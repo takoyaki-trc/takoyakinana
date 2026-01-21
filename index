@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="函館・湯の川温泉のたこ焼き店「たこ焼き菜々」公式ページ。営業時間・メニュー・アクセス・通販・たこ焼きトレカ情報。" />
+  <title>たこ焼き菜々｜公式サイト</title>
+
+  <!-- OGP（SNSで綺麗に出す用：あとで差し替え） -->
+  <meta property="og:title" content="たこ焼き菜々｜公式サイト" />
+  <meta property="og:description" content="函館・湯の川温泉のたこ焼き店。営業時間・メニュー・アクセス・通販・たこ焼きトレカ情報。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="./assets/ogp.jpg" />
+  <meta property="og:url" content="https://YOUR_ID.github.io/YOUR_REPO/" />
+
+  <style>
+    :root{
+      --bg:#0f1115;
+      --panel:#171a21;
+      --text:#eef2ff;
+      --muted:#b8c0d8;
+      --line:rgba(255,255,255,.12);
+      --accent:#ff5a2e;
+      --accent2:#ffd66b;
+      --link:#8bd3ff;
+      --shadow: 0 12px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+      --max: 980px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(255,90,46,.25), transparent 60%),
+        radial-gradient(1200px 600px at 80% 0%, rgba(255,214,107,.18), transparent 60%),
+        linear-gradient(180deg, #0b0d12, var(--bg));
+      color:var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      line-height:1.6;
+    }
+
+    a{ color:var(--link); text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+
+    .wrap{ max-width:var(--max); margin:0 auto; padding:18px 14px 40px; }
+
+    /* ===== top nav ===== */
+    .topbar{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(10px);
+      background: rgba(15,17,21,.72);
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar .inner{
+      max-width:var(--max);
+      margin:0 auto;
+      padding: 10px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width: 0;
+    }
+    .logo{
+      width:34px;height:34px;
+      border-radius:10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 10px 18px rgba(255,90,46,.22);
+      flex:0 0 auto;
+    }
+    .brand .name{
+      font-weight:800;
+      letter-spacing:.02em;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .nav{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .chip{
+      border:1px solid var(--line);
+      color: var(--text);
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:12px;
+      background: rgba(255,255,255,.04);
+      white-space:nowrap;
+    }
+    .chip:hover{ background: rgba(255,255,255,.08); text-decoration:none; }
+
+    /* ===== hero ===== */
+    .hero{
+      margin-top: 16px;
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border-radius: var(--radius);
+      overflow:hidden;
+      box-shadow: var(--shadow);
+    }
+    .heroInner{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 14px;
+      padding: 16px;
+    }
+    @media (max-width: 860px){
+      .heroInner{ grid-template-columns:1fr; }
+    }
+    .kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color: var(--muted);
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform: uppercase;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(255,90,46,.18);
+    }
+    h1{
+      margin: 10px 0 10px;
+      font-size: clamp(22px, 3.2vw, 34px);
+      line-height:1.25;
+    }
+    .lead{ color: var(--muted); margin: 0 0 14px; }
+    .ctaRow{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px; }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      padding: 11px 14px;
+      border-radius: 12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      font-weight:700;
+      font-size: 14px;
+      min-width: 150px;
+    }
+    .btn:hover{ background: rgba(255,255,255,.10); text-decoration:none; }
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(255,90,46,.95), rgba(255,214,107,.9));
+      border-color: transparent;
+      color: #1a120b;
+    }
+    .btn.primary:hover{ filter: brightness(1.03); }
+
+    .sideCard{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(0,0,0,.18);
+      padding: 14px;
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size:12px;
+      color: var(--muted);
+    }
+    .badge b{ color: var(--text); }
+    .kvImg{
+      width:100%;
+      aspect-ratio: 16/11;
+      border-radius: 14px;
+      background: rgba(255,255,255,.06);
+      border: 1px dashed rgba(255,255,255,.18);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color: rgba(255,255,255,.55);
+      font-size: 12px;
+      text-align:center;
+      padding: 10px;
+    }
+
+    /* ===== sections ===== */
+    section{ margin-top: 18px; }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 860px){
+      .grid{ grid-template-columns:1fr; }
+    }
+    .card{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: 0 10px 22px rgba(0,0,0,.25);
+    }
+    .card h2{
+      margin: 0 0 10px;
+      font-size: 16px;
+      letter-spacing:.02em;
+    }
+    .card p{ margin: 6px 0; color: var(--muted); }
+    .label{
+      display:inline-block;
+      font-size:12px;
+      color: var(--muted);
+      margin-right: 8px;
+      min-width: 6.5em;
+    }
+    .row{ display:flex; gap:10px; align-items:flex-start; flex-wrap:wrap; }
+    .pill{
+      display:inline-flex;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      font-size:12px;
+      color: var(--text);
+    }
+    .menuList{ display:flex; flex-direction:column; gap:10px; }
+    .menuItem{
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .menuHead{ display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+    .menuName{ font-weight:800; }
+    .menuPrice{ color: var(--accent2); font-weight:800; }
+    .note{
+      margin-top: 8px;
+      font-size:12px;
+      color: rgba(255,255,255,.62);
+    }
+
+    /* ===== footer ===== */
+    footer{
+      margin-top: 22px;
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+      color: rgba(255,255,255,.62);
+      font-size: 12px;
+    }
+    .smallLinks{ display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
+    .smallLinks a{ padding:6px 10px; border:1px solid var(--line); border-radius:999px; background: rgba(255,255,255,.03); }
+    .smallLinks a:hover{ background: rgba(255,255,255,.07); text-decoration:none; }
+  </style>
+</head>
+
+<body>
+  <!-- top bar -->
+  <div class="topbar">
+    <div class="inner">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div class="name">たこ焼き菜々（公式）</div>
+      </div>
+      <nav class="nav" aria-label="ページ内メニュー">
+        <a class="chip" href="#info">店舗情報</a>
+        <a class="chip" href="#menu">メニュー</a>
+        <a class="chip" href="#access">アクセス</a>
+        <a class="chip" href="#online">通販</a>
+        <a class="chip" href="#trc">たこ焼きトレカ</a>
+      </nav>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <!-- hero -->
+    <div class="hero">
+      <div class="heroInner">
+        <div>
+          <div class="kicker"><span class="dot"></span>Hakodate / Yunokawa</div>
+          <h1>函館・湯の川温泉の<br>たこ焼き店「たこ焼き菜々」</h1>
+          <p class="lead">
+            焼きたて、外カリ中トロ。<br>
+            ふらっと寄れて、ちゃんと旨い。<br>
+            そして…ここから「たこ焼きトレカ」の世界も始まります。
+          </p>
+
+          <div class="ctaRow">
+            <!-- ▼ここは実際のリンクに差し替えOK -->
+            <a class="btn primary" href="#access">地図を見る</a>
+            <a class="btn" href="#menu">メニューを見る</a>
+            <a class="btn" href="#online">通販へ</a>
+          </div>
+
+          <p class="note">
+            ※ 営業時間・定休日は変更になる場合があります。最新情報はSNS等でご確認ください。
+          </p>
+        </div>
+
+        <aside class="sideCard">
+          <div class="badge">🏪 <b>店舗の写真</b>（ここは画像に差し替え）</div>
+          <div class="kvImg">
+            ここに店舗写真を置けます<br>
+            例：./assets/shop.jpg
+          </div>
+          <div class="row">
+            <span class="pill">テイクアウト</span>
+            <span class="pill">湯の川温泉エリア</span>
+            <span class="pill">たこ焼きトレカ発祥</span>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- info -->
+    <section id="info" class="grid">
+      <div class="card">
+        <h2>店舗情報</h2>
+        <p><span class="label">店名</span>たこ焼き菜々</p>
+        <p><span class="label">住所</span>（ここに住所を入れる）</p>
+        <p><span class="label">営業時間</span>（例）11:00〜19:00</p>
+        <p><span class="label">定休日</span>（例）毎週○曜日 / 不定休</p>
+        <p><span class="label">支払い</span>（例）現金 / キャッシュレス など</p>
+        <p class="note">※ 住所や営業時間は、あなたが公開してOKな範囲で記載してください。</p>
+      </div>
+
+      <div class="card">
+        <h2>お知らせ</h2>
+        <p>・新作や限定メニューはSNSで告知します。</p>
+        <p>・混雑時は提供にお時間をいただく場合があります。</p>
+        <p>・「たこ焼きトレカ」の最新情報もこちらから。</p>
+        <div class="smallLinks">
+          <a href="#" target="_blank" rel="noopener">X（店主/公式）</a>
+          <a href="#" target="_blank" rel="noopener">Instagram</a>
+          <a href="#" target="_blank" rel="noopener">Googleマップ</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- menu -->
+    <section id="menu" class="card">
+      <h2>メニュー（例）</h2>
+      <div class="menuList">
+        <div class="menuItem">
+          <div class="menuHead">
+            <div class="menuName">すっぴん（素焼き）</div>
+            <div class="menuPrice">¥---</div>
+          </div>
+          <div class="note">※ “まずはこれ”枠。追いソースはお好みで。</div>
+        </div>
+
+        <div class="menuItem">
+          <div class="menuHead">
+            <div class="menuName">ソース</div>
+            <div class="menuPrice">¥---</div>
+          </div>
+          <div class="note">※ 定番。迷ったらこれ。</div>
+        </div>
+
+        <div class="menuItem">
+          <div class="menuHead">
+            <div class="menuName">ねぎ味噌</div>
+            <div class="menuPrice">¥---</div>
+          </div>
+          <div class="note">※ クセになる系。</div>
+        </div>
+
+        <div class="menuItem">
+          <div class="menuHead">
+            <div class="menuName">めんたいマヨ</div>
+            <div class="menuPrice">¥---</div>
+          </div>
+          <div class="note">※ 人気枠。</div>
+        </div>
+
+        <div class="menuItem">
+          <div class="menuHead">
+            <div class="menuName">イカさま焼き（上に何もかけない）</div>
+            <div class="menuPrice">¥---</div>
+          </div>
+          <div class="note">※ お土産・話題枠にも。</div>
+        </div>
+      </div>
+
+      <p class="note">※ ここは“例”なので、実メニュー名・価格に合わせて書き換えてください。</p>
+    </section>
+
+    <!-- access -->
+    <section id="access" class="grid">
+      <div class="card">
+        <h2>アクセス</h2>
+        <p><span class="label">エリア</span>函館・湯の川温泉</p>
+        <p><span class="label">目印</span>（例）函館アリーナ向かい など</p>
+        <p><span class="label">駐車場</span>（例）近隣コインP / なし / あり</p>
+        <p class="note">※ 地図リンク（Googleマップ）を貼るのがおすすめです。</p>
+        <div class="smallLinks">
+          <a href="#" target="_blank" rel="noopener">Googleマップで開く</a>
+          <a href="#info">店舗情報へ戻る</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>写真（外観 / メニュー）</h2>
+        <p>ここは写真ギャラリー枠（任意）です。</p>
+        <p class="note">例：店頭写真・焼き台・たこ焼きアップ など。</p>
+        <div class="kvImg">ここに画像を置けます（複数もOK）</div>
+      </div>
+    </section>
+
+    <!-- online -->
+    <section id="online" class="card">
+      <h2>通販・リンク</h2>
+      <p>オンラインでの購入や各リンクはこちら。</p>
+      <div class="ctaRow">
+        <!-- ▼BASEのURLに差し替え -->
+        <a class="btn primary" href="https://takoyakinana.1net.jp/" target="_blank" rel="noopener">公式（現サイト）</a>
+        <a class="btn" href="#" target="_blank" rel="noopener">BASE（通販）</a>
+        <a class="btn" href="#" target="_blank" rel="noopener">BOOTH（トレカ通販）</a>
+      </div>
+      <p class="note">※ 現サイトは「捨て看板」化して、このGitHub版を本体にしてもOKです。</p>
+    </section>
+
+    <!-- TRC -->
+    <section id="trc" class="card">
+      <h2>たこ焼きトレカ（TRC）</h2>
+      <p>
+        たこ焼き菜々が制作・販売している、オリジナルのトレーディングカード。<br>
+        集める喜び、世界観、そして“焼かれた伝説”を、あなたの手に。
+      </p>
+
+      <div class="ctaRow">
+        <!-- ▼あなたが作ったPages URLに差し替え -->
+        <a class="btn primary" href="https://takoyaki-trc.github.io/takoyaki-media/" target="_blank" rel="noopener">メディア掲載</a>
+        <a class="btn" href="#" target="_blank" rel="noopener">たこ焼きトレカ（説明）</a>
+        <a class="btn" href="#" target="_blank" rel="noopener">町マップ</a>
+      </div>
+
+      <p class="note">
+        ※ このページ（店舗公式）と、トレカ世界観（別ページ）を分けると、読みやすくて強いです。
+      </p>
+    </section>
+
+    <footer>
+      <div>© たこ焼き菜々 / Takoyaki Nana</div>
+      <div class="smallLinks">
+        <a href="#info">店舗情報</a>
+        <a href="#menu">メニュー</a>
+        <a href="#access">アクセス</a>
+        <a href="#online">通販</a>
+        <a href="#trc">たこ焼きトレカ</a>
+      </div>
+      <div class="note">
+        ※ 写真・ロゴは「自分で撮ったもの」「使用許可があるもの」を使ってください。
+      </div>
+    </footer>
+  </main>
+</body>
+</html>
