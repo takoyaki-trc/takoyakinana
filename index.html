@@ -3,40 +3,29 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>たこ焼き菜々｜焼きたて20分の屋台（公式）</title>
-<meta name="description" content="たこ焼き菜々公式。定番5種（8個450円）/ぷら百6種（+100円）/月替わり（8個550円）/真っ黒いかさま焼き（味3種）。電話注文 070-4077-7732。焼きたてにこだわり、焼き上がりまで20分。" />
+<title>たこ焼き菜々｜焼きたてにこだわる たこ焼き屋</title>
+<meta name="description" content="たこ焼き菜々公式。定番（8個450円）/ぷら百（8個550円）/真っ黒いかさま焼き。電話注文 070-4077-7732。焼き上がりまで約20分。" />
 
 <style>
   :root{
-    /* =========================
-      RED THEME (not plain red)
-      “深紅×金×煤(すす)×夜” + わずかに青いネオン
-    ========================= */
-    --bg0:#06060a;
-    --bg1:#12040a;
-    --bg2:#25060f;
-    --bg3:#3a0714;
+    /* ===== 明るい背景 + 赤アクセント（単色の赤じゃない） ===== */
+    --bg:#fff7f7;
+    --bg2:#fffdf7;
+    --card:#ffffff;
+    --line: rgba(20,10,12,.12);
+    --text:#1a1315;
+    --muted: rgba(26,19,21,.68);
 
-    --paper: rgba(255,255,255,.075);
-    --paper2: rgba(255,255,255,.10);
-    --line: rgba(255,255,255,.16);
+    --red1:#ff2d55; /* 鮮やか */
+    --red2:#ff6a3d; /* 朱/オレンジ寄り */
+    --red3:#ffb800; /* 黄寄り */
+    --pink:#ff6bd6;
+    --sky:#4aa8ff;
 
-    --text:#fff;
-    --muted: rgba(255,255,255,.76);
-
-    --gold1:#f7dc83;
-    --gold2:#caa245;
-    --gold3:#7b5a1b;
-
-    --ember1:#ff4a6a;   /* 濃い赤ピンク */
-    --ember2:#ff7a3d;   /* 炎の橙 */
-    --ember3:#ffcb6b;   /* 火粉の黄 */
-    --neon:#7fd0ff;     /* TRCの青を少し */
-    --ok:#60e6a5;
-
-    --radius:18px;
-    --shadow: 0 18px 60px rgba(0,0,0,.60);
-    --max: 1020px;
+    --shadow: 0 18px 40px rgba(0,0,0,.10);
+    --shadow2: 0 10px 24px rgba(0,0,0,.10);
+    --r:18px;
+    --max: 1120px;
   }
 
   *{ box-sizing:border-box }
@@ -45,45 +34,16 @@
     margin:0;
     font-family: system-ui,-apple-system,"Noto Sans JP",sans-serif;
     color:var(--text);
-    min-height:100svh;
-
-    /* “赤い夜”の奥行き：単色じゃない */
     background:
-      radial-gradient(circle at 20% 10%, rgba(255,74,106,.24) 0%, rgba(255,74,106,0) 40%),
-      radial-gradient(circle at 85% 15%, rgba(255,122,61,.18) 0%, rgba(255,122,61,0) 45%),
-      radial-gradient(circle at 60% 70%, rgba(255,203,107,.10) 0%, rgba(255,203,107,0) 48%),
-      radial-gradient(circle at 35% 65%, rgba(127,208,255,.08) 0%, rgba(127,208,255,0) 45%),
-      linear-gradient(180deg, var(--bg3) 0%, var(--bg2) 30%, var(--bg1) 65%, var(--bg0) 100%);
+      radial-gradient(circle at 20% 10%, rgba(255,45,85,.10), transparent 40%),
+      radial-gradient(circle at 85% 8%, rgba(74,168,255,.10), transparent 42%),
+      radial-gradient(circle at 70% 75%, rgba(255,182,0,.10), transparent 45%),
+      linear-gradient(180deg, var(--bg), var(--bg2));
   }
 
   a{ color:inherit; text-decoration:none }
   button{ font:inherit }
-
-  /* =========================
-     BACKGROUND FX：火粉・薄い格子
-  ========================= */
-  .fx{
-    position:fixed; inset:0;
-    pointer-events:none;
-    opacity:.85;
-    background-image:
-      radial-gradient(circle at 12% 22%, rgba(255,255,255,.45) 0 1px, transparent 2px),
-      radial-gradient(circle at 32% 78%, rgba(255,255,255,.25) 0 1px, transparent 2px),
-      radial-gradient(circle at 66% 30%, rgba(255,255,255,.30) 0 1px, transparent 2px),
-      radial-gradient(circle at 84% 70%, rgba(255,255,255,.20) 0 1px, transparent 2px),
-      radial-gradient(circle at 55% 18%, rgba(255,203,107,.22) 0 1px, transparent 2px),
-      radial-gradient(circle at 18% 66%, rgba(255,74,106,.18) 0 1px, transparent 2px);
-    filter: blur(.15px);
-  }
-  .gridfx{
-    position:fixed; inset:0;
-    pointer-events:none;
-    opacity:.18;
-    background:
-      repeating-linear-gradient(0deg, rgba(255,255,255,.08) 0, rgba(255,255,255,.08) 1px, transparent 1px, transparent 24px),
-      repeating-linear-gradient(90deg, rgba(255,255,255,.06) 0, rgba(255,255,255,.06) 1px, transparent 1px, transparent 24px);
-    mask-image: radial-gradient(circle at 50% 20%, rgba(0,0,0,1), rgba(0,0,0,.25) 55%, rgba(0,0,0,0) 85%);
-  }
+  img{ max-width:100%; display:block }
 
   .wrap{
     width:min(var(--max), 100%);
@@ -91,26 +51,24 @@
     padding: 14px 12px calc(22px + env(safe-area-inset-bottom));
   }
 
-  /* =========================
-     HUD（ゲームの上部バー）
-  ========================= */
-  .hud{
+  /* ===== ヘッダー ===== */
+  header{
     position:sticky;
     top:0;
     z-index:50;
-    padding: 10px 0 12px;
     backdrop-filter: blur(10px);
+    padding: 10px 0 12px;
   }
-  .hudbar{
+  .topbar{
     display:flex;
-    gap:10px;
     align-items:center;
     justify-content:space-between;
+    gap:10px;
     padding: 10px 12px;
     border:1px solid var(--line);
-    background: rgba(0,0,0,.38);
+    background: rgba(255,255,255,.75);
     border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,.40);
+    box-shadow: var(--shadow2);
   }
   .brand{
     display:flex; align-items:center; gap:10px;
@@ -119,38 +77,25 @@
   .logo{
     width:38px; height:38px; border-radius:12px;
     background:
-      radial-gradient(circle at 35% 35%, rgba(255,255,255,.22), transparent 45%),
-      linear-gradient(135deg, rgba(255,74,106,.95), rgba(255,203,107,.65));
-    border:1px solid rgba(255,255,255,.20);
-    box-shadow: 0 12px 30px rgba(0,0,0,.45);
+      radial-gradient(circle at 35% 35%, rgba(255,255,255,.8), rgba(255,255,255,0) 55%),
+      linear-gradient(135deg, var(--red1), var(--red2), var(--red3));
+    box-shadow: 0 10px 22px rgba(255,45,85,.20);
+    border:1px solid rgba(0,0,0,.06);
     flex:0 0 auto;
-    position:relative;
-    overflow:hidden;
   }
-  .logo:after{
-    content:"";
-    position:absolute; inset:-35%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,.26), transparent);
-    transform: rotate(25deg) translateX(-40%);
-    animation: shine 4.8s infinite ease-in-out;
+  .brand .t{
+    min-width:0;
   }
-  @keyframes shine{
-    0%{ transform: rotate(25deg) translateX(-60%); opacity:0 }
-    20%{ opacity:.9 }
-    55%{ transform: rotate(25deg) translateX(60%); opacity:.14 }
-    100%{ transform: rotate(25deg) translateX(60%); opacity:0 }
-  }
-
-  .brandtext{ min-width:0 }
-  .brandtext .name{
+  .brand .name{
     font-weight: 1000;
     letter-spacing:.02em;
-    line-height:1.1;
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
+    line-height:1.1;
   }
-  .brandtext .sub{
+  .brand .sub{
+    margin-top:3px;
     font-size:12px;
     color:var(--muted);
     white-space:nowrap;
@@ -158,375 +103,356 @@
     text-overflow:ellipsis;
   }
 
-  .hudactions{
+  .actions{
     display:flex; gap:8px; flex:0 0 auto; align-items:center;
   }
-
   .btn{
-    border:1px solid rgba(255,255,255,.16);
-    background: rgba(255,255,255,.06);
-    color:var(--text);
+    border:1px solid var(--line);
+    background: #fff;
     padding: 10px 12px;
     border-radius: 14px;
     cursor:pointer;
-    transition: transform .12s ease, background .12s ease, border-color .12s ease;
     display:inline-flex; align-items:center; gap:8px;
+    transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+    box-shadow: 0 10px 20px rgba(0,0,0,.06);
     user-select:none;
   }
-  .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.24); }
-  .btn:active{ transform: translateY(0px) scale(.98); }
-
-  .btn.primary{
-    border-color: rgba(247,220,131,.55);
-    background: linear-gradient(180deg, rgba(247,220,131,.18), rgba(0,0,0,.18));
-    box-shadow: 0 12px 28px rgba(0,0,0,.40);
-  }
+  .btn:hover{ transform: translateY(-1px); }
+  .btn:active{ transform: translateY(0px) scale(.98); box-shadow:none; }
   .btn.call{
-    border-color: rgba(255,74,106,.55);
-    background: linear-gradient(180deg, rgba(255,74,106,.18), rgba(0,0,0,.18));
+    background: linear-gradient(180deg, rgba(255,45,85,.12), rgba(255,255,255,1));
+    border-color: rgba(255,45,85,.25);
   }
-  .btn.trc{
-    border-color: rgba(127,208,255,.55);
-    background: linear-gradient(180deg, rgba(127,208,255,.14), rgba(0,0,0,.18));
+  .btn.ghost{
+    background: rgba(255,255,255,.55);
   }
 
-  /* =========================
-     HERO（入口をシンプルに）
-  ========================= */
+  /* ===== ヒーロー：今日のオススメ ===== */
   .hero{
-    margin-top: 10px;
-    border-radius: var(--radius);
+    margin-top: 12px;
+    border-radius: var(--r);
     border:1px solid var(--line);
-    background:
-      radial-gradient(circle at 15% 20%, rgba(255,74,106,.22), transparent 40%),
-      radial-gradient(circle at 85% 22%, rgba(255,203,107,.14), transparent 45%),
-      linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+    background: rgba(255,255,255,.78);
     box-shadow: var(--shadow);
     overflow:hidden;
-    position:relative;
   }
-  .hero-inner{
-    padding: 16px 14px 14px;
+  .heroInner{
     display:grid;
     grid-template-columns: 1.15fr .85fr;
     gap: 12px;
+    padding: 14px;
     align-items:stretch;
   }
-  @media (max-width:820px){
-    .hero-inner{ grid-template-columns: 1fr; }
+  @media (max-width:900px){
+    .heroInner{ grid-template-columns: 1fr; }
   }
 
-  .badges{
-    display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;
+  .recPhoto{
+    border-radius: 16px;
+    overflow:hidden;
+    border:1px solid rgba(0,0,0,.08);
+    background: #f6f6f6;
+    position:relative;
+    min-height: 240px;
   }
-  .badge{
-    font-size:12px;
+  .recPhoto img{
+    width:100%;
+    height: 100%;
+    object-fit: cover;
+    aspect-ratio: 16/10;
+  }
+  .recRibbon{
+    position:absolute;
+    left: 12px; top: 12px;
+    display:flex; gap:8px; flex-wrap:wrap; align-items:center;
+  }
+  .pill{
+    font-size: 12px;
     padding: 6px 10px;
     border-radius: 999px;
-    border:1px solid rgba(255,255,255,.16);
-    background: rgba(0,0,0,.22);
-    color: rgba(255,255,255,.86);
+    border:1px solid rgba(0,0,0,.10);
+    background: rgba(255,255,255,.82);
+    box-shadow: 0 10px 18px rgba(0,0,0,.08);
+    font-weight: 800;
   }
-  .badge.gold{ border-color: rgba(247,220,131,.55); }
-  .badge.red{ border-color: rgba(255,74,106,.55); }
-  .badge.blue{ border-color: rgba(127,208,255,.55); }
+  .pill.red{ border-color: rgba(255,45,85,.25); }
+  .pill.sky{ border-color: rgba(74,168,255,.25); }
+  .pill.sun{ border-color: rgba(255,182,0,.25); }
+  .pill.gray{ border-color: rgba(0,0,0,.10); color: rgba(26,19,21,.80); }
 
-  .hero h1{
-    margin:0;
-    font-size: clamp(22px, 3.2vw, 34px);
+  .recText{
+    display:flex;
+    flex-direction:column;
+    gap: 10px;
+  }
+  .title{
+    font-size: clamp(20px, 2.6vw, 30px);
+    font-weight: 1000;
     letter-spacing:.02em;
     line-height:1.15;
+    margin:0;
   }
   .lead{
-    margin: 10px 0 0;
+    margin:0;
     color: var(--muted);
     line-height:1.7;
     font-size: 14px;
   }
 
-  .motto{
-    margin-top: 12px;
+  .recCard{
     border-radius: 16px;
-    border:1px solid rgba(247,220,131,.35);
-    background: rgba(0,0,0,.22);
-    padding: 10px 12px;
-  }
-  .motto .t{
-    font-weight: 1000;
-    letter-spacing:.02em;
-  }
-  .motto .q{
-    margin-top: 6px;
-    font-size: 13px;
-    color: rgba(255,255,255,.86);
-    line-height:1.65;
-  }
-
-  /* 右側：タブ式ミニMAP（文字減らす） */
-  .mini{
-    border-radius: 16px;
-    border:1px solid var(--line);
-    background: rgba(0,0,0,.22);
+    border:1px solid rgba(0,0,0,.08);
+    background: #fff;
     padding: 12px;
-    position:relative;
-    overflow:hidden;
+    box-shadow: 0 12px 22px rgba(0,0,0,.06);
   }
-  .mini:before{
-    content:"";
-    position:absolute; inset:0;
-    background:
-      radial-gradient(circle at 22% 18%, rgba(255,74,106,.16), transparent 40%),
-      radial-gradient(circle at 78% 18%, rgba(255,203,107,.10), transparent 42%),
-      linear-gradient(180deg, rgba(255,255,255,.03), rgba(0,0,0,.20));
-    pointer-events:none;
+  .recLine{
+    display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
   }
-  .mini > *{ position:relative; }
-
-  .tabbar{
-    display:flex; gap:8px; flex-wrap:wrap;
-    margin-bottom: 10px;
-  }
-  .tab{
-    flex:1 1 auto;
-    border-radius: 999px;
-    border:1px solid rgba(255,255,255,.16);
-    background: rgba(255,255,255,.06);
-    padding: 8px 10px;
-    font-size: 12px;
-    font-weight: 900;
-    letter-spacing:.02em;
-    cursor:pointer;
-    transition: transform .12s ease, background .12s ease, border-color .12s ease;
-    text-align:center;
-    user-select:none;
-  }
-  .tab:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.22); }
-  .tab.active{
-    border-color: rgba(247,220,131,.55);
-    background: rgba(247,220,131,.10);
-  }
-
-  .miniCard{
-    border-radius: 14px;
-    border:1px solid rgba(255,255,255,.14);
-    background: rgba(0,0,0,.18);
-    padding: 10px 10px;
-  }
-  .miniCard .h{
-    display:flex; align-items:center; justify-content:space-between; gap:10px;
+  .recName{
     font-weight: 1000;
     letter-spacing:.02em;
+    font-size: 16px;
+    line-height:1.25;
   }
-  .pill{
-    font-size: 11px;
-    padding: 4px 8px;
-    border-radius: 999px;
-    border:1px solid rgba(255,255,255,.18);
-    background: rgba(255,255,255,.06);
-    color: rgba(255,255,255,.78);
-    flex:0 0 auto;
+  .recPrice{
+    font-weight: 1000;
+    font-size: 14px;
+    white-space:nowrap;
+    color: rgba(26,19,21,.90);
   }
-  .pill.gold{ border-color: rgba(247,220,131,.45); background: rgba(247,220,131,.08); color: rgba(255,244,210,.95); }
-  .pill.red{ border-color: rgba(255,74,106,.45); background: rgba(255,74,106,.08); color: rgba(255,220,230,.95); }
-  .pill.blue{ border-color: rgba(127,208,255,.45); background: rgba(127,208,255,.08); color: rgba(225,248,255,.95); }
-
-  .miniCard .p{
-    margin-top: 6px;
-    color: rgba(255,255,255,.78);
-    font-size: 13px;
-    line-height:1.65;
+  .recNote{
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height:1.7;
   }
-  .miniBtns{
+  .recBtns{
     margin-top: 10px;
     display:flex; gap:8px; flex-wrap:wrap;
   }
-  .miniBtns a, .miniBtns button{
-    flex:1 1 auto;
-    justify-content:center;
-  }
+  .recBtns .btn{ flex:1 1 auto; justify-content:center; }
 
-  /* =========================
-     LAYOUT（情報を“まとめて”見せる）
-  ========================= */
+  /* ===== セクション ===== */
   .section{
     margin-top: 12px;
-    border-radius: var(--radius);
+    border-radius: var(--r);
     border:1px solid var(--line);
-    background: rgba(255,255,255,.06);
-    box-shadow: 0 18px 60px rgba(0,0,0,.35);
+    background: rgba(255,255,255,.78);
+    box-shadow: var(--shadow);
     overflow:hidden;
   }
   .head{
     padding: 12px 14px;
-    background: rgba(0,0,0,.18);
-    border-bottom: 1px solid rgba(255,255,255,.12);
     display:flex; align-items:center; justify-content:space-between; gap:10px;
+    border-bottom: 1px solid rgba(0,0,0,.06);
+    background:
+      radial-gradient(circle at 15% 20%, rgba(255,45,85,.06), transparent 55%),
+      radial-gradient(circle at 85% 25%, rgba(74,168,255,.06), transparent 55%),
+      #fff;
   }
-  .head .title{
+  .head .h{
     display:flex; align-items:center; gap:10px;
     font-weight: 1000;
     letter-spacing:.02em;
   }
   .dot{
     width:10px; height:10px; border-radius:99px;
-    background: linear-gradient(180deg, var(--gold1), var(--gold2));
-    box-shadow: 0 0 0 2px rgba(0,0,0,.25);
+    background: linear-gradient(180deg, var(--red1), var(--red2), var(--red3));
+    box-shadow: 0 0 0 2px rgba(255,255,255,.9);
   }
   .head .sub{
     font-size: 12px;
     color: var(--muted);
     font-weight: 700;
+    text-align:right;
   }
-  .body{ padding: 12px 14px 14px; }
+  .body{
+    padding: 12px 14px 14px;
+  }
 
-  .cards{
+  /* ===== メニュー：写真カードグリッド ===== */
+  .menuGrid{
     display:grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 10px;
   }
-  @media (max-width:860px){ .cards{ grid-template-columns: 1fr; } }
+  @media (max-width:980px){ .menuGrid{ grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width:560px){ .menuGrid{ grid-template-columns: 1fr; } }
 
-  .card{
+  .mCard{
     border-radius: 16px;
-    border:1px solid rgba(255,255,255,.14);
-    background: rgba(0,0,0,.18);
-    padding: 12px 12px;
-    position:relative;
     overflow:hidden;
+    border:1px solid rgba(0,0,0,.08);
+    background:#fff;
+    box-shadow: 0 12px 22px rgba(0,0,0,.06);
+    display:flex;
+    flex-direction:column;
+    min-height: 100%;
   }
-  .card:before{
-    content:"";
-    position:absolute; inset:0;
-    background: radial-gradient(circle at 20% 10%, rgba(255,74,106,.10), transparent 45%);
-    pointer-events:none;
+  .mPhoto{
+    aspect-ratio: 4/3;
+    background:#f3f3f3;
   }
-  .card > *{ position:relative; }
-
-  .card .k{
-    display:flex; align-items:center; justify-content:space-between; gap:10px;
-    font-weight: 1000;
+  .mPhoto img{
+    width:100%;
+    height:100%;
+    object-fit: cover;
+  }
+  .mBody{
+    padding: 10px 10px 12px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    flex:1;
+  }
+  .mTop{
+    display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+  }
+  .mName{
+    font-weight:1000;
     letter-spacing:.02em;
+    line-height:1.25;
   }
-  .card .v{
-    margin-top: 8px;
-    color: rgba(255,255,255,.80);
-    line-height:1.7;
+  .mPrice{
+    font-weight: 1000;
+    white-space:nowrap;
     font-size: 13px;
+    color: rgba(26,19,21,.88);
   }
-
-  /* メニュー：一覧は“要点だけ” */
-  .menuRow{
-    display:flex; align-items:baseline; justify-content:space-between; gap:10px;
-    padding: 10px 10px;
-    border-radius: 14px;
-    border:1px solid rgba(255,255,255,.14);
-    background: rgba(0,0,0,.18);
+  .tagRow{
+    display:flex; gap:6px; flex-wrap:wrap;
   }
-  .menuRow .l .name{ font-weight:1000; letter-spacing:.02em; }
-  .menuRow .l .desc{ margin-top:4px; font-size:12px; color:rgba(255,255,255,.74); line-height:1.55; }
-  .menuRow .r{ text-align:right; flex:0 0 auto; }
-  .menuRow .price{ font-weight:1000; letter-spacing:.02em; font-size: 16px; }
-  .menuRow .unit{ margin-top:4px; font-size:11px; color:rgba(255,255,255,.72); }
-
-  .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top: 10px; }
-  .chip{
-    font-size: 12px;
-    padding: 7px 10px;
-    border-radius: 999px;
-    border:1px solid rgba(255,255,255,.16);
-    background: rgba(255,255,255,.06);
-    color: rgba(255,255,255,.86);
-  }
-  .chip.ok{ border-color: rgba(96,230,165,.40); background: rgba(96,230,165,.08); }
-  .chip.red{ border-color: rgba(255,74,106,.45); background: rgba(255,74,106,.08); }
-  .chip.gold{ border-color: rgba(247,220,131,.45); background: rgba(247,220,131,.08); color: rgba(255,244,210,.95); }
-  .chip.blue{ border-color: rgba(127,208,255,.45); background: rgba(127,208,255,.08); color: rgba(225,248,255,.95); }
-
-  /* 目玉：ボスカード（黒） */
-  .boss{
-    border-radius: 16px;
-    border:1px solid rgba(255,255,255,.16);
-    background:
-      radial-gradient(circle at 18% 12%, rgba(255,74,106,.14), transparent 40%),
-      radial-gradient(circle at 80% 14%, rgba(255,203,107,.10), transparent 45%),
-      linear-gradient(180deg, rgba(0,0,0,.28), rgba(255,255,255,.05));
-    padding: 12px;
-    overflow:hidden;
-    position:relative;
-  }
-  .boss:after{
-    content:"";
-    position:absolute; inset:-40%;
-    background: radial-gradient(circle at 30% 30%, rgba(0,0,0,.55), transparent 45%);
-    opacity:.55;
-    pointer-events:none;
-  }
-  .boss .row{ position:relative; display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
-  .boss .name{ font-size: 18px; font-weight: 1100; letter-spacing:.02em; }
-  .boss .sub{ margin-top:6px; font-size:12px; color: rgba(255,255,255,.78); line-height:1.6; }
-  .boss .mark{
-    flex:0 0 auto;
-    border-radius: 14px;
-    border:1px solid rgba(255,74,106,.45);
-    background: rgba(255,74,106,.08);
-    padding: 8px 10px;
-    font-weight: 1000;
-    letter-spacing:.02em;
-    color: rgba(255,220,230,.98);
-  }
-  .choices{
-    position:relative;
-    margin-top: 10px;
-    display:grid;
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-  .choice{
-    padding: 10px 10px;
-    border-radius: 14px;
-    border:1px solid rgba(255,255,255,.14);
-    background: rgba(0,0,0,.18);
-    display:flex; justify-content:space-between; gap:10px;
-    align-items:center;
-  }
-  .choice .cname{ font-weight:1000; letter-spacing:.02em; }
-  .choice .ctag{
+  .tag{
     font-size: 11px;
     padding: 4px 8px;
     border-radius: 999px;
-    border:1px solid rgba(127,208,255,.40);
-    background: rgba(127,208,255,.08);
-    color: rgba(225,248,255,.95);
-    flex:0 0 auto;
+    border:1px solid rgba(0,0,0,.10);
+    background: rgba(255,255,255,.92);
+    color: rgba(26,19,21,.75);
+  }
+  .tag.std{ border-color: rgba(74,168,255,.22); }
+  .tag.plus{ border-color: rgba(255,45,85,.22); }
+  .tag.limited{ border-color: rgba(255,182,0,.28); }
+
+  .mHint{
+    margin-top:auto;
+    font-size: 12px;
+    color: var(--muted);
+    line-height:1.6;
   }
 
-  /* FAQは details で圧縮 */
-  details{
-    border-radius: 14px;
-    border:1px solid rgba(255,255,255,.14);
-    background: rgba(0,0,0,.18);
-    padding: 10px 10px;
+  /* ===== いかさま焼き（特別枠） ===== */
+  .feature{
+    display:grid;
+    grid-template-columns: 1.05fr .95fr;
+    gap: 12px;
+    align-items:stretch;
   }
-  summary{
-    cursor:pointer;
-    font-weight: 1000;
+  @media (max-width:900px){ .feature{ grid-template-columns: 1fr; } }
+
+  .featurePhoto{
+    border-radius: 16px;
+    overflow:hidden;
+    border:1px solid rgba(0,0,0,.08);
+    background:#f3f3f3;
+    box-shadow: 0 12px 22px rgba(0,0,0,.06);
+  }
+  .featurePhoto img{
+    width:100%;
+    height:100%;
+    object-fit: cover;
+    aspect-ratio: 16/10;
+  }
+  .featureBox{
+    border-radius: 16px;
+    border:1px solid rgba(0,0,0,.08);
+    background:#fff;
+    padding: 12px;
+    box-shadow: 0 12px 22px rgba(0,0,0,.06);
+  }
+  .featureTitle{
+    font-weight: 1100;
     letter-spacing:.02em;
-    list-style:none;
+    font-size: 18px;
+    margin:0;
+  }
+  .featureDesc{
+    margin: 8px 0 0;
+    color: var(--muted);
+    line-height:1.75;
+    font-size: 14px;
+  }
+  .flavors{
+    margin-top: 10px;
+    display:flex;
+    flex-wrap:wrap;
+    gap: 8px;
+  }
+  .flavor{
+    border-radius: 999px;
+    padding: 8px 10px;
+    border:1px solid rgba(0,0,0,.10);
+    background: linear-gradient(180deg, rgba(255,45,85,.06), rgba(255,255,255,.96));
+    font-size: 12px;
+    font-weight: 900;
+  }
+
+  /* ===== おもしろ要素：焼きたてタイマー ===== */
+  .timerWrap{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    align-items:stretch;
+  }
+  @media (max-width:820px){ .timerWrap{ grid-template-columns: 1fr; } }
+
+  .timerCard{
+    border-radius: 16px;
+    border:1px solid rgba(0,0,0,.08);
+    background:#fff;
+    padding: 12px;
+    box-shadow: 0 12px 22px rgba(0,0,0,.06);
+  }
+  .timerTop{
     display:flex; align-items:center; justify-content:space-between; gap:10px;
   }
-  summary::-webkit-details-marker{ display:none }
-  .ans{
+  .timerTitle{
+    font-weight:1100;
+    letter-spacing:.02em;
+  }
+  .time{
+    font-variant-numeric: tabular-nums;
+    font-weight: 1100;
+    letter-spacing:.02em;
+  }
+  .bar{
+    margin-top: 10px;
+    height: 12px;
+    border-radius: 999px;
+    background: rgba(0,0,0,.06);
+    overflow:hidden;
+    border:1px solid rgba(0,0,0,.06);
+  }
+  .bar > i{
+    display:block;
+    height:100%;
+    width:0%;
+    background: linear-gradient(90deg, var(--red1), var(--red2), var(--red3));
+    border-radius: 999px;
+  }
+  .timerNote{
     margin-top: 8px;
-    color: rgba(255,255,255,.78);
+    font-size: 12px;
+    color: var(--muted);
     line-height:1.7;
-    font-size: 13px;
   }
 
-  /* footer */
+  /* ===== フッター ===== */
   footer{
     margin-top: 14px;
     text-align:center;
-    color: rgba(255,255,255,.70);
+    color: rgba(26,19,21,.70);
     font-size: 12px;
     line-height: 1.7;
     padding: 12px 6px 0;
@@ -536,461 +462,528 @@
     margin-top: 10px;
   }
 
-  /* modal */
-  .modalBg{
-    position:fixed; inset:0;
-    background: rgba(0,0,0,.62);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    padding: 14px;
-    z-index:999;
+  /* ===== 小さな注釈 ===== */
+  .small{
+    font-size:12px;
+    color: var(--muted);
+    line-height:1.7;
   }
-  .modal{
-    width:min(640px, 100%);
-    border-radius: 18px;
-    border:1px solid rgba(255,255,255,.18);
-    background:
-      radial-gradient(circle at 20% 10%, rgba(255,74,106,.10), transparent 45%),
-      radial-gradient(circle at 80% 12%, rgba(247,220,131,.10), transparent 45%),
-      linear-gradient(180deg, rgba(255,255,255,.09), rgba(0,0,0,.25));
-    box-shadow: 0 30px 90px rgba(0,0,0,.65);
-    overflow:hidden;
-  }
-  .modalHead{
-    padding: 12px 14px;
-    border-bottom: 1px solid rgba(255,255,255,.12);
-    display:flex; align-items:center; justify-content:space-between; gap:10px;
-  }
-  .modalHead .t{ font-weight: 1100; letter-spacing:.02em; }
-  .modalBody{ padding: 12px 14px 14px; }
-  .closeBtn{
-    border:1px solid rgba(255,255,255,.18);
-    background: rgba(255,255,255,.06);
-    color:#fff;
-    border-radius: 12px;
-    padding: 8px 10px;
-    cursor:pointer;
-  }
-  .closeBtn:hover{ background: rgba(255,255,255,.10); }
-
-  /* small util */
-  .muted{ color: var(--muted); }
 </style>
 </head>
 
 <body>
-<div class="fx" aria-hidden="true"></div>
-<div class="gridfx" aria-hidden="true"></div>
-
 <div class="wrap">
 
-  <!-- ===== HUD ===== -->
-  <div class="hud">
-    <div class="hudbar" role="navigation" aria-label="上部メニュー">
+  <header>
+    <div class="topbar">
       <div class="brand">
         <div class="logo" aria-hidden="true"></div>
-        <div class="brandtext">
+        <div class="t">
           <div class="name">たこ焼き菜々</div>
-          <div class="sub">焼きたて20分｜電話注文OK</div>
+          <div class="sub">焼きたてにこだわる｜電話注文：070-4077-7732</div>
         </div>
       </div>
-
-      <div class="hudactions">
-        <a class="btn call" href="tel:07040777732" aria-label="電話注文する（070-4077-7732）">📞 注文</a>
-        <button class="btn primary" id="btnGuide" type="button">🧭 案内</button>
-        <a class="btn trc" href="https://takoyaki-trc.github.io/takoyaki-media/town/cardlist.html" target="_blank" rel="noopener" aria-label="たこ焼きトレカへ（別タブ）">🌀 TRC</a>
+      <div class="actions">
+        <a class="btn call" href="tel:07040777732">📞 電話注文</a>
+        <a class="btn ghost" href="#menu">🍴 メニュー</a>
+        <a class="btn ghost" href="https://takoyaki-trc.github.io/takoyaki-media/town/cardlist.html" target="_blank" rel="noopener">🌀 トレカ</a>
       </div>
     </div>
-  </div>
+  </header>
 
-  <!-- ===== HERO ===== -->
-  <section class="hero" aria-label="入口">
-    <div class="hero-inner">
-      <div>
-        <div class="badges">
-          <span class="badge gold">定番 8個450円</span>
-          <span class="badge gold">月替わり 8個550円</span>
-          <span class="badge red">ぷら百 +100円</span>
-          <span class="badge blue">電話注文OK</span>
+  <!-- ===== HERO：天気×おすすめ（画像で） ===== -->
+  <section class="hero" aria-label="今日のおすすめ">
+    <div class="heroInner">
+      <div class="recPhoto" aria-label="おすすめ写真">
+        <img id="recImg" src="https://ul.h3z.jp/wKg45O6e.JPG" alt="おすすめメニュー画像" />
+        <div class="recRibbon" aria-hidden="false">
+          <span class="pill red" id="weatherPill">天気チェック中…</span>
+          <span class="pill gray" id="tempPill">--℃</span>
+          <span class="pill gray" id="reasonPill">おすすめ判定中</span>
         </div>
+      </div>
 
-        <h1>赤い夜の屋台で、焼きたてを受け取れ。</h1>
+      <div class="recText">
+        <h1 class="title">今日のおすすめ、出ました。</h1>
         <p class="lead">
-          ご注文から焼き上げまで <b>約20分</b>。<br>
-          その時間は、焼きたてのための“演出”です。
+          天気・気温・湿度っぽさで、<b>おすすめが変わる</b>たこ焼き屋です。<br>
+          （押すたびに同条件内でランダムに変わります）
         </p>
 
-        <div class="motto" aria-label="決め台詞">
-          <div class="t">店主の決め台詞</div>
-          <div class="q">《今日もだれかがたこ焼きを食べている　菜々》</div>
-        </div>
-      </div>
-
-      <!-- 右：タブで情報を圧縮 -->
-      <aside class="mini" aria-label="クイック案内">
-        <div class="tabbar" role="tablist" aria-label="クイック案内タブ">
-          <button class="tab active" id="tabMenu" type="button" role="tab" aria-selected="true">🍴 メニュー</button>
-          <button class="tab" id="tabOrder" type="button" role="tab" aria-selected="false">📞 注文</button>
-          <button class="tab" id="tabBoss" type="button" role="tab" aria-selected="false">🖤 目玉</button>
-        </div>
-
-        <div class="miniCard" id="miniCard" aria-live="polite">
-          <div class="h"><span>メニュー早見</span><span class="pill gold">SHOP</span></div>
-          <div class="p">
-            定番5種（8個450円）<br>
-            ぷら百6種（+100円）<br>
-            月替わり1種（8個550円）
+        <div class="recCard">
+          <div class="recLine">
+            <div class="recName" id="recName">ソース</div>
+            <div class="recPrice" id="recPrice">《8個 450円》</div>
           </div>
-          <div class="miniBtns">
-            <a class="btn primary" href="#menu">一覧を見る</a>
-            <a class="btn call" href="tel:07040777732">電話する</a>
+          <div class="recNote" id="recNote">
+            迷った日は、まずここ。今日の胃袋に一番スッと入るやつ。
+          </div>
+
+          <div class="recBtns">
+            <button class="btn" id="btnReroll" type="button">🎲 別のおすすめ</button>
+            <a class="btn call" href="tel:07040777732">📞 電話で頼む</a>
+          </div>
+
+          <div class="small" style="margin-top:10px" id="lastUpdate">
+            最終更新：--:--
           </div>
         </div>
-      </aside>
-
-    </div>
-  </section>
-
-  <!-- ===== MENU (まとめて見せる) ===== -->
-  <section class="section" id="menu" aria-label="メニュー">
-    <div class="head">
-      <div class="title"><span class="dot"></span>メニュー（早見表）</div>
-      <div class="sub">文字は最小限：必要な情報だけ</div>
-    </div>
-    <div class="body">
-
-      <div class="menuRow" aria-label="定番メニュー">
-        <div class="l">
-          <div class="name">定番メニュー（5種類）</div>
-          <div class="desc">8個単位。迷ったらここ。</div>
-        </div>
-        <div class="r">
-          <div class="price">8個 450円</div>
-          <div class="unit">基本</div>
-        </div>
-      </div>
-
-      <div class="menuRow" style="margin-top:10px" aria-label="ぷら百メニュー">
-        <div class="l">
-          <div class="name">ぷら百メニュー（6種類）</div>
-          <div class="desc">定番料金 +100円（8個単位）</div>
-        </div>
-        <div class="r">
-          <div class="price">8個 550円</div>
-          <div class="unit">+100</div>
-        </div>
-      </div>
-
-      <div class="menuRow" style="margin-top:10px" aria-label="月替わりメニュー">
-        <div class="l">
-          <div class="name">月替わり限定（毎月1種類）</div>
-          <div class="desc">今月の“限定ドロップ”。店頭で告知。</div>
-        </div>
-        <div class="r">
-          <div class="price">8個 550円</div>
-          <div class="unit">限定</div>
-        </div>
-      </div>
-
-      <div class="chips" aria-label="補足チップ">
-        <span class="chip gold">8個単位</span>
-        <span class="chip red">ぷら百は +100円</span>
-        <span class="chip blue">電話注文OK</span>
-        <span class="chip ok">焼きたて優先</span>
-      </div>
-
-      <details style="margin-top:10px">
-        <summary>メニュー名（定番/ぷら百）を後で入れたい <span class="pill">任意</span></summary>
-        <div class="ans">
-          ここは“価格とカテゴリ”だけ先に出しています。<br>
-          定番①〜⑤、ぷら百①〜⑥ の実名が決まったら、ここに追記するだけでOKです。
-        </div>
-      </details>
-
-    </div>
-  </section>
-
-  <!-- ===== BOSS ===== -->
-  <section class="section" id="boss" aria-label="目玉メニュー">
-    <div class="head">
-      <div class="title"><span class="dot"></span>目玉：真っ黒「いかさま焼き」</div>
-      <div class="sub">見た目が強い／味は3種</div>
-    </div>
-    <div class="body">
-      <div class="boss">
-        <div class="row">
-          <div>
-            <div class="name">🖤 真っ黒 いかさま焼き</div>
-            <div class="sub">味は3種類から選べます。</div>
-          </div>
-          <div class="mark">BOSS</div>
-        </div>
-
-        <div class="choices" aria-label="味">
-          <div class="choice"><div class="cname">がごめ昆布醤油</div><div class="ctag">UMAMI</div></div>
-          <div class="choice"><div class="cname">ピンク岩塩</div><div class="ctag">SALT</div></div>
-          <div class="choice"><div class="cname">レモンソルト</div><div class="ctag">CITRUS</div></div>
-        </div>
-
-        <details style="margin-top:10px">
-          <summary>写真を入れるならここ（おすすめ） <span class="pill red">強い</span></summary>
-          <div class="ans">
-            いかさま焼きは“1枚写真があるだけで勝つ”枠です。<br>
-            GitHubに <b>assets/images/ikasama.jpg</b> を置いて、ここに&lt;img&gt;を差し込むのが最短です。
-          </div>
-        </details>
       </div>
     </div>
   </section>
 
-  <!-- ===== TOPPING + ORDER (まとめてカード化) ===== -->
-  <section class="section" id="info" aria-label="トッピングと注文">
+  <!-- ===== メニュー（写真で一覧） ===== -->
+  <section class="section" id="menu" aria-label="メニュー一覧">
     <div class="head">
-      <div class="title"><span class="dot"></span>トッピング＆注文（まとめ）</div>
-      <div class="sub">長文にしない：カードで要点だけ</div>
+      <div class="h"><span class="dot"></span>メニュー（写真）</div>
+      <div class="sub">定番 450円 / ぷら百 550円</div>
     </div>
     <div class="body">
-      <div class="cards">
+      <div class="menuGrid" id="menuGrid"></div>
+      <div class="small" style="margin-top:10px">
+        ※ 価格は《8個》表記です。トッピング：無料2つまで（マヨ・一味マヨ・かつおぶし・山椒）／有料（ねぎ+50円、からしマヨ+50円）
+      </div>
+    </div>
+  </section>
 
-        <div class="card" aria-label="無料トッピング">
-          <div class="k">無料トッピング（2つまで） <span class="pill gold">装備2</span></div>
-          <div class="v">
-            <div class="chips" style="margin-top:0">
-              <span class="chip ok">マヨネーズ</span>
-              <span class="chip ok">一味マヨネーズ</span>
-              <span class="chip ok">かつおぶし</span>
-              <span class="chip ok">山椒</span>
+  <!-- ===== いかさま焼き ===== -->
+  <section class="section" id="ikasama" aria-label="いかさま焼き">
+    <div class="head">
+      <div class="h"><span class="dot"></span>真っ黒 いかさま焼き</div>
+      <div class="sub">味が選べる（3種）</div>
+    </div>
+    <div class="body">
+      <div class="feature">
+        <div class="featurePhoto">
+          <img src="https://ul.h3z.jp/X0hNea3x.JPG" alt="真っ黒いかさま焼き" />
+        </div>
+        <div class="featureBox">
+          <h2 class="featureTitle">見た目が強いのに、ちゃんと旨い。</h2>
+          <p class="featureDesc">
+            真っ黒いかさま焼きは、<b>味が3種類</b>。<br>
+            「がごめ昆布醤油」「ピンク岩塩」「レモンソルト」から選べます。
+          </p>
+          <div class="flavors" aria-label="いかさま焼きの味">
+            <span class="flavor">がごめ昆布醤油</span>
+            <span class="flavor">ピンク岩塩</span>
+            <span class="flavor">レモンソルト</span>
+          </div>
+          <div class="small" style="margin-top:10px">
+            ※ 写真は“黒”の参考。味は注文時に選べます。
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== おもしろ要素：焼きたてタイマー ===== -->
+  <section class="section" id="timer" aria-label="焼きたてタイマー">
+    <div class="head">
+      <div class="h"><span class="dot"></span>焼きたてタイマー（20分）</div>
+      <div class="sub">押すと動く／遊び</div>
+    </div>
+    <div class="body">
+      <div class="timerWrap">
+        <div class="timerCard">
+          <div class="timerTop">
+            <div class="timerTitle">焼き上がりまで</div>
+            <div class="time" id="timerText">20:00</div>
+          </div>
+          <div class="bar" aria-label="進捗バー"><i id="timerBar"></i></div>
+          <div class="timerNote">
+            ご注文をいただいてから焼き上げるため、<b>約20分</b>お時間を頂戴しています。<br>
+            でも、その20分は「焼きたての価値」です。
+          </div>
+          <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn" id="timerStart" type="button">▶ 開始</button>
+            <button class="btn" id="timerReset" type="button">↺ リセット</button>
+          </div>
+        </div>
+
+        <div class="timerCard">
+          <div class="timerTitle" style="font-weight:1100; letter-spacing:.02em;">お店の合言葉</div>
+          <div style="margin-top:10px; padding:12px; border-radius:16px; border:1px solid rgba(0,0,0,.08); background: linear-gradient(180deg, rgba(255,45,85,.06), #fff);">
+            <div style="font-weight:1100;">《今日もだれかがたこ焼きを食べている　菜々》</div>
+            <div class="small" style="margin-top:8px;">
+              ふつうの飲食店のサイトっぽくしないために、<br>
+              “今日のおすすめ”と“焼きたてタイマー”で、来た瞬間に遊べるようにしました。
             </div>
           </div>
-        </div>
-
-        <div class="card" aria-label="有料トッピング">
-          <div class="k">有料トッピング <span class="pill red">+50</span></div>
-          <div class="v">
-            <div class="chips" style="margin-top:0">
-              <span class="chip red">ねぎ +50円</span>
-              <span class="chip red">からしマヨ +50円</span>
-            </div>
+          <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+            <a class="btn call" href="tel:07040777732">📞 電話注文する</a>
+            <a class="btn ghost" href="https://takoyaki-trc.github.io/takoyaki-media/town/cardlist.html" target="_blank" rel="noopener">🌀 トレカへ</a>
           </div>
         </div>
-
-        <div class="card" aria-label="注文クエスト">
-          <div class="k">注文クエスト <span class="pill blue">QUEST</span></div>
-          <div class="v">
-            <b>電話注文OK：</b><a href="tel:07040777732">070-4077-7732</a><br>
-            <b>焼き上がり：</b>約20分（焼きたて優先）<br>
-            <div style="margin-top:8px">
-              <a class="btn call" href="tel:07040777732" style="width:100%; justify-content:center;">📞 今すぐ電話する</a>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <details style="margin-top:10px">
-        <summary>電話注文の言い方（最短） <span class="pill">FAQ</span></summary>
-        <div class="ans">
-          「メニュー名・個数（8個単位）・トッピング（無料2つまで）・受取希望時間」<br>
-          を伝えるとスムーズです。焼き上がりは約20分いただいています。
-        </div>
-      </details>
-    </div>
-  </section>
-
-  <!-- ===== TRC GATE ===== -->
-  <section class="section" id="trc" aria-label="たこ焼きトレカへ">
-    <div class="head">
-      <div class="title"><span class="dot"></span>異世界ゲート：たこ焼きトレカ</div>
-      <div class="sub">世界観につなげる（別タブ）</div>
-    </div>
-    <div class="body">
-      <div class="menuRow" style="align-items:center">
-        <div class="l">
-          <div class="name">焼かれた伝説の世界へ</div>
-          <div class="desc">遊びたい人だけ寄り道。主役は“焼きたて”。</div>
-        </div>
-        <div class="r">
-          <a class="btn trc" href="https://takoyaki-trc.github.io/takoyaki-media/town/cardlist.html" target="_blank" rel="noopener">🌀 TRCへ</a>
-        </div>
-      </div>
-
-      <div class="chips" style="margin-top:10px">
-        <span class="chip gold">ゲームみたいな世界</span>
-        <span class="chip blue">別タブで開く</span>
-        <span class="chip ok">迷ったら戻れる</span>
-      </div>
-
-      <div style="margin-top:10px">
-        <button class="btn primary" id="btnStory" type="button" style="width:100%; justify-content:center;">
-          📖 “菜々の噂（掲示板）”を見る
-        </button>
       </div>
     </div>
   </section>
 
   <footer>
-    <div>たこ焼き菜々｜電話注文：<a href="tel:07040777732">070-4077-7732</a></div>
-    <div>焼き上がりまで約20分（焼きたて優先）</div>
-    <div style="margin-top:10px; opacity:.78;">《今日もだれかがたこ焼きを食べている　菜々》</div>
+    <div><b>たこ焼き菜々</b>｜電話注文：<a href="tel:07040777732">070-4077-7732</a></div>
+    <div>焼き上がりまで約20分（焼きたてにこだわっています）</div>
     <div class="footerLinks">
-      <a class="btn" href="#menu">🍴 メニュー</a>
-      <a class="btn" href="#boss">🖤 いかさま焼き</a>
+      <a class="btn ghost" href="#menu">🍴 メニュー</a>
+      <a class="btn ghost" href="#ikasama">🖤 いかさま焼き</a>
       <a class="btn call" href="tel:07040777732">📞 注文</a>
-      <a class="btn trc" href="https://takoyaki-trc.github.io/takoyaki-media/town/cardlist.html" target="_blank" rel="noopener">🌀 TRC</a>
+      <a class="btn ghost" href="https://takoyaki-trc.github.io/takoyaki-media/town/cardlist.html" target="_blank" rel="noopener">🌀 トレカ</a>
     </div>
+    <div style="margin-top:10px; opacity:.75;">《今日もだれかがたこ焼きを食べている　菜々》</div>
   </footer>
 
-</div>
-
-<!-- ===== MODAL ===== -->
-<div class="modalBg" id="modalBg" role="dialog" aria-modal="true" aria-label="案内モーダル">
-  <div class="modal" role="document">
-    <div class="modalHead">
-      <div class="t" id="modalTitle">案内</div>
-      <button class="closeBtn" id="btnClose" type="button" aria-label="閉じる">閉じる</button>
-    </div>
-    <div class="modalBody" id="modalBody"></div>
-  </div>
 </div>
 
 <script>
 (() => {
   "use strict";
 
-  // ===== modal =====
-  const modalBg = document.getElementById("modalBg");
-  const modalTitle = document.getElementById("modalTitle");
-  const modalBody = document.getElementById("modalBody");
-  const btnClose = document.getElementById("btnClose");
+  // =========================
+  // 1) メニュー定義（画像・価格）
+  // =========================
+  const MENU = [
+    // --- ぷら百 / 550 ---
+    { id:"teritama", name:"てりたま", price:550, cat:"plus", img:"https://ul.h3z.jp/S507mjUX.jpg", tags:["ぷら百","人気"] },
+    { id:"negimiso", name:"ねぎ味噌", price:550, cat:"plus", img:"https://ul.h3z.jp/CcWfr8d0.JPG", tags:["ぷら百","雨の日人気"] },
+    { id:"age_dama_karashi", name:"ぶっかけ揚げ玉からしマヨ", price:550, cat:"plus", img:"https://ul.h3z.jp/Z680luDn.JPG", tags:["ぷら百","こってり"] },
+    { id:"shio_mayo_pepper", name:"塩マヨペッパー", price:550, cat:"plus", img:"https://ul.h3z.jp/hwUJtJOS.JPG", tags:["ぷら百","パンチ"] },
+    { id:"cheese_sauce_mayo", name:"チーズソースマヨ", price:550, cat:"plus", img:"https://ul.h3z.jp/zQvjz2vk.JPG", tags:["ぷら百","雨/湿度人気"] },
+    { id:"mentai_mayo", name:"めんたいマヨ", price:550, cat:"plus", img:"https://ul.h3z.jp/bibwTWq6.JPG", tags:["ぷら百","雨/湿度人気"] },
 
-  function openModal(title, html){
-    modalTitle.textContent = title;
-    modalBody.innerHTML = html;
-    modalBg.style.display = "flex";
-    document.body.style.overflow = "hidden";
+    // --- 定番 / 450 ---
+    { id:"shio_kosho", name:"塩こしょう", price:450, cat:"std", img:"https://ul.h3z.jp/SLJuBJs1.jpg", tags:["定番","暑い日人気"] },
+    { id:"suppin", name:"すっぴん", price:450, cat:"std", img:"https://ul.h3z.jp/mEuk5OwJ.jpg", tags:["定番","暑い日人気"] },
+    { id:"karakuchi_sauce", name:"辛口ソース", price:450, cat:"std", img:"https://ul.h3z.jp/Jit1r3Jv.JPG", tags:["定番","暑い日人気"] },
+    { id:"kaki_dashi", name:"牡蠣だし醤油", price:450, cat:"std", img:"https://ul.h3z.jp/k7J0DvPG.jpg", tags:["定番","暑い日人気"] },
+    { id:"sauce", name:"ソース", price:450, cat:"std", img:"https://ul.h3z.jp/wKg45O6e.JPG", tags:["定番","迷ったらコレ"] },
+  ];
+
+  // いかさま焼き（別枠）
+  const IKASAMA_IMG = "https://ul.h3z.jp/X0hNea3x.JPG";
+
+  // =========================
+  // 2) おすすめロジック（天気/気温/湿度）
+  //    - 雨 or 湿度高め: チーズソースマヨ/ねぎ味噌/めんたいマヨ
+  //    - 暑い日: 辛口ソース/塩こしょう/牡蠣だし醤油/すっぴん
+  //    - それ以外: ソース
+  // =========================
+  const RECOMMEND = {
+    rainy_or_humid: ["cheese_sauce_mayo", "negimiso", "mentai_mayo"],
+    hot: ["karakuchi_sauce", "shio_kosho", "kaki_dashi", "suppin"],
+    normal: ["sauce"]
+  };
+
+  // 閾値（ここは好みに合わせて調整OK）
+  const THRESH = {
+    hotTempC: 25,          // 25℃以上を“暑い日”
+    humidRH: 78,           // 相対湿度 78%以上を“湿度高め”
+    rainMm: 0.1            // 降水量 0.1mm以上で“雨っぽい”
+  };
+
+  // =========================
+  // 3) UI参照
+  // =========================
+  const menuGrid = document.getElementById("menuGrid");
+
+  const recImg = document.getElementById("recImg");
+  const recName = document.getElementById("recName");
+  const recPrice = document.getElementById("recPrice");
+  const recNote = document.getElementById("recNote");
+
+  const weatherPill = document.getElementById("weatherPill");
+  const tempPill = document.getElementById("tempPill");
+  const reasonPill = document.getElementById("reasonPill");
+  const lastUpdate = document.getElementById("lastUpdate");
+
+  const btnReroll = document.getElementById("btnReroll");
+
+  // タイマー
+  const timerText = document.getElementById("timerText");
+  const timerBar = document.getElementById("timerBar");
+  const timerStart = document.getElementById("timerStart");
+  const timerReset = document.getElementById("timerReset");
+
+  // =========================
+  // 4) ユーティリティ
+  // =========================
+  const yen = (n) => `《8個 ${n}円》`;
+
+  function pickRandom(arr){
+    return arr[Math.floor(Math.random() * arr.length)];
   }
-  function closeModal(){
-    modalBg.style.display = "none";
-    document.body.style.overflow = "";
+
+  function findById(id){
+    return MENU.find(x => x.id === id) || null;
   }
-  btnClose.addEventListener("click", closeModal);
-  modalBg.addEventListener("click", (e) => { if(e.target === modalBg) closeModal(); });
-  window.addEventListener("keydown", (e) => { if(e.key === "Escape") closeModal(); });
 
-  // ===== tabs (mini guide) =====
-  const tabMenu = document.getElementById("tabMenu");
-  const tabOrder = document.getElementById("tabOrder");
-  const tabBoss = document.getElementById("tabBoss");
-  const miniCard = document.getElementById("miniCard");
+  function setPills({ weatherText, tempText, reasonText }){
+    weatherPill.textContent = weatherText;
+    tempPill.textContent = tempText;
+    reasonPill.textContent = reasonText;
+  }
 
-  function setActive(tab){
-    [tabMenu, tabOrder, tabBoss].forEach(t => {
-      t.classList.toggle("active", t === tab);
-      t.setAttribute("aria-selected", t === tab ? "true" : "false");
+  function setLastUpdate(ts){
+    const d = new Date(ts);
+    const hh = String(d.getHours()).padStart(2,"0");
+    const mm = String(d.getMinutes()).padStart(2,"0");
+    lastUpdate.textContent = `最終更新：${hh}:${mm}`;
+  }
+
+  // =========================
+  // 5) メニュー表示（写真カード）
+  // =========================
+  function renderMenu(){
+    menuGrid.innerHTML = "";
+    const order = [
+      // 550たち
+      "teritama","negimiso","cheese_sauce_mayo","mentai_mayo","shio_mayo_pepper","age_dama_karashi",
+      // 450たち
+      "sauce","kaki_dashi","shio_kosho","karakuchi_sauce","suppin"
+    ];
+
+    order.forEach(id => {
+      const m = findById(id);
+      if(!m) return;
+
+      const tagClass = (m.cat === "plus") ? "plus" : "std";
+      const tagLabel = (m.cat === "plus") ? "ぷら百" : "定番";
+
+      const tagsHtml = (m.tags || []).slice(0,3).map(t => `<span class="tag ${tagClass}">${t}</span>`).join("");
+
+      const card = document.createElement("article");
+      card.className = "mCard";
+      card.innerHTML = `
+        <div class="mPhoto">
+          <img src="${m.img}" alt="${m.name}">
+        </div>
+        <div class="mBody">
+          <div class="mTop">
+            <div class="mName">${m.name}</div>
+            <div class="mPrice">${yen(m.price)}</div>
+          </div>
+          <div class="tagRow">
+            <span class="tag ${tagClass}">${tagLabel}</span>
+            ${tagsHtml}
+          </div>
+          <div class="mHint">クリックで「今日のおすすめ」にセットできます。</div>
+        </div>
+      `;
+      card.style.cursor = "pointer";
+      card.addEventListener("click", () => {
+        applyRecommendation(m.id, "手動で選択");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      menuGrid.appendChild(card);
     });
   }
 
-  function renderMini(kind){
-    if(kind === "menu"){
-      miniCard.innerHTML = `
-        <div class="h"><span>メニュー早見</span><span class="pill gold">SHOP</span></div>
-        <div class="p">
-          定番5種（8個450円）<br>
-          ぷら百6種（+100円）<br>
-          月替わり1種（8個550円）
-        </div>
-        <div class="miniBtns">
-          <a class="btn primary" href="#menu">一覧を見る</a>
-          <a class="btn call" href="tel:07040777732">電話する</a>
-        </div>
-      `;
-      return;
-    }
-    if(kind === "order"){
-      miniCard.innerHTML = `
-        <div class="h"><span>注文の要点</span><span class="pill blue">QUEST</span></div>
-        <div class="p">
-          電話：<b><a href="tel:07040777732">070-4077-7732</a></b><br>
-          焼き上がり：<b>約20分</b><br>
-          （焼きたて優先）
-        </div>
-        <div class="miniBtns">
-          <a class="btn call" href="tel:07040777732">今すぐ電話</a>
-          <button class="btn primary" id="btnQuickGuide" type="button">言い方</button>
-        </div>
-      `;
-      // 追加ボタンのクリック
-      const b = document.getElementById("btnQuickGuide");
-      b.addEventListener("click", () => {
-        openModal("📞 電話注文の言い方（最短）", `
-          <div style="line-height:1.85; color:rgba(255,255,255,.86); font-size:14px;">
-            これだけ伝えればOK：<br><br>
-            ・<b>メニュー名</b><br>
-            ・<b>個数（8個単位）</b><br>
-            ・<b>トッピング（無料2つまで）</b><br>
-            ・<b>受取希望時間</b><br><br>
-            焼き上がりは<b>約20分</b>いただいています（焼きたて優先）。
-          </div>
-        `);
-      });
-      return;
-    }
-    // boss
-    miniCard.innerHTML = `
-      <div class="h"><span>目玉メニュー</span><span class="pill red">BOSS</span></div>
-      <div class="p">
-        真っ黒「いかさま焼き」<br>
-        味は<b>3種</b>：がごめ昆布醤油 / ピンク岩塩 / レモンソルト
-      </div>
-      <div class="miniBtns">
-        <a class="btn primary" href="#boss">詳細を見る</a>
-        <a class="btn call" href="tel:07040777732">注文する</a>
-      </div>
-    `;
+  // =========================
+  // 6) おすすめの表示を適用
+  // =========================
+  function applyRecommendation(menuId, reason){
+    const m = findById(menuId) || findById("sauce");
+    recImg.src = m.img;
+    recImg.alt = m.name;
+    recName.textContent = m.name;
+    recPrice.textContent = yen(m.price);
+
+    // ちょい面白い一言（短く）
+    const notes = {
+      cheese_sauce_mayo: "雨の日、湿度の高い日に“欲しくなる系”。",
+      negimiso: "雨の日に強い。体が“味噌”を求めるらしい。",
+      mentai_mayo: "湿度が高いと、なぜか明太が勝つ。",
+      karakuchi_sauce: "暑い日は辛口でスイッチを入れる。",
+      shio_kosho: "暑い日にキリッと。軽いのに満足感。",
+      kaki_dashi: "暑い日に“だし”が沁みる。静かな強さ。",
+      suppin: "暑い日は原点回帰。余計なものがいらない。",
+      sauce: "迷ったらコレ。王道は、いつだって強い。",
+      teritama: "甘みとコクで、気分が上がる550。",
+      age_dama_karashi: "ガツンといきたい時の“やんちゃ枠”。",
+      shio_mayo_pepper: "塩×マヨ×ペッパー。大人の背徳。",
+    };
+    recNote.textContent = (notes[m.id] || "今日の気分に合う一皿。") + `（${reason}）`;
+
+    // 保存（同条件での“リロール”用）
+    localStorage.setItem("nana_rec_last", m.id);
   }
 
-  tabMenu.addEventListener("click", () => { setActive(tabMenu); renderMini("menu"); });
-  tabOrder.addEventListener("click", () => { setActive(tabOrder); renderMini("order"); });
-  tabBoss.addEventListener("click", () => { setActive(tabBoss); renderMini("boss"); });
+  // =========================
+  // 7) 天気取得（Open-Meteo / 無料 / APIキー不要）
+  //    店が函館前提：lat/lon固定
+  // =========================
+  const HAKODATE = { lat: 41.7687, lon: 140.7288 };
 
-  // ===== guide modal =====
-  document.getElementById("btnGuide").addEventListener("click", () => {
-    openModal("🧭 案内（この屋台の遊び方）", `
-      <div style="line-height:1.85; color:rgba(255,255,255,.86); font-size:14px;">
-        <b>1) メニューを選ぶ</b><br>
-        ・定番（8個450円） / ぷら百（+100円） / 月替わり（8個550円）<br><br>
+  async function fetchWeather(){
+    // current_weather: temp, wind, weathercode
+    // hourly: relative_humidity_2m, precipitation
+    const url =
+      "https://api.open-meteo.com/v1/forecast" +
+      `?latitude=${HAKODATE.lat}&longitude=${HAKODATE.lon}` +
+      "&current_weather=true" +
+      "&hourly=relative_humidity_2m,precipitation" +
+      "&timezone=Asia%2FTokyo";
 
-        <b>2) トッピングを選ぶ</b><br>
-        ・無料は<b>2つまで</b>：マヨ / 一味マヨ / かつおぶし / 山椒<br>
-        ・有料：ねぎ +50円 / からしマヨ +50円<br><br>
+    const res = await fetch(url, { cache: "no-store" });
+    if(!res.ok) throw new Error("weather fetch failed");
+    const data = await res.json();
 
-        <b>3) 焼きたてを受け取る</b><br>
-        ・焼き上がりまで<b>約20分</b>（焼きたて優先）<br><br>
+    const cw = data.current_weather || {};
+    const tempC = (typeof cw.temperature === "number") ? cw.temperature : null;
+    const wcode = (typeof cw.weathercode === "number") ? cw.weathercode : null;
 
-        <div style="margin-top:10px; padding:10px; border-radius:14px; border:1px solid rgba(247,220,131,.35); background:rgba(0,0,0,.18);">
-          店主の決め台詞：<br>
-          <b>《今日もだれかがたこ焼きを食べている　菜々》</b>
-        </div>
-      </div>
-    `);
+    // “今の時間”に最も近いhourlyを探す
+    let rh = null, pr = null;
+    try{
+      const times = data.hourly?.time || [];
+      const rhs = data.hourly?.relative_humidity_2m || [];
+      const prs = data.hourly?.precipitation || [];
+      const now = new Date();
+      const nowIso = now.toISOString().slice(0,13); // YYYY-MM-DDTHH
+      let idx = times.findIndex(t => t.startsWith(nowIso));
+      if(idx < 0) idx = times.length - 1;
+      rh = (typeof rhs[idx] === "number") ? rhs[idx] : null;
+      pr = (typeof prs[idx] === "number") ? prs[idx] : null;
+    }catch(_){}
+
+    // 天気ラベル（ざっくり）
+    const weatherText = (() => {
+      if(wcode == null) return "天気：--";
+      // Open-Meteo weathercode: 0 clear, 1-3 partly, 45/48 fog, 51-67 drizzle/rain, 71-77 snow, 80-82 rain showers, 95 thunder
+      if(wcode === 0) return "天気：快晴";
+      if(wcode >= 1 && wcode <= 3) return "天気：くもり";
+      if(wcode === 45 || wcode === 48) return "天気：霧";
+      if((wcode >= 51 && wcode <= 67) || (wcode >= 80 && wcode <= 82) || wcode === 95) return "天気：雨";
+      if(wcode >= 71 && wcode <= 77) return "天気：雪";
+      return "天気：変化あり";
+    })();
+
+    return { tempC, rh, pr, wcode, weatherText };
+  }
+
+  function decidePool(wx){
+    const tempC = wx.tempC;
+    const rh = wx.rh;
+    const pr = wx.pr;
+    const wcode = wx.wcode;
+
+    const isRainByCode = (wcode != null) && (
+      (wcode >= 51 && wcode <= 67) || (wcode >= 80 && wcode <= 82) || wcode === 95
+    );
+    const isRainByMm = (pr != null) && (pr >= THRESH.rainMm);
+    const isRain = isRainByCode || isRainByMm;
+
+    const isHumid = (rh != null) && (rh >= THRESH.humidRH);
+    const isHot = (tempC != null) && (tempC >= THRESH.hotTempC);
+
+    if(isRain || isHumid){
+      return { key:"rainy_or_humid", reason: (isRain ? "雨/湿度" : "湿度高め") };
+    }
+    if(isHot){
+      return { key:"hot", reason:"暑い日" };
+    }
+    return { key:"normal", reason:"ふつうの日" };
+  }
+
+  function reroll(poolKey, reason){
+    const ids = RECOMMEND[poolKey] || RECOMMEND.normal;
+    const pick = pickRandom(ids);
+    applyRecommendation(pick, `天気判定：${reason} → ランダム`);
+  }
+
+  // =========================
+  // 8) リロールボタン
+  // =========================
+  let lastPoolKey = "normal";
+  let lastReason = "ふつうの日";
+
+  btnReroll.addEventListener("click", () => {
+    reroll(lastPoolKey, lastReason);
   });
 
-  // ===== story modal =====
-  document.getElementById("btnStory").addEventListener("click", () => {
-    openModal("📖 菜々の噂（掲示板）", `
-      <div style="line-height:1.9; color:rgba(255,255,255,.86); font-size:14px;">
-        町ではこんな噂が流れている。<br><br>
-        ・焼き台の前に立つと、時間の感覚が<b>20分</b>だけ消える。<br>
-        ・その代わり、手のひらに残るのは<b>焼きたての幸福</b>。<br>
-        ・黒い門（いかさま焼き）をくぐった者は、見た目に反して静かに頷く。<br><br>
-        そして最後に、誰かがこう書き残す。<br>
-        <div style="margin-top:10px; padding:10px; border-radius:14px; border:1px solid rgba(255,74,106,.35); background:rgba(0,0,0,.18);">
-          <b>《今日もだれかがたこ焼きを食べている　菜々》</b>
-        </div>
-      </div>
-    `);
+  // =========================
+  // 9) タイマー（20分）
+  // =========================
+  const TOTAL = 20 * 60; // seconds
+  let tLeft = TOTAL;
+  let timer = null;
+
+  function drawTimer(){
+    const m = Math.floor(tLeft / 60);
+    const s = tLeft % 60;
+    timerText.textContent = `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+    const done = (TOTAL - tLeft) / TOTAL;
+    timerBar.style.width = `${Math.max(0, Math.min(1, done)) * 100}%`;
+  }
+
+  function stopTimer(){
+    if(timer){ clearInterval(timer); timer = null; }
+  }
+
+  timerStart.addEventListener("click", () => {
+    if(timer) return; // 二重起動防止
+    timer = setInterval(() => {
+      tLeft = Math.max(0, tLeft - 1);
+      drawTimer();
+      if(tLeft <= 0){
+        stopTimer();
+        // ちいさく祝う（派手すぎない）
+        timerText.textContent = "できた！";
+      }
+    }, 1000);
   });
+
+  timerReset.addEventListener("click", () => {
+    stopTimer();
+    tLeft = TOTAL;
+    drawTimer();
+  });
+
+  // =========================
+  // 起動
+  // =========================
+  renderMenu();
+  drawTimer();
+
+  // 初期：前回のおすすめがあれば先に出す（体感が良い）
+  const last = localStorage.getItem("nana_rec_last");
+  if(last && findById(last)){
+    applyRecommendation(last, "前回の表示");
+  }else{
+    applyRecommendation("sauce", "初期表示");
+  }
+
+  // 天気取得しておすすめ更新
+  (async () => {
+    try{
+      const wx = await fetchWeather();
+      const tempText = (wx.tempC == null) ? "--℃" : `${Math.round(wx.tempC)}℃`;
+      const humidityText = (wx.rh == null) ? "" : ` / 湿度 ${Math.round(wx.rh)}%`;
+      const rainText = (wx.pr == null) ? "" : ` / 降水 ${wx.pr.toFixed(1)}mm`;
+      const pool = decidePool(wx);
+
+      lastPoolKey = pool.key;
+      lastReason = pool.reason;
+
+      setPills({
+        weatherText: wx.weatherText,
+        tempText: tempText,
+        reasonText: `${pool.reason}${humidityText}${rainText}`
+      });
+
+      reroll(pool.key, pool.reason);
+      setLastUpdate(Date.now());
+    }catch(e){
+      // 失敗時は“普通の日”として扱う
+      lastPoolKey = "normal";
+      lastReason = "ふつうの日（天気取得失敗）";
+      setPills({
+        weatherText: "天気：取得できませんでした",
+        tempText: "--℃",
+        reasonText: "おすすめ：ソース（仮）"
+      });
+      applyRecommendation("sauce", "天気取得失敗 → 安定の王道");
+      setLastUpdate(Date.now());
+    }
+  })();
 
 })();
 </script>
