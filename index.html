@@ -1,829 +1,795 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>たこ焼き菜々｜焼きたてにこだわる たこ焼き屋</title>
-<meta name="description" content="たこ焼き菜々公式。定番（8個450円）/ぷら百（8個550円）/真っ黒いかさま焼き。電話注文 070-4077-7732。焼き上がりまで約20分。天気でおすすめが変わる。" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>メニュー｜たこ焼き菜々</title>
+  <meta name="description" content="たこ焼き菜々のメニュー（焼きたて・8個）。写真つきで見やすく、おしゃれな和モダン配色のメニューページです。" />
 
-<style>
-  :root{
-    --bg:#fff7f7;
-    --bg2:#fffdf7;
-    --card:#ffffff;
-    --line: rgba(20,10,12,.12);
-    --text:#1a1315;
-    --muted: rgba(26,19,21,.68);
+  <style>
+    :root{
+      /* ====== Oshare (和モダン / カフェ寄り) ====== */
+      --bg0:#F7F3EE;        /* くすみベージュ */
+      --paper:#FFFDF9;      /* アイボリー */
+      --ink:#2A2A2A;        /* 墨黒 */
+      --muted:rgba(42,42,42,.72);
+      --line:#E6E0D8;       /* 薄グレー */
+      --gold:#C8A86B;       /* 深い金 */
+      --gold2:#B8924F;
+      --shadow: 0 10px 26px rgba(0,0,0,.07);
+      --shadow2: 0 16px 42px rgba(0,0,0,.10);
+      --radius: 16px;
+      --radius2: 22px;
+    }
 
-    --red1:#ff2d55;
-    --red2:#ff6a3d;
-    --red3:#ffb800;
-    --sky:#4aa8ff;
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(1200px 600px at 50% -120px, rgba(200,168,107,.18), transparent 55%),
+        linear-gradient(180deg, #FBF8F4, var(--bg0));
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
 
-    --shadow: 0 18px 40px rgba(0,0,0,.10);
-    --shadow2: 0 10px 24px rgba(0,0,0,.10);
-    --r:18px;
-    --max: 1120px;
+    a{ color:inherit; text-decoration:none; }
+    .wrap{
+      width:min(1060px, 100%);
+      margin:0 auto;
+      padding: 18px 14px 26px;
+      padding-bottom: calc(26px + env(safe-area-inset-bottom));
+    }
 
-    /* Deck */
-    --deckH: 360px;          /* スマホで縦に長すぎない */
-    --cardR: 18px;
-    --glow: 0 12px 28px rgba(255,45,85,.14);
-  }
+    /* ====== Header ====== */
+    header.hero{
+      background: linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.46));
+      border: 1px solid var(--line);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    header.hero::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:
+        radial-gradient(520px 220px at 18% 20%, rgba(200,168,107,.20), transparent 55%),
+        radial-gradient(520px 220px at 82% 0%, rgba(184,146,79,.12), transparent 55%);
+      pointer-events:none;
+    }
+    .heroInner{
+      position:relative;
+      padding: 18px 16px 16px;
+    }
+    .brandRow{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .brand{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-width: 240px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      width:fit-content;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.65);
+      font-size: 12px;
+      letter-spacing:.06em;
+      color: rgba(42,42,42,.78);
+    }
+    .badge .dot{
+      width:8px;height:8px;border-radius:99px;
+      background: var(--gold);
+      box-shadow: 0 0 0 4px rgba(200,168,107,.18);
+    }
+    h1{
+      margin:0;
+      font-size: 22px;
+      letter-spacing:.06em;
+      font-weight: 720;
+    }
+    .sub{
+      margin:0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height:1.65;
+    }
+    .heroActions{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .btn{
+      appearance:none;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.72);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 10px 12px;
+      font-weight: 650;
+      letter-spacing:.04em;
+      font-size: 13px;
+      cursor:pointer;
+      box-shadow: 0 6px 16px rgba(0,0,0,.05);
+      transition: transform .06s ease, box-shadow .18s ease, background .18s ease;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      user-select:none;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn.primary{
+      border-color: rgba(200,168,107,.55);
+      background: linear-gradient(180deg, rgba(200,168,107,.28), rgba(200,168,107,.12));
+    }
+    .btn .ico{
+      width:18px;height:18px; display:inline-block;
+    }
 
-  *{ box-sizing:border-box }
-  html,body{ height:100% }
-  body{
-    margin:0;
-    font-family: system-ui,-apple-system,"Noto Sans JP",sans-serif;
-    color:var(--text);
-    background:
-      radial-gradient(circle at 20% 10%, rgba(255,45,85,.10), transparent 40%),
-      radial-gradient(circle at 85% 8%, rgba(74,168,255,.10), transparent 42%),
-      radial-gradient(circle at 70% 75%, rgba(255,182,0,.10), transparent 45%),
-      linear-gradient(180deg, var(--bg), var(--bg2));
-  }
+    /* ====== Sections ====== */
+    .section{
+      margin-top: 16px;
+      background: rgba(255,255,255,.55);
+      border: 1px solid var(--line);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .sectionHead{
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.54));
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .sectionTitle{
+      margin:0;
+      font-size: 16px;
+      font-weight: 760;
+      letter-spacing:.06em;
+    }
+    .sectionNote{
+      margin:0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height:1.6;
+    }
 
-  a{ color:inherit; text-decoration:none }
-  button{ font:inherit }
-  img{ max-width:100%; display:block }
+    /* ====== Grid ====== */
+    .grid{
+      padding: 14px;
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 520px){
+      .grid{ grid-template-columns: 1fr; }
+      .heroActions{ width:100%; justify-content:flex-end; }
+    }
 
-  .wrap{
-    width:min(var(--max), 100%);
-    margin:0 auto;
-    padding: 14px 12px calc(22px + env(safe-area-inset-bottom));
-  }
+    /* ====== Card ====== */
+    .card{
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow:hidden;
+      box-shadow: 0 8px 18px rgba(0,0,0,.06);
+      cursor:pointer;
+      transition: transform .10s ease, box-shadow .18s ease;
+      position:relative;
+    }
+    .card:hover{ transform: translateY(-1px); box-shadow: var(--shadow2); }
+    .thumb{
+      width:100%;
+      aspect-ratio: 4 / 3;
+      background: #eee;
+      position:relative;
+      overflow:hidden;
+    }
+    .thumb img{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      display:block;
+      transform: scale(1.01);
+    }
+    .pricePill{
+      position:absolute;
+      right:10px;
+      bottom:10px;
+      background: rgba(255,255,255,.86);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-weight: 820;
+      letter-spacing:.04em;
+      box-shadow: 0 8px 18px rgba(0,0,0,.10);
+      font-size: 12px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .pricePill .yen{ color: var(--gold2); }
+    .cardBody{
+      padding: 12px 12px 12px;
+      display:flex;
+      flex-direction:column;
+      gap: 6px;
+    }
+    .name{
+      margin:0;
+      font-size: 15px;
+      font-weight: 760;
+      letter-spacing:.06em;
+      line-height:1.25;
+    }
+    .metaRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.65);
+      font-weight: 650;
+    }
+    .tag b{
+      color: var(--gold2);
+      font-weight: 900;
+      letter-spacing:.02em;
+    }
+    .desc{
+      margin:0;
+      color: rgba(42,42,42,.82);
+      font-size: 12.5px;
+      line-height: 1.6;
+    }
 
-  header{
-    position:sticky;
-    top:0;
-    z-index:50;
-    backdrop-filter: blur(10px);
-    padding: 10px 0 12px;
-  }
-  .topbar{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    padding: 10px 12px;
-    border:1px solid var(--line);
-    background: rgba(255,255,255,.78);
-    border-radius: 16px;
-    box-shadow: var(--shadow2);
-  }
-  .brand{
-    display:flex; align-items:center; gap:10px;
-    min-width:0;
-  }
-  .logo{
-    width:38px; height:38px; border-radius:12px;
-    background:
-      radial-gradient(circle at 35% 35%, rgba(255,255,255,.8), rgba(255,255,255,0) 55%),
-      linear-gradient(135deg, var(--red1), var(--red2), var(--red3));
-    box-shadow: 0 10px 22px rgba(255,45,85,.20);
-    border:1px solid rgba(0,0,0,.06);
-    flex:0 0 auto;
-  }
-  .brand .t{ min-width:0; }
-  .brand .name{
-    font-weight: 1000;
-    letter-spacing:.02em;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    line-height:1.1;
-  }
-  .brand .sub{
-    margin-top:3px;
-    font-size:12px;
-    color:var(--muted);
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-  }
-  .actions{
-    display:flex; gap:8px; flex:0 0 auto; align-items:center;
-  }
-  .btn{
-    border:1px solid var(--line);
-    background: #fff;
-    padding: 10px 12px;
-    border-radius: 14px;
-    cursor:pointer;
-    display:inline-flex; align-items:center; gap:8px;
-    transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
-    box-shadow: 0 10px 20px rgba(0,0,0,.06);
-    user-select:none;
-  }
-  .btn:hover{ transform: translateY(-1px); }
-  .btn:active{ transform: translateY(0px) scale(.98); box-shadow:none; }
-  .btn.call{
-    background: linear-gradient(180deg, rgba(255,45,85,.12), rgba(255,255,255,1));
-    border-color: rgba(255,45,85,.25);
-  }
-  .btn.ghost{ background: rgba(255,255,255,.55); }
+    /* ====== Drink list (simple, clean) ====== */
+    .drinkWrap{ padding: 14px; }
+    .drinkGrid{
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    @media (max-width: 520px){
+      .drinkGrid{ grid-template-columns: 1fr; }
+    }
+    .drinkItem{
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 12px;
+      box-shadow: 0 8px 18px rgba(0,0,0,.06);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .drinkName{
+      margin:0;
+      font-weight: 760;
+      letter-spacing:.05em;
+      font-size: 14px;
+      line-height:1.2;
+    }
+    .drinkNote{
+      margin:6px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height:1.55;
+    }
+    .drinkPrice{
+      white-space:nowrap;
+      font-weight: 900;
+      letter-spacing:.02em;
+      color: var(--gold2);
+    }
 
-  .section{
-    margin-top: 12px;
-    border-radius: var(--r);
-    border:1px solid var(--line);
-    background: rgba(255,255,255,.80);
-    box-shadow: var(--shadow);
-    overflow:hidden;
-  }
-  .head{
-    padding: 12px 14px;
-    display:flex; align-items:center; justify-content:space-between; gap:10px;
-    border-bottom: 1px solid rgba(0,0,0,.06);
-    background:
-      radial-gradient(circle at 15% 20%, rgba(255,45,85,.06), transparent 55%),
-      radial-gradient(circle at 85% 25%, rgba(74,168,255,.06), transparent 55%),
-      #fff;
-  }
-  .head .h{
-    display:flex; align-items:center; gap:10px;
-    font-weight: 1000;
-    letter-spacing:.02em;
-  }
-  .dot{
-    width:10px; height:10px; border-radius:99px;
-    background: linear-gradient(180deg, var(--red1), var(--red2), var(--red3));
-    box-shadow: 0 0 0 2px rgba(255,255,255,.9);
-  }
-  .head .sub{
-    font-size: 12px;
-    color: var(--muted);
-    font-weight: 700;
-    text-align:right;
-  }
-  .body{ padding: 12px 14px 14px; }
+    /* ====== Footer ====== */
+    footer{
+      margin-top: 14px;
+      color: rgba(42,42,42,.70);
+      font-size: 12px;
+      line-height: 1.7;
+      text-align:center;
+      padding: 10px 6px 0;
+    }
 
-  /* ===== 驚き：DECK UI ===== */
-  .deckArea{
-    display:grid;
-    grid-template-columns: 1.05fr .95fr;
-    gap: 12px;
-    align-items:stretch;
-  }
-  @media (max-width:900px){
-    .deckArea{ grid-template-columns: 1fr; }
-  }
+    /* ====== Modal (tap-to-zoom) ====== */
+    .modal{
+      position:fixed;
+      inset:0;
+      background: rgba(20,18,16,.62);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index: 9999;
+      padding: 16px;
+      padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    }
+    .modal.show{ display:flex; }
+    .modalCard{
+      width: min(940px, 100%);
+      background: var(--paper);
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 18px;
+      overflow:hidden;
+      box-shadow: 0 28px 90px rgba(0,0,0,.35);
+      transform: translateY(6px);
+      opacity: 0;
+      transition: transform .16s ease, opacity .16s ease;
+    }
+    .modal.show .modalCard{
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .modalTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      padding: 12px 12px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.65);
+    }
+    .modalTitle{
+      margin:0;
+      font-size: 14px;
+      font-weight: 850;
+      letter-spacing:.06em;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .modalTitle .price{
+      color: var(--gold2);
+      font-weight: 950;
+    }
+    .xbtn{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.75);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 10px 12px;
+      cursor:pointer;
+      font-weight: 900;
+      letter-spacing:.08em;
+    }
+    .modalImg{
+      width:100%;
+      max-height: 70svh;
+      object-fit: contain;
+      background: #faf7f1;
+      display:block;
+    }
+    .modalBody{
+      padding: 12px 14px 14px;
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+    }
+    .modalDesc{
+      margin:0;
+      color: rgba(42,42,42,.82);
+      font-size: 13px;
+      line-height:1.75;
+    }
+    .miniHelp{
+      margin:0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height:1.6;
+    }
+    .modalBtns{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
 
-  .deck{
-    border-radius: var(--cardR);
-    border:1px solid rgba(0,0,0,.08);
-    background: #fff;
-    box-shadow: var(--shadow2);
-    position:relative;
-    overflow:hidden;
-    height: var(--deckH);
-  }
-
-  /* スマホでちょうどいい高さ */
-  @media (max-width:480px){
-    :root{ --deckH: 320px; }
-  }
-
-  .deckBg{
-    position:absolute; inset:0;
-    background:
-      radial-gradient(circle at 20% 20%, rgba(255,45,85,.10), transparent 45%),
-      radial-gradient(circle at 80% 22%, rgba(74,168,255,.10), transparent 45%),
-      linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.76));
-    pointer-events:none;
-  }
-
-  .stack{
-    position:absolute; inset:0;
-    padding: 12px;
-  }
-
-  .cardItem{
-    position:absolute;
-    inset: 12px;
-    border-radius: 18px;
-    overflow:hidden;
-    border:1px solid rgba(0,0,0,.08);
-    background:#f3f3f3;
-    box-shadow: 0 14px 28px rgba(0,0,0,.10);
-    transform-origin: 50% 100%;
-    transition: transform .22s ease, opacity .18s ease;
-    touch-action: pan-y;
-  }
-
-  .cardItem img{
-    width:100%;
-    height:100%;
-    object-fit: cover;
-  }
-
-  /* スタックの“束感” */
-  .cardItem[data-depth="1"]{ transform: translate(6px, 6px) scale(.985) rotate(.25deg); opacity:.92; filter:saturate(.98); }
-  .cardItem[data-depth="2"]{ transform: translate(12px, 12px) scale(.97) rotate(.5deg); opacity:.84; filter:saturate(.96); }
-  .cardItem[data-depth="3"]{ transform: translate(18px, 18px) scale(.955) rotate(.75deg); opacity:.74; filter:saturate(.94); }
-
-  /* 表（トップ） */
-  .cardItem.isTop{
-    transform: translate(0,0) scale(1) rotate(0deg);
-    opacity:1;
-    box-shadow: 0 18px 36px rgba(0,0,0,.14), var(--glow);
-    border-color: rgba(255,45,85,.18);
-  }
-
-  /* スワイプ時 */
-  .cardItem.isDragging{
-    transition: none !important;
-    cursor: grabbing;
-  }
-
-  .cardOverlay{
-    position:absolute;
-    left: 12px; right: 12px; bottom: 12px;
-    border-radius: 16px;
-    background: rgba(255,255,255,.86);
-    border:1px solid rgba(0,0,0,.08);
-    box-shadow: 0 12px 22px rgba(0,0,0,.10);
-    padding: 10px 10px;
-    display:flex;
-    align-items:flex-start;
-    justify-content:space-between;
-    gap: 10px;
-  }
-  .cName{
-    font-weight: 1100;
-    letter-spacing:.02em;
-    line-height:1.2;
-  }
-  .cMeta{
-    margin-top:4px;
-    font-size: 12px;
-    color: var(--muted);
-    line-height:1.5;
-  }
-  .cPrice{
-    font-weight: 1100;
-    white-space:nowrap;
-    font-size: 13px;
-  }
-
-  .deckHint{
-    position:absolute;
-    left: 12px; top: 12px;
-    display:flex;
-    gap: 8px;
-    flex-wrap:wrap;
-    align-items:center;
-    z-index: 3;
-    pointer-events:none;
-  }
-  .pill{
-    font-size: 12px;
-    padding: 6px 10px;
-    border-radius: 999px;
-    border:1px solid rgba(0,0,0,.10);
-    background: rgba(255,255,255,.86);
-    box-shadow: 0 10px 18px rgba(0,0,0,.08);
-    font-weight: 900;
-  }
-  .pill.red{ border-color: rgba(255,45,85,.25); }
-  .pill.sky{ border-color: rgba(74,168,255,.25); }
-  .pill.sun{ border-color: rgba(255,182,0,.25); }
-  .pill.gray{ border-color: rgba(0,0,0,.10); color: rgba(26,19,21,.80); }
-
-  .deckCtrls{
-    display:flex; gap:8px; flex-wrap:wrap;
-    margin-top: 10px;
-  }
-  .deckCtrls .btn{ flex:1 1 auto; justify-content:center; }
-
-  /* 右側：カテゴリ切替と説明（文字を最小に） */
-  .side{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-  }
-  .heroTitle{
-    font-size: clamp(18px, 2.5vw, 28px);
-    font-weight: 1000;
-    letter-spacing:.02em;
-    margin:0;
-    line-height:1.15;
-  }
-  .lead{
-    margin:0;
-    color:var(--muted);
-    line-height:1.75;
-    font-size: 14px;
-  }
-
-  .switchRow{
-    display:flex; gap:8px; flex-wrap:wrap;
-  }
-  .seg{
-    flex:1 1 auto;
-    border:1px solid rgba(0,0,0,.10);
-    background:#fff;
-    border-radius: 999px;
-    padding: 10px 12px;
-    font-weight: 1000;
-    cursor:pointer;
-    box-shadow: 0 10px 20px rgba(0,0,0,.06);
-    transition: transform .12s ease, background .12s ease, border-color .12s ease;
-    text-align:center;
-    user-select:none;
-  }
-  .seg:hover{ transform: translateY(-1px); }
-  .seg.active{
-    border-color: rgba(255,45,85,.25);
-    background: linear-gradient(180deg, rgba(255,45,85,.10), #fff);
-  }
-
-  .infoBox{
-    border-radius: 16px;
-    border:1px solid rgba(0,0,0,.08);
-    background:#fff;
-    padding: 12px;
-    box-shadow: 0 12px 22px rgba(0,0,0,.06);
-  }
-  .infoBox .k{
-    font-weight: 1100;
-    letter-spacing:.02em;
-  }
-  .infoBox .p{
-    margin-top:6px;
-    color: var(--muted);
-    font-size: 13px;
-    line-height:1.75;
-  }
-
-  footer{
-    margin-top: 14px;
-    text-align:center;
-    color: rgba(26,19,21,.70);
-    font-size: 12px;
-    line-height: 1.7;
-    padding: 12px 6px 0;
-  }
-  .footerLinks{
-    display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
-    margin-top: 10px;
-  }
-</style>
+    /* ====== Tiny helper ====== */
+    .srOnly{
+      position:absolute!important;
+      width:1px;height:1px;
+      padding:0;margin:-1px;
+      overflow:hidden;clip:rect(0,0,0,0);
+      white-space:nowrap;border:0;
+    }
+  </style>
 </head>
 
 <body>
-<div class="wrap">
+  <div class="wrap">
 
-  <header>
-    <div class="topbar">
-      <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div class="t">
-          <div class="name">たこ焼き菜々</div>
-          <div class="sub">焼きたてにこだわる｜電話注文：070-4077-7732</div>
+    <header class="hero" role="banner" aria-label="メニューの案内">
+      <div class="heroInner">
+        <div class="brandRow">
+          <div class="brand">
+            <div class="badge"><span class="dot" aria-hidden="true"></span>焼きたて MENU</div>
+            <h1>たこ焼き菜々｜メニュー</h1>
+            <p class="sub">
+              ご注文を受けてから焼き上げます。<br />
+              写真をタップすると大きく表示できます。
+            </p>
+          </div>
+
+          <div class="heroActions">
+            <!-- ✅ ここに「Googleで混雑を見る」などのリンクを置いてもOK -->
+            <button class="btn primary" type="button" id="btnTopInfo" aria-label="ご案内を表示">
+              <span class="ico" aria-hidden="true">ℹ️</span> ご案内
+            </button>
+            <a class="btn" href="#drink" aria-label="ドリンクへ移動">
+              <span class="ico" aria-hidden="true">🥤</span> ドリンク
+            </a>
+          </div>
         </div>
       </div>
-      <div class="actions">
-        <a class="btn call" href="tel:07040777732">📞 電話注文</a>
-        <a class="btn ghost" href="https://takoyaki-trc.github.io/takoyaki-media/town/cardlist.html" target="_blank" rel="noopener">🌀 トレカ</a>
-      </div>
-    </div>
-  </header>
+    </header>
 
-  <!-- ===== 驚き：メニューDECK ===== -->
-  <section class="section" aria-label="メニュー（デッキ表示）">
-    <div class="head">
-      <div class="h"><span class="dot"></span>メニュー（めくるだけ）</div>
-      <div class="sub">下までスクロール不要｜指でシュッ</div>
-    </div>
-
-    <div class="body">
-      <div class="deckArea">
-
-        <!-- 左：カード束 -->
+    <!-- =========================
+         TAKOYAKI MENU
+    ========================== -->
+    <section class="section" aria-label="たこ焼きメニュー">
+      <div class="sectionHead">
         <div>
-          <div class="deck" id="deck" aria-label="メニューカード束">
-            <div class="deckBg" aria-hidden="true"></div>
+          <h2 class="sectionTitle">たこ焼き（8個）</h2>
+          <p class="sectionNote">写真タップで拡大できます。価格は税込表記の想定です。</p>
+        </div>
+        <p class="sectionNote">※「いかさま焼き」は価格表記が無いので、必要なら後で追記できます。</p>
+      </div>
 
-            <div class="deckHint">
-              <span class="pill red" id="wxPill">天気判定中…</span>
-              <span class="pill gray" id="tmpPill">--℃</span>
-              <span class="pill gray" id="modePill">おすすめ</span>
+      <div class="grid" id="menuGrid">
+        <!-- cards injected by JS -->
+      </div>
+    </section>
+
+    <!-- =========================
+         DRINK (placeholder)
+    ========================== -->
+    <section class="section" id="drink" aria-label="ドリンクメニュー">
+      <div class="sectionHead">
+        <div>
+          <h2 class="sectionTitle">ドリンク</h2>
+          <p class="sectionNote">※ここはあとから内容を差し替えできます（例：缶・ボトル・ホットなど）。</p>
+        </div>
+        <p class="sectionNote">「たこ焼きと一緒にどうぞ」</p>
+      </div>
+
+      <div class="drinkWrap">
+        <div class="drinkGrid" id="drinkGrid">
+          <!-- ✅ ここは仮。好きに変更OK -->
+          <div class="drinkItem">
+            <div>
+              <p class="drinkName">コーラ</p>
+              <p class="drinkNote">たこ焼きに合う定番。</p>
             </div>
+            <div class="drinkPrice">—</div>
+          </div>
+          <div class="drinkItem">
+            <div>
+              <p class="drinkName">ウーロン茶</p>
+              <p class="drinkNote">さっぱり。</p>
+            </div>
+            <div class="drinkPrice">—</div>
+          </div>
+          <div class="drinkItem">
+            <div>
+              <p class="drinkName">オレンジジュース</p>
+              <p class="drinkNote">お子さまにも。</p>
+            </div>
+            <div class="drinkPrice">—</div>
+          </div>
+          <div class="drinkItem">
+            <div>
+              <p class="drinkName">ホット（季節）</p>
+              <p class="drinkNote">寒い日に。</p>
+            </div>
+            <div class="drinkPrice">—</div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-            <div class="stack" id="stack"></div>
+    <footer>
+      たこ焼き菜々｜焼きたての美味しさをそのままに。<br />
+      ※メニュー内容・価格は変更になる場合があります。
+    </footer>
+  </div>
 
-            <div class="cardOverlay" aria-live="polite">
-              <div>
-                <div class="cName" id="cName">ソース</div>
-                <div class="cMeta" id="cMeta">指で左右にスワイプすると次のメニュー</div>
+  <!-- =========================
+       MODAL (tap to zoom)
+  ========================== -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="メニュー詳細">
+    <div class="modalCard" role="document">
+      <div class="modalTop">
+        <p class="modalTitle" id="modalTitle">
+          <span id="modalName">—</span>
+          <span class="price" id="modalPrice">—</span>
+        </p>
+        <button class="xbtn" type="button" id="modalClose" aria-label="閉じる">閉じる</button>
+      </div>
+
+      <img class="modalImg" id="modalImg" alt="" />
+
+      <div class="modalBody">
+        <p class="modalDesc" id="modalDesc">—</p>
+        <p class="miniHelp">※写真はタップで拡大表示しています。戻るには「閉じる」または背景タップ。</p>
+
+        <div class="modalBtns">
+          <!-- ✅ もし将来「注文」導線を作るならここにボタン追加できます -->
+          <button class="btn" type="button" id="modalCopyBtn" aria-label="メニュー名をコピー">
+            <span class="ico" aria-hidden="true">📋</span> 名前をコピー
+          </button>
+
+          <!-- ✅ Googleマップに飛ぶなどのボタンも置けます -->
+          <!-- <a class="btn primary" href="YOUR_GOOGLE_MAP_URL" target="_blank" rel="noopener">地図を見る</a> -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      // =========================
+      // メニュー（画像URLはユーザー提供）
+      // =========================
+      const MENUS = [
+        {
+          id: "ikasma",
+          name: "いかさま焼き",
+          price: "", // ←価格不明。必要なら「8個 550円」など入れてOK
+          img: "https://ul.h3z.jp/X0hNea3x.JPG",
+          note: "数量限定系や変わり種の場合は、ここに一言を入れると注文が迷いません。"
+        },
+        {
+          id: "teritama",
+          name: "てりたま",
+          price: "8個 550円",
+          img: "https://ul.h3z.jp/S507mjUX.jpg",
+          note: "甘辛×まろやか。迷ったら人気の組み合わせ。"
+        },
+        {
+          id: "negimiso",
+          name: "ねぎ味噌",
+          price: "8個 550円",
+          img: "https://ul.h3z.jp/CcWfr8d0.JPG",
+          note: "香ばしいコク。ねぎの香りが立ちます。"
+        },
+        {
+          id: "shio-kosho",
+          name: "塩こしょう",
+          price: "8個 450円",
+          img: "https://ul.h3z.jp/SLJuBJs1.jpg",
+          note: "素材の味が分かる、さっぱり系。"
+        },
+        {
+          id: "suppin",
+          name: "すっぴん",
+          price: "", // ←価格不明。必要なら入れてOK
+          img: "https://ul.h3z.jp/mEuk5OwJ.jpg",
+          note: "シンプルに生地を味わう“原点”。"
+        },
+        {
+          id: "karakuchi",
+          name: "辛口ソース",
+          price: "8個 450円",
+          img: "https://ul.h3z.jp/Jit1r3Jv.JPG",
+          note: "ピリッと刺激。ビール派にも。"
+        },
+        {
+          id: "kakidashi",
+          name: "牡蠣だし醤油",
+          price: "8個 450円",
+          img: "https://ul.h3z.jp/k7J0DvPG.jpg",
+          note: "出汁の香りがふわっと広がる一品。"
+        },
+        {
+          id: "sauce",
+          name: "ソース",
+          price: "8個 450円",
+          img: "https://ul.h3z.jp/wKg45O6e.JPG",
+          note: "定番。まずはこれ。"
+        },
+        {
+          id: "agedama",
+          name: "ぶっかけ揚げ玉からしマヨ",
+          price: "8個 550円",
+          img: "https://ul.h3z.jp/Z680luDn.JPG",
+          note: "食感楽しいガッツリ系。クセになります。"
+        },
+        {
+          id: "shiomayopepper",
+          name: "塩マヨペッパー",
+          price: "8個 550円",
+          img: "https://ul.h3z.jp/hwUJtJOS.JPG",
+          note: "おつまみに人気。胡椒の香りが決め手。"
+        },
+        {
+          id: "cheese",
+          name: "チーズソースマヨ",
+          price: "8個 550円",
+          img: "https://ul.h3z.jp/zQvjz2vk.JPG",
+          note: "濃厚で満足度高め。写真映えも◎"
+        },
+        {
+          id: "mentai",
+          name: "めんたいマヨ",
+          price: "8個 550円",
+          img: "https://ul.h3z.jp/bibwTWq6.JPG",
+          note: "女性人気の鉄板。迷ったら選ばれやすい味。"
+        },
+      ];
+
+      // =========================
+      // DOM
+      // =========================
+      const grid = document.getElementById("menuGrid");
+      const modal = document.getElementById("modal");
+      const modalClose = document.getElementById("modalClose");
+      const modalName = document.getElementById("modalName");
+      const modalPrice = document.getElementById("modalPrice");
+      const modalImg = document.getElementById("modalImg");
+      const modalDesc = document.getElementById("modalDesc");
+      const copyBtn = document.getElementById("modalCopyBtn");
+      const btnTopInfo = document.getElementById("btnTopInfo");
+
+      // =========================
+      // Render cards
+      // =========================
+      function render(){
+        grid.innerHTML = MENUS.map(m => {
+          const priceText = m.price ? m.price : "価格は店頭でご確認ください";
+          const tagPrice = m.price ? `<span class="tag"><b>¥</b> ${m.price.replace("8個 ","")}</span>` : `<span class="tag"><b>?</b> 価格</span>`;
+          return `
+            <article class="card" data-id="${escapeHtml(m.id)}" tabindex="0" aria-label="${escapeHtml(m.name)}の詳細を開く">
+              <div class="thumb">
+                <img src="${escapeAttr(m.img)}" alt="${escapeAttr(m.name)}" loading="lazy" />
+                <div class="pricePill"><span>8個</span> <span class="yen">${escapeHtml(m.price ? m.price.split(" ").pop() : "—")}</span></div>
               </div>
-              <div class="cPrice" id="cPrice">《8個 450円》</div>
-            </div>
-          </div>
-
-          <div class="deckCtrls">
-            <button class="btn" id="btnNext" type="button">👉 次へ</button>
-            <button class="btn" id="btnShuffle" type="button">🎲 シャッフル</button>
-          </div>
-        </div>
-
-        <!-- 右：モード切替 -->
-        <div class="side">
-          <h1 class="heroTitle">写真は大きく、並べない。</h1>
-          <p class="lead">
-            スマホで“メニュー画像が縦に長すぎる問題”を潰すため、<br>
-            <b>メニューをカード束として表示</b>します。<br>
-            見るのが楽しいのに、スクロールは増えません。
-          </p>
-
-          <div class="switchRow" role="tablist" aria-label="表示モード">
-            <button class="seg active" id="segRec" type="button">おすすめ</button>
-            <button class="seg" id="segStd" type="button">定番450</button>
-            <button class="seg" id="segPlus" type="button">ぷら百550</button>
-            <button class="seg" id="segBoss" type="button">いかさま</button>
-          </div>
-
-          <div class="infoBox" id="infoBox">
-            <div class="k">今日のおすすめ（天気で変わる）</div>
-            <div class="p">
-              雨・湿度高め：チーズソースマヨ／ねぎ味噌／めんたいマヨ<br>
-              暑い日：辛口ソース／塩こしょう／牡蠣だし醤油／すっぴん<br>
-              その他：ソース
-            </div>
-          </div>
-
-          <div class="infoBox">
-            <div class="k">トッピング</div>
-            <div class="p">
-              無料2つまで：マヨ・一味マヨ・かつおぶし・山椒<br>
-              有料：ねぎ +50円／からしマヨ +50円
-            </div>
-          </div>
-
-          <a class="btn call" href="tel:07040777732" style="justify-content:center;">📞 電話注文する</a>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    <div><b>たこ焼き菜々</b>｜電話注文：<a href="tel:07040777732">070-4077-7732</a></div>
-    <div>焼き上がりまで約20分（焼きたてにこだわっています）</div>
-    <div class="footerLinks">
-      <a class="btn ghost" href="https://takoyaki-trc.github.io/takoyaki-media/town/cardlist.html" target="_blank" rel="noopener">🌀 トレカ</a>
-      <a class="btn call" href="tel:07040777732">📞 注文</a>
-    </div>
-    <div style="margin-top:10px; opacity:.75;">《今日もだれかがたこ焼きを食べている　菜々》</div>
-  </footer>
-
-</div>
-
-<script>
-(() => {
-  "use strict";
-
-  // =========================
-  // メニュー定義（画像・価格）
-  // =========================
-  const MENU = [
-    // 550
-    { id:"teritama", name:"てりたま", price:550, cat:"plus", img:"https://ul.h3z.jp/S507mjUX.jpg" },
-    { id:"negimiso", name:"ねぎ味噌", price:550, cat:"plus", img:"https://ul.h3z.jp/CcWfr8d0.JPG" },
-    { id:"age_dama_karashi", name:"ぶっかけ揚げ玉からしマヨ", price:550, cat:"plus", img:"https://ul.h3z.jp/Z680luDn.JPG" },
-    { id:"shio_mayo_pepper", name:"塩マヨペッパー", price:550, cat:"plus", img:"https://ul.h3z.jp/hwUJtJOS.JPG" },
-    { id:"cheese_sauce_mayo", name:"チーズソースマヨ", price:550, cat:"plus", img:"https://ul.h3z.jp/zQvjz2vk.JPG" },
-    { id:"mentai_mayo", name:"めんたいマヨ", price:550, cat:"plus", img:"https://ul.h3z.jp/bibwTWq6.JPG" },
-
-    // 450
-    { id:"shio_kosho", name:"塩こしょう", price:450, cat:"std", img:"https://ul.h3z.jp/SLJuBJs1.jpg" },
-    { id:"suppin", name:"すっぴん", price:450, cat:"std", img:"https://ul.h3z.jp/mEuk5OwJ.jpg" },
-    { id:"karakuchi_sauce", name:"辛口ソース", price:450, cat:"std", img:"https://ul.h3z.jp/Jit1r3Jv.JPG" },
-    { id:"kaki_dashi", name:"牡蠣だし醤油", price:450, cat:"std", img:"https://ul.h3z.jp/k7J0DvPG.jpg" },
-    { id:"sauce", name:"ソース", price:450, cat:"std", img:"https://ul.h3z.jp/wKg45O6e.JPG" },
-  ];
-
-  const IKASAMA = { id:"ikasama", name:"真っ黒 いかさま焼き", price:null, cat:"boss", img:"https://ul.h3z.jp/X0hNea3x.JPG" };
-
-  const RECOMMEND = {
-    rainy_or_humid: ["cheese_sauce_mayo", "negimiso", "mentai_mayo"],
-    hot: ["karakuchi_sauce", "shio_kosho", "kaki_dashi", "suppin"],
-    normal: ["sauce"]
-  };
-  const THRESH = { hotTempC: 25, humidRH: 78, rainMm: 0.1 };
-
-  const HAKODATE = { lat: 41.7687, lon: 140.7288 };
-
-  // =========================
-  // UI
-  // =========================
-  const stackEl = document.getElementById("stack");
-  const cName = document.getElementById("cName");
-  const cMeta = document.getElementById("cMeta");
-  const cPrice = document.getElementById("cPrice");
-
-  const wxPill = document.getElementById("wxPill");
-  const tmpPill = document.getElementById("tmpPill");
-  const modePill = document.getElementById("modePill");
-
-  const btnNext = document.getElementById("btnNext");
-  const btnShuffle = document.getElementById("btnShuffle");
-
-  const segRec = document.getElementById("segRec");
-  const segStd = document.getElementById("segStd");
-  const segPlus = document.getElementById("segPlus");
-  const segBoss = document.getElementById("segBoss");
-  const infoBox = document.getElementById("infoBox");
-
-  // =========================
-  // State
-  // =========================
-  let mode = "rec";              // rec/std/plus/boss
-  let pool = [];                 // 表示中のID配列
-  let cardOrder = [];            // 表示中のメニュー配列（オブジェクト）
-  let topIndex = 0;
-  let lastPoolKey = "normal";
-  let lastReason = "ふつうの日";
-
-  const yen = (n) => `《8個 ${n}円》`;
-  const pickRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
-  const byId = (id) => MENU.find(x => x.id === id) || null;
-
-  function setActiveSeg(target){
-    [segRec, segStd, segPlus, segBoss].forEach(b => b.classList.toggle("active", b === target));
-  }
-
-  function setOverlay(m){
-    cName.textContent = m.name;
-    cPrice.textContent = (typeof m.price === "number") ? yen(m.price) : "（味は3種）";
-    cMeta.textContent = (mode === "boss")
-      ? "がごめ昆布醤油 / ピンク岩塩 / レモンソルト"
-      : "指で左右にスワイプ → 次のメニュー";
-  }
-
-  // =========================
-  // Deck render
-  // =========================
-  function renderDeck(){
-    stackEl.innerHTML = "";
-
-    // 最大4枚まで束っぽく見せる（軽い）
-    const maxShow = Math.min(4, cardOrder.length);
-    for(let d=0; d<maxShow; d++){
-      const idx = (topIndex + d) % cardOrder.length;
-      const m = cardOrder[idx];
-
-      const card = document.createElement("div");
-      card.className = "cardItem" + (d === 0 ? " isTop" : "");
-      card.dataset.depth = String(d);
-
-      card.innerHTML = `<img src="${m.img}" alt="${m.name}">`;
-
-      // topだけドラッグ可能
-      if(d === 0){
-        attachSwipe(card);
-        setOverlay(m);
+              <div class="cardBody">
+                <h3 class="name">${escapeHtml(m.name)}</h3>
+                <div class="metaRow">
+                  ${tagPrice}
+                  <span>${escapeHtml(priceText)}</span>
+                </div>
+                <p class="desc">${escapeHtml(m.note || "")}</p>
+              </div>
+            </article>
+          `;
+        }).join("");
       }
 
-      stackEl.appendChild(card);
-    }
-  }
+      // =========================
+      // Modal
+      // =========================
+      function openModal(menu){
+        modalName.textContent = menu.name || "—";
+        modalPrice.textContent = menu.price ? `（${menu.price}）` : "（価格は店頭でご確認ください）";
+        modalImg.src = menu.img;
+        modalImg.alt = menu.name;
+        modalDesc.textContent = menu.note || "";
 
-  // =========================
-  // Swipe
-  // =========================
-  function attachSwipe(el){
-    let startX = 0;
-    let currentX = 0;
-    let dragging = false;
-
-    const onDown = (x) => {
-      dragging = true;
-      startX = x;
-      currentX = x;
-      el.classList.add("isDragging");
-    };
-    const onMove = (x) => {
-      if(!dragging) return;
-      currentX = x;
-      const dx = currentX - startX;
-      const rot = dx * 0.03;
-      el.style.transform = `translate(${dx}px, 0) rotate(${rot}deg)`;
-      el.style.opacity = String(Math.max(0.35, 1 - Math.abs(dx) / 360));
-    };
-    const onUp = () => {
-      if(!dragging) return;
-      dragging = false;
-      el.classList.remove("isDragging");
-
-      const dx = currentX - startX;
-      const threshold = 90;
-
-      if(Math.abs(dx) > threshold){
-        // 飛ばす
-        const dir = dx > 0 ? 1 : -1;
-        el.style.transition = "transform .18s ease, opacity .18s ease";
-        el.style.transform = `translate(${dir * 520}px, 30px) rotate(${dir * 18}deg)`;
-        el.style.opacity = "0";
-        setTimeout(() => {
-          nextCard();
-        }, 140);
-      }else{
-        // 戻す
-        el.style.transition = "transform .18s ease, opacity .18s ease";
-        el.style.transform = "";
-        el.style.opacity = "";
+        modal.classList.add("show");
+        document.body.style.overflow = "hidden";
       }
-    };
 
-    // pointer events
-    el.addEventListener("pointerdown", (e) => {
-      el.setPointerCapture(e.pointerId);
-      onDown(e.clientX);
-    });
-    el.addEventListener("pointermove", (e) => onMove(e.clientX));
-    el.addEventListener("pointerup", onUp);
-    el.addEventListener("pointercancel", onUp);
-  }
+      function closeModal(){
+        modal.classList.remove("show");
+        document.body.style.overflow = "";
+        // 画像読み込みを軽くする
+        modalImg.src = "";
+      }
 
-  function nextCard(){
-    topIndex = (topIndex + 1) % cardOrder.length;
-    renderDeck();
-  }
+      // =========================
+      // Events
+      // =========================
+      grid.addEventListener("click", (e) => {
+        const card = e.target.closest(".card");
+        if(!card) return;
+        const id = card.getAttribute("data-id");
+        const menu = MENUS.find(x => x.id === id);
+        if(menu) openModal(menu);
+      });
 
-  function shuffle(){
-    // Fisher-Yates
-    for(let i=cardOrder.length-1; i>0; i--){
-      const j = Math.floor(Math.random() * (i+1));
-      [cardOrder[i], cardOrder[j]] = [cardOrder[j], cardOrder[i]];
-    }
-    topIndex = 0;
-    renderDeck();
-  }
+      // Enter/Space で開ける
+      grid.addEventListener("keydown", (e) => {
+        const card = e.target.closest(".card");
+        if(!card) return;
+        if(e.key === "Enter" || e.key === " "){
+          e.preventDefault();
+          const id = card.getAttribute("data-id");
+          const menu = MENUS.find(x => x.id === id);
+          if(menu) openModal(menu);
+        }
+      });
 
-  btnNext.addEventListener("click", nextCard);
-  btnShuffle.addEventListener("click", shuffle);
+      // 閉じるボタン
+      modalClose.addEventListener("click", closeModal);
 
-  // =========================
-  // Mode change
-  // =========================
-  function setMode(newMode){
-    mode = newMode;
+      // 背景クリックで閉じる
+      modal.addEventListener("click", (e) => {
+        if(e.target === modal) closeModal();
+      });
 
-    if(mode === "boss"){
-      modePill.textContent = "いかさま";
-      cardOrder = [IKASAMA];
-      infoBox.innerHTML = `
-        <div class="k">真っ黒 いかさま焼き</div>
-        <div class="p">味は3種類：がごめ昆布醤油 / ピンク岩塩 / レモンソルト</div>
-      `;
-      renderDeck();
-      return;
-    }
+      // ESCで閉じる
+      window.addEventListener("keydown", (e) => {
+        if(e.key === "Escape" && modal.classList.contains("show")){
+          closeModal();
+        }
+      });
 
-    if(mode === "std"){
-      modePill.textContent = "定番450";
-      cardOrder = MENU.filter(m => m.cat === "std");
-      infoBox.innerHTML = `
-        <div class="k">定番（8個450円）</div>
-        <div class="p">王道の安定。迷ったら「ソース」から。</div>
-      `;
-      renderDeck();
-      return;
-    }
+      // 名前コピー（注文で口頭伝える用）
+      copyBtn.addEventListener("click", async () => {
+        const text = modalName.textContent || "";
+        try{
+          await navigator.clipboard.writeText(text);
+          copyBtn.textContent = "コピーしました";
+          setTimeout(() => copyBtn.innerHTML = '<span class="ico" aria-hidden="true">📋</span> 名前をコピー', 900);
+        }catch(err){
+          alert("コピーできませんでした。端末の設定をご確認ください。");
+        }
+      });
 
-    if(mode === "plus"){
-      modePill.textContent = "ぷら百550";
-      cardOrder = MENU.filter(m => m.cat === "plus");
-      infoBox.innerHTML = `
-        <div class="k">ぷら百（8個550円）</div>
-        <div class="p">気分を上げる“+100円の一手”。</div>
-      `;
-      renderDeck();
-      return;
-    }
+      // ご案内ボタン（軽い説明）
+      btnTopInfo.addEventListener("click", () => {
+        alert("写真をタップすると大きく表示できます。価格は変更になる場合があります。最新は店頭にてご確認ください。");
+      });
 
-    // rec
-    modePill.textContent = "おすすめ";
-    applyWeatherBasedPool(); // 天気判定の結果から作る
-  }
+      // =========================
+      // Utils
+      // =========================
+      function escapeHtml(str){
+        return String(str ?? "")
+          .replaceAll("&","&amp;")
+          .replaceAll("<","&lt;")
+          .replaceAll(">","&gt;")
+          .replaceAll('"',"&quot;")
+          .replaceAll("'","&#39;");
+      }
+      function escapeAttr(str){
+        // attribute 用（基本同じ）
+        return escapeHtml(str);
+      }
 
-  segRec.addEventListener("click", () => { setActiveSeg(segRec); setMode("rec"); });
-  segStd.addEventListener("click", () => { setActiveSeg(segStd); setMode("std"); });
-  segPlus.addEventListener("click", () => { setActiveSeg(segPlus); setMode("plus"); });
-  segBoss.addEventListener("click", () => { setActiveSeg(segBoss); setMode("boss"); });
+      // =========================
+      // Init
+      // =========================
+      render();
 
-  // =========================
-  // Weather
-  // =========================
-  async function fetchWeather(){
-    const url =
-      "https://api.open-meteo.com/v1/forecast" +
-      `?latitude=${HAKODATE.lat}&longitude=${HAKODATE.lon}` +
-      "&current_weather=true" +
-      "&hourly=relative_humidity_2m,precipitation" +
-      "&timezone=Asia%2FTokyo";
-
-    const res = await fetch(url, { cache:"no-store" });
-    if(!res.ok) throw new Error("weather fetch failed");
-    const data = await res.json();
-
-    const cw = data.current_weather || {};
-    const tempC = (typeof cw.temperature === "number") ? cw.temperature : null;
-    const wcode = (typeof cw.weathercode === "number") ? cw.weathercode : null;
-
-    let rh = null, pr = null;
-    try{
-      const times = data.hourly?.time || [];
-      const rhs = data.hourly?.relative_humidity_2m || [];
-      const prs = data.hourly?.precipitation || [];
-      const now = new Date();
-      const nowIso = now.toISOString().slice(0,13);
-      let idx = times.findIndex(t => t.startsWith(nowIso));
-      if(idx < 0) idx = times.length - 1;
-      rh = (typeof rhs[idx] === "number") ? rhs[idx] : null;
-      pr = (typeof prs[idx] === "number") ? prs[idx] : null;
-    }catch(_){}
-
-    const weatherText = (() => {
-      if(wcode == null) return "天気：--";
-      if(wcode === 0) return "天気：快晴";
-      if(wcode >= 1 && wcode <= 3) return "天気：くもり";
-      if(wcode === 45 || wcode === 48) return "天気：霧";
-      if((wcode >= 51 && wcode <= 67) || (wcode >= 80 && wcode <= 82) || wcode === 95) return "天気：雨";
-      if(wcode >= 71 && wcode <= 77) return "天気：雪";
-      return "天気：変化あり";
     })();
-
-    return { tempC, rh, pr, wcode, weatherText };
-  }
-
-  function decidePool(wx){
-    const tempC = wx.tempC;
-    const rh = wx.rh;
-    const pr = wx.pr;
-    const wcode = wx.wcode;
-
-    const isRainByCode = (wcode != null) && (
-      (wcode >= 51 && wcode <= 67) || (wcode >= 80 && wcode <= 82) || wcode === 95
-    );
-    const isRainByMm = (pr != null) && (pr >= THRESH.rainMm);
-    const isRain = isRainByCode || isRainByMm;
-
-    const isHumid = (rh != null) && (rh >= THRESH.humidRH);
-    const isHot = (tempC != null) && (tempC >= THRESH.hotTempC);
-
-    if(isRain || isHumid) return { key:"rainy_or_humid", reason: (isRain ? "雨/湿度" : "湿度高め") };
-    if(isHot) return { key:"hot", reason:"暑い日" };
-    return { key:"normal", reason:"ふつうの日" };
-  }
-
-  function applyWeatherBasedPool(){
-    const ids = RECOMMEND[lastPoolKey] || RECOMMEND.normal;
-    cardOrder = ids.map(id => byId(id)).filter(Boolean);
-    if(cardOrder.length === 0) cardOrder = [byId("sauce")].filter(Boolean);
-
-    infoBox.innerHTML = `
-      <div class="k">今日のおすすめ（${lastReason}）</div>
-      <div class="p">
-        ${lastPoolKey === "rainy_or_humid" ? "雨・湿度高めは「こってり/濃い味」が人気。" :
-          lastPoolKey === "hot" ? "暑い日は「キレ/だし/シンプル」が人気。" :
-          "ふつうの日は王道「ソース」。"}
-        <br>（束は同条件内でシャッフルできます）
-      </div>
-    `;
-    topIndex = 0;
-    renderDeck();
-  }
-
-  // =========================
-  // init
-  // =========================
-  setMode("rec"); // 先に“仮”で表示
-
-  (async () => {
-    try{
-      const wx = await fetchWeather();
-      wxPill.textContent = wx.weatherText;
-      tmpPill.textContent = (wx.tempC == null) ? "--℃" : `${Math.round(wx.tempC)}℃`;
-
-      const pool = decidePool(wx);
-      lastPoolKey = pool.key;
-      lastReason = pool.reason;
-
-      if(mode === "rec") applyWeatherBasedPool();
-    }catch(e){
-      wxPill.textContent = "天気：取得できません";
-      tmpPill.textContent = "--℃";
-      lastPoolKey = "normal";
-      lastReason = "ふつうの日（仮）";
-      if(mode === "rec") applyWeatherBasedPool();
-    }
-  })();
-
-})();
-</script>
+  </script>
 </body>
 </html>
+```0
