@@ -3,24 +3,25 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>メニュー｜たこ焼き菜々</title>
-  <meta name="description" content="たこ焼き菜々のメニュー。スマホで見やすい正方形サムネ・2列グリッドで、写真はタップで大きく表示できます。" />
+  <title>たこ焼き菜々｜メニュー</title>
+  <meta name="description" content="たこ焼き菜々のメニュー。期間限定イカさま焼き、定番（450円）とぷら100（550円）をスマホで見やすく案内します。" />
 
   <style>
     :root{
-      /* ====== 和モダン / カフェ寄り（スマホ最優先） ====== */
-      --bg:#F6F2EC;
-      --paper:#FFFDF8;
-      --ink:#242424;
-      --muted:rgba(36,36,36,.68);
-      --line:#E7E0D6;
-      --gold:#C6A86A;
-      --shadow: 0 10px 24px rgba(0,0,0,.08);
-      --radius: 16px;
-      --radius2: 22px;
+      /* ===== 雰囲気：明るい紙 × 赤アクセント（銀だこ系） ===== */
+      --brand:#d6001c;
+      --brand2:#ff2b43;
+      --bg:#f7f2e8;
+      --paper:#ffffff;
+      --ink:#141414;
+      --muted:rgba(20,20,20,.68);
+      --line:rgba(20,20,20,.12);
+      --shadow: 0 12px 34px rgba(0,0,0,.10);
+      --radius:16px;
+      --radius2:22px;
 
-      --safeB: env(safe-area-inset-bottom);
       --safeT: env(safe-area-inset-top);
+      --safeB: env(safe-area-inset-bottom);
     }
 
     *{ box-sizing:border-box; }
@@ -28,318 +29,438 @@
     body{
       margin:0;
       font-family: system-ui, -apple-system, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
-      color: var(--ink);
+      color:var(--ink);
       background:
-        radial-gradient(900px 420px at 50% -120px, rgba(198,168,106,.18), transparent 55%),
-        linear-gradient(180deg, #FBF8F2, var(--bg));
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+        radial-gradient(900px 520px at 50% -120px, rgba(214,0,28,.14), transparent 60%),
+        linear-gradient(180deg, #fff, var(--bg));
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
-
     a{ color:inherit; text-decoration:none; }
+    img{ max-width:100%; display:block; }
     button{ font:inherit; }
 
-    /* ===== Layout ===== */
     .wrap{
       width:min(980px, 100%);
       margin:0 auto;
-      padding: 12px 12px calc(24px + var(--safeB));
+      padding: 0 12px calc(20px + var(--safeB));
     }
 
-    /* ===== Header ===== */
-    .hero{
-      border:1px solid var(--line);
-      border-radius: var(--radius2);
-      background: linear-gradient(180deg, rgba(255,255,255,.82), rgba(255,255,255,.55));
-      box-shadow: var(--shadow);
-      padding: 14px 14px 12px;
-      position:relative;
+    /* ===== Top bar ===== */
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:100;
+      background: linear-gradient(180deg, rgba(214,0,28,.98), rgba(214,0,28,.92));
+      color:#fff;
+      padding: calc(10px + var(--safeT)) 12px 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.18);
+    }
+    .topbarInner{
+      width:min(980px, 100%);
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .brandRow{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+    .logoMark{
+      width:38px;height:38px;
+      border-radius:12px;
+      background: rgba(255,255,255,.16);
+      display:grid; place-items:center;
+      border: 1px solid rgba(255,255,255,.22);
+      flex:0 0 auto;
+      font-weight:900;
+      letter-spacing:.08em;
+    }
+    .brandText{
+      min-width:0;
+    }
+    .brandText .name{
+      margin:0;
+      font-weight:900;
+      letter-spacing:.06em;
+      font-size: 14.5px;
+      line-height:1.1;
+      white-space:nowrap;
       overflow:hidden;
+      text-overflow:ellipsis;
     }
-    .hero::before{
-      content:"";
-      position:absolute;
-      inset:-2px;
-      background:
-        radial-gradient(520px 220px at 15% 10%, rgba(198,168,106,.18), transparent 55%),
-        radial-gradient(520px 220px at 85% -10%, rgba(198,168,106,.10), transparent 55%);
-      pointer-events:none;
+    .brandText .tagline{
+      margin:2px 0 0;
+      font-size: 11.5px;
+      opacity:.88;
+      letter-spacing:.04em;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
-    .heroInner{ position:relative; display:flex; gap:10px; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; }
-    .badge{
+    .menuBtn{
+      appearance:none;
+      border:1px solid rgba(255,255,255,.28);
+      background: rgba(255,255,255,.16);
+      color:#fff;
+      border-radius: 999px;
+      padding: 10px 12px;
+      font-weight: 900;
+      letter-spacing:.06em;
+      cursor:pointer;
       display:inline-flex;
       align-items:center;
       gap:8px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.72);
-      font-size:12px;
-      letter-spacing:.06em;
-      color: rgba(36,36,36,.78);
-      width:fit-content;
-    }
-    .dot{
-      width:8px; height:8px; border-radius:99px;
-      background: var(--gold);
-      box-shadow: 0 0 0 4px rgba(198,168,106,.16);
-    }
-    h1{
-      margin:8px 0 0;
-      font-size: 18px;
-      font-weight: 820;
-      letter-spacing:.06em;
-      line-height:1.2;
-    }
-    .sub{
-      margin:6px 0 0;
-      color: var(--muted);
-      font-size: 12.5px;
-      line-height:1.55;
-    }
-
-    .topBtns{
-      display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:flex-end;
-    }
-    .btn{
-      appearance:none;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.78);
-      color: var(--ink);
-      border-radius: 999px;
-      padding: 9px 11px;
-      font-weight: 760;
-      letter-spacing:.04em;
-      font-size: 12.5px;
-      cursor:pointer;
-      box-shadow: 0 8px 18px rgba(0,0,0,.06);
-      transition: transform .06s ease, box-shadow .18s ease;
-      display:inline-flex; align-items:center; gap:8px;
       user-select:none;
       white-space:nowrap;
     }
-    .btn:active{ transform: translateY(1px); }
-    .btn.primary{
-      border-color: rgba(198,168,106,.55);
-      background: linear-gradient(180deg, rgba(198,168,106,.26), rgba(198,168,106,.12));
-    }
+    .menuBtn:active{ transform: translateY(1px); }
 
-    /* ===== Sticky filter bar ===== */
-    .stickyBar{
-      position: sticky;
-      top: 10px;
-      top: calc(10px + var(--safeT));
-      z-index: 50;
+    /* ===== Hero (店の大画像) ===== */
+    .hero{
       margin-top: 12px;
-      border:1px solid var(--line);
       border-radius: var(--radius2);
-      background: rgba(255,255,255,.78);
-      backdrop-filter: blur(8px);
-      box-shadow: 0 10px 26px rgba(0,0,0,.08);
-      padding: 10px 10px;
+      overflow:hidden;
+      border: 1px solid rgba(0,0,0,.10);
+      background:#eee;
+      box-shadow: var(--shadow);
+      position:relative;
     }
-    .barRow{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
-    .search{
-      flex: 1 1 180px;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.86);
-      border-radius: 999px;
-      padding: 9px 12px;
-      min-width: 180px;
-    }
-    .search input{
-      border:0; outline:0;
-      background:transparent;
+    .heroImg{
       width:100%;
-      font-size: 13px;
-      color: var(--ink);
+      height: 38svh;               /* ✅ スマホで“ドーン” */
+      min-height: 240px;
+      max-height: 420px;
+      object-fit: cover;
+      transform: scale(1.01);
+      filter: saturate(1.02) contrast(1.02);
     }
-    .chips{
-      display:flex; gap:8px; flex-wrap:wrap;
+    .heroOverlay{
+      position:absolute;
+      inset:auto 0 0 0;
+      padding: 14px 14px 14px;
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,.45));
+      color:#fff;
     }
-    .chip{
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.86);
-      border-radius: 999px;
-      padding: 9px 11px;
+    .heroTitle{
+      margin:0;
+      font-size: 18px;
+      font-weight: 950;
+      letter-spacing:.06em;
+      line-height:1.25;
+      text-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    .heroSub{
+      margin:6px 0 0;
       font-size: 12.5px;
-      font-weight: 760;
-      cursor:pointer;
-      user-select:none;
-      white-space:nowrap;
-      transition: background .16s ease, transform .06s ease, border-color .16s ease;
-    }
-    .chip:active{ transform: translateY(1px); }
-    .chip.on{
-      border-color: rgba(198,168,106,.65);
-      background: rgba(198,168,106,.18);
+      opacity:.92;
+      letter-spacing:.04em;
+      line-height:1.5;
+      text-shadow: 0 10px 30px rgba(0,0,0,.35);
     }
 
-    /* ===== Section ===== */
+    /* ===== Section frame (紙カード) ===== */
     .section{
       margin-top: 14px;
-      border:1px solid var(--line);
+      background: rgba(255,255,255,.86);
+      border: 1px solid rgba(0,0,0,.10);
       border-radius: var(--radius2);
-      background: rgba(255,255,255,.58);
       box-shadow: var(--shadow);
       overflow:hidden;
     }
     .sectionHead{
-      padding: 12px 14px;
+      padding: 14px 14px 12px;
       border-bottom: 1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,.86), rgba(255,255,255,.58));
-      display:flex; justify-content:space-between; align-items:flex-end; gap:10px; flex-wrap:wrap;
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.80));
+    }
+    .kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      width:fit-content;
+      border-radius: 999px;
+      padding: 7px 11px;
+      border: 1px solid rgba(214,0,28,.20);
+      background: rgba(214,0,28,.08);
+      color: rgba(214,0,28,.92);
+      font-weight: 950;
+      letter-spacing:.06em;
+      font-size: 12px;
     }
     .sectionTitle{
-      margin:0;
-      font-size: 15px;
-      font-weight: 860;
+      margin:8px 0 0;
+      font-size: 16px;
+      font-weight: 950;
       letter-spacing:.06em;
     }
     .sectionNote{
-      margin:0;
+      margin:6px 0 0;
       color: var(--muted);
       font-size: 12px;
-      line-height:1.5;
+      line-height:1.55;
     }
 
-    /* ===== Grid (Mobile first) ===== */
+    /* ===== Featured (期間限定ドーン) ===== */
+    .featured{
+      padding: 14px;
+      display:grid;
+      gap: 12px;
+    }
+    .featuredCard{
+      border-radius: 18px;
+      overflow:hidden;
+      border: 1px solid rgba(0,0,0,.10);
+      background: #fff;
+      box-shadow: 0 14px 40px rgba(0,0,0,.10);
+    }
+    .featuredImg{
+      width:100%;
+      aspect-ratio: 16 / 9; /* ✅ 横長でドーン */
+      object-fit: cover;
+      background:#eee;
+    }
+    .featuredBody{
+      padding: 12px 12px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .featuredName{
+      margin:0;
+      font-size: 18px;
+      font-weight: 950;
+      letter-spacing:.06em;
+      line-height:1.2;
+    }
+    .featuredMeta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border-radius: 999px;
+      padding: 8px 11px;
+      border: 1px solid rgba(0,0,0,.10);
+      background: rgba(0,0,0,.03);
+      font-weight: 900;
+      letter-spacing:.04em;
+    }
+    .pill strong{ color: var(--brand); font-weight: 950; }
+    .featuredDesc{
+      margin:0;
+      color: rgba(20,20,20,.80);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    /* ===== Menu buttons row ===== */
+    .btnRow{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 0 14px 14px;
+    }
+    .bigBtn{
+      appearance:none;
+      border:1px solid rgba(0,0,0,.10);
+      border-radius: 18px;
+      padding: 14px 12px;
+      background:#fff;
+      box-shadow: 0 14px 40px rgba(0,0,0,.10);
+      cursor:pointer;
+      text-align:center;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      align-items:center;
+      justify-content:center;
+      user-select:none;
+    }
+    .bigBtn:active{ transform: translateY(1px); }
+    .bigBtn .t1{
+      font-weight: 950;
+      letter-spacing:.06em;
+      font-size: 13px;
+      color: rgba(20,20,20,.78);
+    }
+    .bigBtn .t2{
+      font-weight: 950;
+      letter-spacing:.08em;
+      font-size: 17px;
+    }
+    .bigBtn .t3{
+      font-weight: 950;
+      letter-spacing:.06em;
+      font-size: 12.5px;
+      color: var(--brand);
+    }
+    .bigBtn.primary .t2{ color: rgba(20,20,20,.92); }
+    .bigBtn.plus100{
+      background: linear-gradient(180deg, #fff, rgba(214,0,28,.06));
+      border-color: rgba(214,0,28,.16);
+    }
+    .bigBtn.plus100 .t2{ color: rgba(214,0,28,.92); }
+
+    /* ===== Grid menus ===== */
     .grid{
-      padding: 12px;
+      padding: 14px;
       display:grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
     }
     @media (min-width: 860px){
-      .grid{ grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 14px; }
-      h1{ font-size: 20px; }
+      .grid{ grid-template-columns: repeat(3, 1fr); gap:12px; }
+      .heroTitle{ font-size: 20px; }
     }
-
-    /* ===== Card (compact / square thumb) ===== */
     .card{
-      background: var(--paper);
-      border:1px solid var(--line);
-      border-radius: var(--radius);
+      background:#fff;
+      border:1px solid rgba(0,0,0,.10);
+      border-radius: 16px;
       overflow:hidden;
-      box-shadow: 0 8px 18px rgba(0,0,0,.06);
+      box-shadow: 0 12px 34px rgba(0,0,0,.10);
       cursor:pointer;
       transition: transform .10s ease, box-shadow .18s ease;
-      display:flex;
-      flex-direction:column;
-      min-height: 0;
     }
-    .card:hover{ transform: translateY(-1px); box-shadow: 0 16px 42px rgba(0,0,0,.10); }
-
+    .card:hover{ transform: translateY(-1px); box-shadow: 0 18px 46px rgba(0,0,0,.14); }
     .thumb{
       width:100%;
-      aspect-ratio: 1 / 1;   /* ✅ 正方形に固定（ここが超重要） */
-      background: #eee;
-      position:relative;
-      overflow:hidden;
+      aspect-ratio: 1 / 1;  /* ✅ 一覧で見やすい */
+      object-fit: cover;
+      background:#eee;
     }
-    .thumb img{
-      width:100%;
-      height:100%;
-      object-fit: cover;     /* ✅ はみ出しをトリミングして “見やすさ優先” */
-      display:block;
-      transform: scale(1.01);
-    }
-
-    .pill{
-      position:absolute;
-      left:8px; bottom:8px;
-      display:inline-flex; align-items:center; gap:6px;
-      padding: 7px 9px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.65);
-      background: rgba(36,36,36,.42);
-      color: rgba(255,255,255,.96);
-      font-size: 11.5px;
-      font-weight: 820;
-      letter-spacing:.04em;
-      box-shadow: 0 10px 22px rgba(0,0,0,.18);
-      backdrop-filter: blur(6px);
-    }
-    .pill b{ color: #fff; font-weight: 950; }
-
-    .body{
-      padding: 10px 10px 11px;
+    .cardBody{
+      padding: 10px 10px 12px;
       display:flex;
       flex-direction:column;
-      gap: 6px;
+      gap:6px;
     }
-    .name{
+    .cardName{
       margin:0;
+      font-weight: 950;
+      letter-spacing:.06em;
       font-size: 13.5px;
-      font-weight: 860;
-      letter-spacing:.05em;
       line-height:1.25;
     }
-    .row{
+    .cardMeta{
       display:flex;
       justify-content:space-between;
-      align-items:center;
       gap:10px;
+      align-items:center;
       flex-wrap:wrap;
-      color: var(--muted);
       font-size: 12px;
+      color: var(--muted);
     }
     .price{
-      color: rgba(36,36,36,.88);
-      font-weight: 900;
-      letter-spacing:.02em;
+      font-weight: 950;
+      letter-spacing:.04em;
     }
-    .price .yen{ color: var(--gold); }
+    .price b{ color: var(--brand); }
     .mini{
       margin:0;
       font-size: 12px;
-      color: rgba(36,36,36,.74);
-      line-height:1.55;
+      line-height: 1.55;
+      color: rgba(20,20,20,.76);
       display:-webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow:hidden;
     }
 
-    /* ===== Drinks (simple list) ===== */
-    .drinkWrap{ padding: 12px; display:grid; gap:10px; }
-    .drinkItem{
-      background: var(--paper);
-      border:1px solid var(--line);
-      border-radius: 14px;
-      padding: 11px 11px;
-      box-shadow: 0 8px 18px rgba(0,0,0,.06);
-      display:flex; justify-content:space-between; gap:10px; align-items:flex-start;
+    /* ===== News list (3枚目風) ===== */
+    .newsWrap{ padding: 14px; display:grid; gap: 10px; }
+    .newsCard{
+      background:#fff;
+      border:1px solid rgba(0,0,0,.10);
+      border-radius: 18px;
+      box-shadow: 0 12px 34px rgba(0,0,0,.10);
+      padding: 12px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      cursor:pointer;
     }
-    .drinkName{ margin:0; font-weight: 860; letter-spacing:.05em; font-size: 13.5px; }
-    .drinkNote{ margin:6px 0 0; color: var(--muted); font-size: 12px; line-height:1.5; }
-    .drinkPrice{ white-space:nowrap; font-weight: 950; color: var(--gold); }
+    .newsLeft{
+      display:flex;
+      gap: 10px;
+      align-items:flex-start;
+      min-width:0;
+    }
+    .newsBadge{
+      flex:0 0 auto;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      height: 28px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: var(--brand);
+      color:#fff;
+      font-weight: 950;
+      letter-spacing:.08em;
+      font-size: 12px;
+      box-shadow: 0 10px 24px rgba(214,0,28,.22);
+    }
+    .newsBody{ min-width:0; }
+    .newsDate{
+      margin:0;
+      font-size: 12px;
+      color: rgba(20,20,20,.62);
+      letter-spacing:.04em;
+    }
+    .newsTitle{
+      margin:4px 0 0;
+      font-size: 13.5px;
+      font-weight: 950;
+      letter-spacing:.05em;
+      line-height:1.35;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 54vw;
+    }
+    .arrow{
+      flex:0 0 auto;
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      border:1px solid rgba(0,0,0,.10);
+      background: rgba(0,0,0,.02);
+      display:grid;
+      place-items:center;
+      font-weight: 950;
+    }
 
-    /* ===== Footer ===== */
     footer{
-      margin-top: 14px;
-      color: rgba(36,36,36,.70);
+      text-align:center;
+      color: rgba(20,20,20,.62);
       font-size: 12px;
       line-height: 1.7;
-      text-align:center;
-      padding: 10px 6px 0;
+      padding: 12px 6px 0;
     }
 
-    /* ===== Modal (full screen, light) ===== */
+    /* ===== Modal (画像拡大用) ===== */
     .modal{
       position:fixed;
       inset:0;
       display:none;
-      z-index: 9999;
-      background: rgba(20,18,16,.66);
+      z-index:9999;
+      background: rgba(0,0,0,.66);
       padding: 12px;
       padding-top: calc(12px + var(--safeT));
       padding-bottom: calc(12px + var(--safeB));
@@ -349,24 +470,19 @@
     .modal.show{ display:flex; }
     .sheet{
       width: min(920px, 100%);
-      background: var(--paper);
+      background:#fff;
       border-radius: 18px;
       overflow:hidden;
-      box-shadow: 0 28px 90px rgba(0,0,0,.35);
-      border: 1px solid rgba(255,255,255,.25);
-      transform: translateY(8px);
-      opacity: 0;
-      transition: transform .16s ease, opacity .16s ease;
+      box-shadow: 0 28px 90px rgba(0,0,0,.40);
+      border: 1px solid rgba(255,255,255,.20);
     }
-    .modal.show .sheet{ transform: translateY(0); opacity: 1; }
-
     .sheetTop{
       display:flex;
-      justify-content:space-between;
       align-items:center;
+      justify-content:space-between;
       gap:10px;
-      padding: 11px 11px;
-      background: rgba(255,255,255,.78);
+      padding: 10px 10px;
+      background: rgba(255,255,255,.92);
       border-bottom: 1px solid var(--line);
     }
     .sheetTitle{
@@ -376,15 +492,13 @@
       font-size: 13.5px;
       line-height:1.25;
       display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+      min-width:0;
     }
-    .sheetTitle .p{
-      color: var(--gold);
-      font-weight: 950;
-    }
+    .sheetTitle .p{ color: var(--brand); font-weight: 950; }
     .close{
       appearance:none;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.86);
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(0,0,0,.04);
       border-radius: 999px;
       padding: 9px 11px;
       cursor:pointer;
@@ -394,143 +508,297 @@
     }
     .sheetImg{
       width:100%;
-      max-height: 66svh;
+      max-height: 70svh;
       object-fit: contain;
-      background: #FAF7F1;
-      display:block;
+      background:#f3f3f3;
     }
     .sheetBody{
-      padding: 12px 12px 13px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
+      padding: 12px 12px 14px;
+      display:grid;
+      gap: 10px;
     }
     .sheetDesc{
       margin:0;
-      color: rgba(36,36,36,.82);
+      color: rgba(20,20,20,.82);
       font-size: 13px;
-      line-height:1.75;
-    }
-    .sheetBtns{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-
-    /* ===== Floating top button ===== */
-    .toTop{
-      position: fixed;
-      right: 12px;
-      bottom: 12px;
-      bottom: calc(12px + var(--safeB));
-      z-index: 60;
-      display:none;
-    }
-    .toTop.show{ display:block; }
-
-    /* accessibility helper */
-    .srOnly{
-      position:absolute!important;
-      width:1px;height:1px;
-      padding:0;margin:-1px;
-      overflow:hidden;clip:rect(0,0,0,0);
-      white-space:nowrap;border:0;
+      line-height: 1.75;
     }
   </style>
 </head>
 
 <body>
+
+  <!-- Top red bar -->
+  <div class="topbar" role="banner">
+    <div class="topbarInner">
+      <div class="brandRow">
+        <div class="logoMark">菜々</div>
+        <div class="brandText">
+          <p class="name">たこ焼き菜々</p>
+          <p class="tagline">焼きたてを、気軽に。</p>
+        </div>
+      </div>
+      <button class="menuBtn" type="button" id="btnJump">
+        ☰ メニュー
+      </button>
+    </div>
+  </div>
+
   <div class="wrap">
 
-    <header class="hero" aria-label="メニュー">
-      <div class="heroInner">
-        <div>
-          <div class="badge"><span class="dot" aria-hidden="true"></span>MENU（焼きたて）</div>
-          <h1>たこ焼き菜々｜メニュー</h1>
-          <p class="sub">スマホで見やすい「正方形サムネ」。写真はタップで大きく見られます。</p>
-        </div>
-        <div class="topBtns">
-          <button class="btn primary" id="btnHelp" type="button"><span aria-hidden="true">ℹ️</span>見方</button>
-          <a class="btn" href="#drink"><span aria-hidden="true">🥤</span>ドリンク</a>
-        </div>
-      </div>
-    </header>
+    <!-- ✅ トップ上部：当店の画像を大きく -->
+    <section class="hero" aria-label="店舗イメージ">
+      <!-- ★ここをあなたの店の写真URLに差し替え -->
+      <img class="heroImg"
+           src="https://images.unsplash.com/photo-1526318472351-c75fcf070305?auto=format&fit=crop&w=1400&q=80"
+           alt="たこ焼き菜々 店舗イメージ（差し替え）">
 
-    <!-- Sticky filter/search -->
-    <div class="stickyBar" aria-label="検索とフィルター">
-      <div class="barRow">
-        <div class="search" role="search">
-          <span aria-hidden="true">🔎</span>
-          <input id="q" type="search" placeholder="例：チーズ、辛口、塩…" inputmode="search" />
-        </div>
-
-        <div class="chips" aria-label="価格フィルター">
-          <button class="chip on" data-filter="all" type="button">全部</button>
-          <button class="chip" data-filter="450" type="button">450円</button>
-          <button class="chip" data-filter="550" type="button">550円</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAKOYAKI -->
-    <section class="section" aria-label="たこ焼きメニュー">
-      <div class="sectionHead">
-        <div>
-          <h2 class="sectionTitle">たこ焼き（8個）</h2>
-          <p class="sectionNote">一覧はコンパクト、詳細はタップで大きく。</p>
-        </div>
-        <p class="sectionNote" id="countLine">—</p>
-      </div>
-
-      <div class="grid" id="menuGrid">
-        <!-- injected -->
+      <div class="heroOverlay">
+        <h1 class="heroTitle">たこ焼き菜々｜メニュー</h1>
+        <p class="heroSub">期間限定 → 定番 → ぷら100（+100円） の順でサクッと選べます。</p>
       </div>
     </section>
 
-    <!-- DRINK -->
-    <section class="section" id="drink" aria-label="ドリンクメニュー">
+    <!-- ✅ 期間限定（イカさま焼きドーン） -->
+    <section class="section" id="limited" aria-label="期間限定メニュー">
       <div class="sectionHead">
         <div>
-          <h2 class="sectionTitle">ドリンク</h2>
-          <p class="sectionNote">※ここは内容を後で差し替えできます。</p>
+          <div class="kicker">今だけ！旬の味わい</div>
+          <h2 class="sectionTitle">期間限定メニュー</h2>
+          <p class="sectionNote">写真をタップすると拡大できます。</p>
         </div>
-        <p class="sectionNote">たこ焼きと一緒にどうぞ</p>
       </div>
 
-      <div class="drinkWrap">
-        <!-- 仮のドリンク：あとで好きに変更 -->
-        <div class="drinkItem">
-          <div>
-            <p class="drinkName">コーラ</p>
-            <p class="drinkNote">たこ焼きに合う定番。</p>
+      <div class="featured">
+        <article class="featuredCard" data-open="ikasma">
+          <img class="featuredImg" src="https://ul.h3z.jp/X0hNea3x.JPG" alt="いかさま焼き">
+          <div class="featuredBody">
+            <h3 class="featuredName">いかさま焼き</h3>
+            <div class="featuredMeta">
+              <span class="pill">8個 <strong>価格は店頭で</strong></span>
+              <span>“今だけ”の一皿。気になる人は即チェック。</span>
+            </div>
+            <p class="featuredDesc">
+              ※ここに短い推し文句を入れると強いです（例：香りが立つ、食感がクセになる、など）。
+            </p>
           </div>
-          <div class="drinkPrice">—</div>
-        </div>
+        </article>
+      </div>
 
-        <div class="drinkItem">
-          <div>
-            <p class="drinkName">ウーロン茶</p>
-            <p class="drinkNote">さっぱり。</p>
-          </div>
-          <div class="drinkPrice">—</div>
-        </div>
+      <!-- ✅ 2つのメニューボタン -->
+      <div class="btnRow" id="menuButtons">
+        <button class="bigBtn primary" type="button" data-scroll="#regular">
+          <div class="t1">おいしいレギュラー</div>
+          <div class="t2">定番メニュー</div>
+          <div class="t3">450円</div>
+        </button>
 
-        <div class="drinkItem">
-          <div>
-            <p class="drinkName">オレンジジュース</p>
-            <p class="drinkNote">お子さまにも。</p>
-          </div>
-          <div class="drinkPrice">—</div>
+        <button class="bigBtn plus100" type="button" data-scroll="#plus100">
+          <div class="t1">ちょい足しで満足</div>
+          <div class="t2">ぷら100メニュー</div>
+          <div class="t3">550円</div>
+        </button>
+      </div>
+    </section>
+
+    <!-- ✅ 定番（450円） -->
+    <section class="section" id="regular" aria-label="定番メニュー 450円">
+      <div class="sectionHead">
+        <div>
+          <div class="kicker">REGULAR</div>
+          <h2 class="sectionTitle">定番メニュー（450円）</h2>
+          <p class="sectionNote">一覧は見やすく。タップで拡大。</p>
         </div>
+      </div>
+
+      <div class="grid">
+        <article class="card" data-open="sauce">
+          <img class="thumb" src="https://ul.h3z.jp/wKg45O6e.JPG" alt="ソース">
+          <div class="cardBody">
+            <p class="cardName">ソース</p>
+            <div class="cardMeta">
+              <span class="price">8個 <b>450円</b></span>
+              <span>定番</span>
+            </div>
+            <p class="mini">迷ったらこれ。王道の味。</p>
+          </div>
+        </article>
+
+        <article class="card" data-open="karakuchi">
+          <img class="thumb" src="https://ul.h3z.jp/Jit1r3Jv.JPG" alt="辛口ソース">
+          <div class="cardBody">
+            <p class="cardName">辛口ソース</p>
+            <div class="cardMeta">
+              <span class="price">8個 <b>450円</b></span>
+              <span>刺激</span>
+            </div>
+            <p class="mini">ピリッと。辛党向け。</p>
+          </div>
+        </article>
+
+        <article class="card" data-open="kakidashi">
+          <img class="thumb" src="https://ul.h3z.jp/k7J0DvPG.jpg" alt="牡蠣だし醤油">
+          <div class="cardBody">
+            <p class="cardName">牡蠣だし醤油</p>
+            <div class="cardMeta">
+              <span class="price">8個 <b>450円</b></span>
+              <span>出汁</span>
+            </div>
+            <p class="mini">香りが立つ、和の一品。</p>
+          </div>
+        </article>
+
+        <article class="card" data-open="shiokosho">
+          <img class="thumb" src="https://ul.h3z.jp/SLJuBJs1.jpg" alt="塩こしょう">
+          <div class="cardBody">
+            <p class="cardName">塩こしょう</p>
+            <div class="cardMeta">
+              <span class="price">8個 <b>450円</b></span>
+              <span>さっぱり</span>
+            </div>
+            <p class="mini">素材の味が分かる。</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ✅ ぷら100（550円） -->
+    <section class="section" id="plus100" aria-label="ぷら100メニュー 550円">
+      <div class="sectionHead">
+        <div>
+          <div class="kicker">PLUS 100</div>
+          <h2 class="sectionTitle">ぷら100メニュー（550円）</h2>
+          <p class="sectionNote">満足度アップ系。</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <article class="card" data-open="teritama">
+          <img class="thumb" src="https://ul.h3z.jp/S507mjUX.jpg" alt="てりたま">
+          <div class="cardBody">
+            <p class="cardName">てりたま</p>
+            <div class="cardMeta">
+              <span class="price">8個 <b>550円</b></span>
+              <span>人気</span>
+            </div>
+            <p class="mini">甘辛×まろやか。</p>
+          </div>
+        </article>
+
+        <article class="card" data-open="negimiso">
+          <img class="thumb" src="https://ul.h3z.jp/CcWfr8d0.JPG" alt="ねぎ味噌">
+          <div class="cardBody">
+            <p class="cardName">ねぎ味噌</p>
+            <div class="cardMeta">
+              <span class="price">8個 <b>550円</b></span>
+              <span>コク</span>
+            </div>
+            <p class="mini">香ばしい味噌の風味。</p>
+          </div>
+        </article>
+
+        <article class="card" data-open="agedama">
+          <img class="thumb" src="https://ul.h3z.jp/Z680luDn.JPG" alt="ぶっかけ揚げ玉からしマヨ">
+          <div class="cardBody">
+            <p class="cardName">ぶっかけ揚げ玉からしマヨ</p>
+            <div class="cardMeta">
+              <span class="price">8個 <b>550円</b></span>
+              <span>食感</span>
+            </div>
+            <p class="mini">ザクッと系。クセになる。</p>
+          </div>
+        </article>
+
+        <article class="card" data-open="shiomayopepper">
+          <img class="thumb" src="https://ul.h3z.jp/hwUJtJOS.JPG" alt="塩マヨペッパー">
+          <div class="cardBody">
+            <p class="cardName">塩マヨペッパー</p>
+            <div class="cardMeta">
+              <span class="price">8個 <b>550円</b></span>
+              <span>おつまみ</span>
+            </div>
+            <p class="mini">胡椒の香りが決め手。</p>
+          </div>
+        </article>
+
+        <article class="card" data-open="cheese">
+          <img class="thumb" src="https://ul.h3z.jp/zQvjz2vk.JPG" alt="チーズソースマヨ">
+          <div class="cardBody">
+            <p class="cardName">チーズソースマヨ</p>
+            <div class="cardMeta">
+              <span class="price">8個 <b>550円</b></span>
+              <span>濃厚</span>
+            </div>
+            <p class="mini">満足度高め。映え◎</p>
+          </div>
+        </article>
+
+        <article class="card" data-open="mentai">
+          <img class="thumb" src="https://ul.h3z.jp/bibwTWq6.JPG" alt="めんたいマヨ">
+           <div class="cardMeta">
+              <span class="price">8個 <b>550円</b></span>
+              <span>人気</span>
+            </div>
+            <p class="mini">迷ったら選ばれやすい。</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ✅ 下部：お知らせ（3枚目風） -->
+    <section class="section" id="news" aria-label="お知らせ">
+      <div class="sectionHead">
+        <div>
+          <div class="kicker">NEWS</div>
+          <h2 class="sectionTitle">重要なお知らせ</h2>
+          <p class="sectionNote">最新のお知らせを掲載します。</p>
+        </div>
+      </div>
+
+      <div class="newsWrap">
+        <!-- ★リンク先URLは後で差し替え（href） -->
+        <a class="newsCard" href="#" aria-label="お知らせ1">
+          <div class="newsLeft">
+            <div class="newsBadge">重要</div>
+            <div class="newsBody">
+              <p class="newsDate">2026.03.01</p>
+              <p class="newsTitle">今月の限定メニュー「いかさま焼き」登場</p>
+            </div>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+
+        <a class="newsCard" href="#" aria-label="お知らせ2">
+          <div class="newsLeft">
+            <div class="newsBadge" style="background:#111;">お知らせ</div>
+            <div class="newsBody">
+              <p class="newsDate">2026.02.26</p>
+              <p class="newsTitle">臨時休業・営業時間変更のお知らせ</p>
+            </div>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+
+        <a class="newsCard" href="#" aria-label="お知らせ3">
+          <div class="newsLeft">
+            <div class="newsBadge" style="background:#111;">お知らせ</div>
+            <div class="newsBody">
+              <p class="newsDate">2026.02.10</p>
+              <p class="newsTitle">ドリンクメニュー追加のお知らせ</p>
+            </div>
+          </div>
+          <div class="arrow">›</div>
+        </a>
       </div>
     </section>
 
     <footer>
-      たこ焼き菜々｜※メニュー内容・価格は変更になる場合があります。最新は店頭でご確認ください。
+      たこ焼き菜々｜※価格・内容は変更になる場合があります。最新は店頭でご確認ください。
     </footer>
+
   </div>
 
-  <!-- Modal -->
+  <!-- ===== Modal（画像拡大） ===== -->
   <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="メニュー詳細">
     <div class="sheet" role="document">
       <div class="sheetTop">
@@ -540,111 +808,62 @@
       <img class="sheetImg" id="mImg" alt="" />
       <div class="sheetBody">
         <p class="sheetDesc" id="mDesc">—</p>
-        <div class="sheetBtns">
-          <button class="btn" id="mCopy" type="button"><span aria-hidden="true">📋</span>名前をコピー</button>
-        </div>
       </div>
     </div>
-  </div>
-
-  <!-- Floating top button -->
-  <div class="toTop" id="toTop">
-    <button class="btn" type="button" id="btnTop"><span aria-hidden="true">⬆️</span>上へ</button>
   </div>
 
   <script>
     (() => {
       "use strict";
 
-      // =========================
-      // メニュー（ユーザー提供URL）
-      // =========================
-      const MENUS = [
-        { id:"ikasma", name:"いかさま焼き", price:null, img:"https://ul.h3z.jp/X0hNea3x.JPG", note:"価格は店頭でご確認ください。" },
-        { id:"teritama", name:"てりたま", price:550, img:"https://ul.h3z.jp/S507mjUX.jpg", note:"甘辛×まろやか。人気の組み合わせ。" },
-        { id:"negimiso", name:"ねぎ味噌", price:550, img:"https://ul.h3z.jp/CcWfr8d0.JPG", note:"香ばしいコク。ねぎの香りが立つ一品。" },
-        { id:"shiokosho", name:"塩こしょう", price:450, img:"https://ul.h3z.jp/SLJuBJs1.jpg", note:"素材の味が分かる、さっぱり系。" },
-        { id:"suppin", name:"すっぴん", price:null, img:"https://ul.h3z.jp/mEuk5OwJ.jpg", note:"シンプルに生地を味わう“原点”。" },
-        { id:"karakuchi", name:"辛口ソース", price:450, img:"https://ul.h3z.jp/Jit1r3Jv.JPG", note:"ピリッと刺激。辛党におすすめ。" },
-        { id:"kakidashi", name:"牡蠣だし醤油", price:450, img:"https://ul.h3z.jp/k7J0DvPG.jpg", note:"出汁の香りがふわっと広がる。" },
-        { id:"sauce", name:"ソース", price:450, img:"https://ul.h3z.jp/wKg45O6e.JPG", note:"定番。迷ったらこれ。" },
-        { id:"agedama", name:"ぶっかけ揚げ玉からしマヨ", price:550, img:"https://ul.h3z.jp/Z680luDn.JPG", note:"食感楽しいガッツリ系。クセになる。" },
-        { id:"shiomayopepper", name:"塩マヨペッパー", price:550, img:"https://ul.h3z.jp/hwUJtJOS.JPG", note:"おつまみに人気。胡椒の香りが決め手。" },
-        { id:"cheese", name:"チーズソースマヨ", price:550, img:"https://ul.h3z.jp/zQvjz2vk.JPG", note:"濃厚で満足度高め。写真映えも◎" },
-        { id:"mentai", name:"めんたいマヨ", price:550, img:"https://ul.h3z.jp/bibwTWq6.JPG", note:"迷ったら選ばれやすい人気メニュー。" },
-      ];
+      // ===== メニュー詳細（モーダル用） =====
+      const DATA = {
+        ikasma: { name:"いかさま焼き", price:"価格は店頭で", img:"https://ul.h3z.jp/X0hNea3x.JPG", desc:"※ここに“いかさま焼き”の説明文を入れられます。" },
 
-      // =========================
-      // DOM
-      // =========================
-      const grid = document.getElementById("menuGrid");
-      const q = document.getElementById("q");
-      const chips = [...document.querySelectorAll(".chip")];
-      const countLine = document.getElementById("countLine");
+        // 450
+        sauce: { name:"ソース", price:"8個 450円", img:"https://ul.h3z.jp/wKg45O6e.JPG", desc:"定番。迷ったらこれ。" },
+        karakuchi: { name:"辛口ソース", price:"8個 450円", img:"https://ul.h3z.jp/Jit1r3Jv.JPG", desc:"ピリッと刺激。" },
+        kakidashi: { name:"牡蠣だし醤油", price:"8個 450円", img:"https://ul.h3z.jp/k7J0DvPG.jpg", desc:"出汁の香りが広がる。" },
+        shiokosho: { name:"塩こしょう", price:"8個 450円", img:"https://ul.h3z.jp/SLJuBJs1.jpg", desc:"素材の味が分かる。" },
 
+        // 550
+        teritama: { name:"てりたま", price:"8個 550円", img:"https://ul.h3z.jp/S507mjUX.jpg", desc:"甘辛×まろやか。" },
+        negimiso: { name:"ねぎ味噌", price:"8個 550円", img:"https://ul.h3z.jp/CcWfr8d0.JPG", desc:"香ばしいコク。" },
+        agedama: { name:"ぶっかけ揚げ玉からしマヨ", price:"8個 550円", img:"https://ul.h3z.jp/Z680luDn.JPG", desc:"ザクッと食感。" },
+        shiomayopepper: { name:"塩マヨペッパー", price:"8個 550円", img:"https://ul.h3z.jp/hwUJtJOS.JPG", desc:"胡椒が効いたおつまみ系。" },
+        cheese: { name:"チーズソースマヨ", price:"8個 550円", img:"https://ul.h3z.jp/zQvjz2vk.JPG", desc:"濃厚で満足度高め。" },
+        mentai: { name:"めんたいマヨ", price:"8個 550円", img:"https://ul.h3z.jp/bibwTWq6.JPG", desc:"人気の味。" },
+      };
+
+      // ===== Scroll buttons =====
+      document.getElementById("btnJump").addEventListener("click", () => {
+        document.getElementById("limited").scrollIntoView({ behavior:"smooth", block:"start" });
+      });
+
+      document.querySelectorAll("[data-scroll]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const sel = btn.getAttribute("data-scroll");
+          const el = document.querySelector(sel);
+          if(el) el.scrollIntoView({ behavior:"smooth", block:"start" });
+        });
+      });
+
+      // ===== Modal =====
       const modal = document.getElementById("modal");
       const mClose = document.getElementById("mClose");
       const mName = document.getElementById("mName");
       const mPrice = document.getElementById("mPrice");
       const mImg = document.getElementById("mImg");
       const mDesc = document.getElementById("mDesc");
-      const mCopy = document.getElementById("mCopy");
 
-      const btnHelp = document.getElementById("btnHelp");
-      const toTop = document.getElementById("toTop");
-      const btnTop = document.getElementById("btnTop");
-
-      let currentFilter = "all";
-
-      // =========================
-      // Render
-      // =========================
-      function render(){
-        const keyword = (q.value || "").trim().toLowerCase();
-
-        const list = MENUS.filter(m => {
-          const hitText = (m.name + " " + (m.note||"")).toLowerCase().includes(keyword);
-          const hitPrice =
-            currentFilter === "all" ? true :
-            currentFilter === "450" ? (m.price === 450) :
-            currentFilter === "550" ? (m.price === 550) :
-            true;
-          return hitText && hitPrice;
-        });
-
-        countLine.textContent = `${list.length} / ${MENUS.length} 件表示`;
-
-        grid.innerHTML = list.map(m => {
-          const priceText = (m.price ? `8個 ${m.price}円` : "価格は店頭で");
-          const pillPrice = (m.price ? `${m.price}円` : "—");
-          return `
-            <article class="card" data-id="${esc(m.id)}" tabindex="0" aria-label="${esc(m.name)}を開く">
-              <div class="thumb">
-                <img src="${esc(m.img)}" alt="${esc(m.name)}" loading="lazy">
-                <div class="pill"><b>8個</b> ${esc(pillPrice)}</div>
-              </div>
-              <div class="body">
-                <h3 class="name">${esc(m.name)}</h3>
-                <div class="row">
-                  <span class="price"><span class="yen">¥</span> ${esc(priceText)}</span>
-                </div>
-                <p class="mini">${esc(m.note || "")}</p>
-              </div>
-            </article>
-          `;
-        }).join("");
-      }
-
-      // =========================
-      // Modal
-      // =========================
-      function openModal(menu){
-        mName.textContent = menu.name || "—";
-        mPrice.textContent = menu.price ? `（8個 ${menu.price}円）` : "（価格は店頭で）";
-        mImg.src = menu.img;
-        mImg.alt = menu.name;
-        mDesc.textContent = menu.note || "";
-
+      function openModal(key){
+        const d = DATA[key];
+        if(!d) return;
+        mName.textContent = d.name || "—";
+        mPrice.textContent = d.price ? `（${d.price}）` : "";
+        mImg.src = d.img;
+        mImg.alt = d.name || "";
+        mDesc.textContent = d.desc || "";
         modal.classList.add("show");
         document.body.style.overflow = "hidden";
       }
@@ -654,26 +873,9 @@
         mImg.src = "";
       }
 
-      // =========================
-      // Events
-      // =========================
-      grid.addEventListener("click", (e) => {
-        const card = e.target.closest(".card");
-        if(!card) return;
-        const id = card.dataset.id;
-        const menu = MENUS.find(x => x.id === id);
-        if(menu) openModal(menu);
-      });
-
-      grid.addEventListener("keydown", (e) => {
-        const card = e.target.closest(".card");
-        if(!card) return;
-        if(e.key === "Enter" || e.key === " "){
-          e.preventDefault();
-          const id = card.dataset.id;
-          const menu = MENUS.find(x => x.id === id);
-          if(menu) openModal(menu);
-        }
+      document.addEventListener("click", (e) => {
+        const openKey = e.target.closest("[data-open]")?.getAttribute("data-open");
+        if(openKey) openModal(openKey);
       });
 
       mClose.addEventListener("click", closeModal);
@@ -681,53 +883,6 @@
       window.addEventListener("keydown", (e) => {
         if(e.key === "Escape" && modal.classList.contains("show")) closeModal();
       });
-
-      q.addEventListener("input", render);
-
-      chips.forEach(ch => {
-        ch.addEventListener("click", () => {
-          chips.forEach(x => x.classList.remove("on"));
-          ch.classList.add("on");
-          currentFilter = ch.dataset.filter;
-          render();
-        });
-      });
-
-      btnHelp.addEventListener("click", () => {
-        alert("一覧は見やすくコンパクトに。写真はタップで大きく表示できます。検索・価格フィルターも使えます。");
-      });
-
-      mCopy.addEventListener("click", async () => {
-        try{
-          await navigator.clipboard.writeText(mName.textContent || "");
-          mCopy.textContent = "コピーしました";
-          setTimeout(() => mCopy.innerHTML = '<span aria-hidden="true">📋</span>名前をコピー', 900);
-        }catch(_){
-          alert("コピーできませんでした。端末の設定をご確認ください。");
-        }
-      });
-
-      // Top button
-      const onScroll = () => {
-        if(window.scrollY > 500) toTop.classList.add("show");
-        else toTop.classList.remove("show");
-      };
-      window.addEventListener("scroll", onScroll, { passive:true });
-      btnTop.addEventListener("click", () => window.scrollTo({ top:0, behavior:"smooth" }));
-
-      // Utils
-      function esc(s){
-        return String(s ?? "")
-          .replaceAll("&","&amp;")
-          .replaceAll("<","&lt;")
-          .replaceAll(">","&gt;")
-          .replaceAll('"',"&quot;")
-          .replaceAll("'","&#39;");
-      }
-
-      // Init
-      render();
-      onScroll();
     })();
   </script>
 </body>
