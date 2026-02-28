@@ -16,7 +16,6 @@
       --sun:#d04545;
       --sat:#2f6bff;
 
-      /* ✅ 休みマスの背景色（薄い赤） */
       --offbg: rgba(210, 74, 74, .08);
       --offbg2: rgba(210, 74, 74, .12);
       --offink:#d24a4a;
@@ -29,8 +28,6 @@
       font-family: system-ui,-apple-system,"Noto Sans JP",sans-serif;
       color:var(--ink);
       min-height:100svh;
-
-      /* 木目背景 */
       background:
         linear-gradient(90deg,
           rgba(120,80,40,.22) 0%,
@@ -51,7 +48,7 @@
     .wrap{
       max-width:980px;
       margin:0 auto;
-      padding:18px 12px 40px;
+      padding:14px 12px 24px; /* ✅ 全体を少し詰める */
     }
 
     .sheet{
@@ -104,7 +101,7 @@
       display:grid;
       grid-template-columns:repeat(7,1fr);
       grid-auto-rows:minmax(74px, 1fr);
-      min-height: 360px; /* つぶれ防止 */
+      min-height: 360px;
     }
     .cell{
       position:relative;
@@ -124,28 +121,28 @@
     .cell.sun .day{ color:var(--sun); }
     .cell.sat .day{ color:var(--sat); }
 
-    /* ✅ 休みマス（背景色をつける） */
+    /* 休み背景 */
     .cell.isOff{
-      background:
-        linear-gradient(180deg, var(--offbg2), var(--offbg));
+      background: linear-gradient(180deg, var(--offbg2), var(--offbg));
     }
 
-    /* ✅ 休（小さめ＆中央の圧を軽く） */
+    /* ✅ 休：右下隅に寄せる */
     .off{
       position:absolute;
-      inset:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      right:8px;
+      bottom:6px;
+      left:auto;
+      top:auto;
+
       font-weight:1000;
-      font-size:36px;      /* ← 44→36に縮小 */
+      font-size:30px; /* 右下に置くので少し小さめが上品 */
       color:var(--offink);
-      opacity:.88;
+      opacity:.92;
       pointer-events:none;
-      letter-spacing:.08em;
+      letter-spacing:.06em;
     }
 
-    /* スタンプ2倍（途中折返し禁止） */
+    /* スタンプ2倍 */
     .noteTag{
       position:absolute;
       right:8px;
@@ -157,61 +154,74 @@
       opacity:.95;
       transform:rotate(-10deg);
       pointer-events:none;
-
       white-space:pre;
       line-height:1.05;
       text-align:right;
       letter-spacing:-0.02em;
     }
 
-    /* ===== 下部（サイズを少し小さくして整える） ===== */
-    .foot{ padding:14px 14px 16px; } /* 少し詰める */
-
-    .hours{
-      display:flex;
-      gap:10px;
-      align-items:flex-end;
+    /* ===== 下段（崩れないレイアウト） ===== */
+    .foot{
+      padding:12px 14px 12px; /* ✅ さらに詰める */
     }
+
+    /* ✅ 営業時間：絶対に崩れないように「2列＋固定文字」 */
+    .hours{
+      display:grid;
+      grid-template-columns: 76px 1fr;
+      align-items:end;
+      column-gap:12px;
+    }
+
     .hours-label{
       font-weight:1000;
-      font-size:16px;   /* 18→16 */
-      line-height:1.1;
+      font-size:16px;
+      line-height:1.05;
+      white-space:nowrap; /* ✅ 変な改行禁止 */
     }
+
     .hours-time{
       font-weight:1000;
-      font-size:50px;   /* 56→50 */
+      font-size:48px;
       letter-spacing:.01em;
       line-height:1;
+      white-space:nowrap;   /* ✅ ここで折り返さない */
+      overflow:hidden;
+      text-overflow:clip;
     }
-    .lo{
-      font-size:13px;   /* 14→13 */
+    .hours-time .lo{
+      font-size:13px;
       font-weight:1000;
       margin-left:6px;
       color:#333;
+      white-space:nowrap;
     }
+
     .note{
       margin-top:6px;
-      font-size:12px;   /* 13→12 */
+      font-size:12px;
       color:#333;
       line-height:1.45;
     }
 
     .shoprow{
-      margin-top:10px;  /* 12→10 */
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-end;
-      gap:12px;
+      margin-top:8px;
+      display:grid;
+      grid-template-columns: 1fr auto;
+      align-items:end;
+      gap:10px;
     }
+
     .shopname{
       font-weight:1000;
-      font-size:40px;   /* 44→40 */
+      font-size:38px;
       letter-spacing:.03em;
       line-height:1;
     }
+
     .telbox{
       text-align:right;
-      min-width:220px;
+      min-width: 210px;
     }
     .telbadge{
       display:inline-block;
@@ -222,20 +232,23 @@
       padding:6px 10px;
       border-radius:6px;
       margin-bottom:6px;
+      white-space:nowrap;
     }
     .tel{
       font-weight:1000;
-      font-size:14px;  /* 16→14 */
+      font-size:14px;
       line-height:1.1;
+      white-space:nowrap; /* ✅ TELで折り返さない */
     }
     .tel .num{
       font-weight:1000;
-      font-size:24px;  /* 26→24 */
+      font-size:22px;
+      white-space:nowrap;
     }
 
     /* 操作ボタン */
     .bars{
-      margin-top:12px;
+      margin-top:10px;
       display:flex;
       gap:10px;
       justify-content:center;
@@ -250,11 +263,19 @@
       cursor:pointer;
     }
 
-    /* スマホ */
+    /* ✅ スマホ最適化：下段をさらに詰めて崩れ防止 */
     @media (max-width: 520px){
+      .wrap{ padding:12px 10px 18px; }
+
       .grid{ grid-auto-rows:62px; min-height: 320px; }
       .day{ font-size:20px; }
-      .off{ font-size:30px; } /* スマホはさらに小さく */
+
+      .off{
+        right:6px;
+        bottom:5px;
+        font-size:26px;
+      }
+
       .noteTag{
         font-size:12px;
         right:6px;
@@ -262,10 +283,26 @@
         transform:rotate(-8deg);
       }
 
+      .foot{ padding:10px 12px 10px; }
+
+      .hours{
+        grid-template-columns: 64px 1fr; /* ラベル幅を縮める */
+        column-gap:10px;
+      }
+      .hours-label{ font-size:14px; }
       .hours-time{ font-size:40px; }
+      .hours-time .lo{ font-size:12px; }
+
+      .shoprow{
+        grid-template-columns: 1fr auto;
+        gap:8px;
+      }
       .shopname{ font-size:32px; }
-      .tel .num{ font-size:20px; }
+
       .telbox{ min-width: 180px; }
+      .telbadge{ font-size:11px; padding:5px 9px; }
+      .tel{ font-size:13px; }
+      .tel .num{ font-size:20px; }
     }
 
     /* A4印刷 */
@@ -297,6 +334,7 @@
         border-radius:0 !important;
         overflow:hidden !important;
       }
+
       .band{ padding: 8mm 4mm !important; }
       .band-month{ font-size:12mm !important; }
       .band-title{ font-size:12mm !important; }
@@ -311,7 +349,6 @@
         font-size:4mm !important;
       }
 
-      /* 5〜6週でも綺麗に収める */
       .grid{
         height:150mm !important;
         min-height:150mm !important;
@@ -323,12 +360,15 @@
       }
       .day{ font-size:6mm !important; }
 
-      /* ✅ 印刷時の休（少し小さめ） */
-      .off{ font-size:11mm !important; }
-
-      /* ✅ 印刷時の休み背景も出す */
       .cell.isOff{
         background: linear-gradient(180deg, rgba(210,74,74,.14), rgba(210,74,74,.08)) !important;
+      }
+
+      /* ✅ 印刷時の休：右下寄せ＆小さめ */
+      .off{
+        right: 2.4mm !important;
+        bottom: 2.0mm !important;
+        font-size: 9mm !important;
       }
 
       .noteTag{
@@ -342,15 +382,19 @@
         text-align:right !important;
       }
 
-      /* ✅ 下段を少し詰める（A4で綺麗に） */
+      /* 下段：A4で詰めて崩さない */
       .foot{ padding:6mm 6mm 6mm !important; }
+      .hours{ grid-template-columns: 22mm 1fr !important; column-gap: 4mm !important; }
       .hours-label{ font-size:4.6mm !important; }
-      .hours-time{ font-size:15mm !important; }
-      .lo{ font-size:3.2mm !important; }
+      .hours-time{ font-size:15mm !important; white-space:nowrap !important; }
+      .hours-time .lo{ font-size:3.2mm !important; }
+
       .note{ font-size:3.4mm !important; margin-top:2mm !important; }
-      .shopname{ font-size:13mm !important; }
+
+      .shoprow{ grid-template-columns: 1fr auto !important; gap: 4mm !important; }
+      .shopname{ font-size:12.5mm !important; }
       .telbadge{ font-size:3.2mm !important; padding:2mm 3mm !important; }
-      .tel{ font-size:3.8mm !important; }
+      .tel{ font-size:3.8mm !important; white-space:nowrap !important; }
       .tel .num{ font-size:6.6mm !important; }
 
       .sheet, .band, .dow, .grid, .foot{
@@ -380,6 +424,7 @@
           <div class="hours-label">営業時間</div>
           <div class="hours-time">11:00 ～ 19:30 <span class="lo">(L.O.)</span></div>
         </div>
+
         <div class="note">※材料、または店主の元気がなくなり次第終了する場合があります。</div>
 
         <div class="shoprow">
@@ -413,13 +458,11 @@
     const todayBtn = $("#todayBtn");
     const printBtn = $("#printBtn");
 
-    // 表示中の年月
     let view = (() => {
       const d = new Date();
       return { y: d.getFullYear(), m: d.getMonth()+1 };
     })();
 
-    // 手動上書きJSON（無くてもOK）
     let DATA = { overrides: {} };
 
     function pad2(n){ return String(n).padStart(2,"0"); }
@@ -431,8 +474,8 @@
     // 基本休み：毎週水曜 + 第2/第3木曜
     function isBaseOff(y,m,d){
       const dt = new Date(y, m-1, d);
-      const dow = dt.getDay(); // 0=日 3=水 4=木
-      if(dow === 3) return true; // 水曜
+      const dow = dt.getDay();
+      if(dow === 3) return true;
       if(dow === 4){
         let count = 0;
         for(let i=1;i<=d;i++){
@@ -481,14 +524,12 @@
       const start = firstDow(y,m);
       const last = daysInMonth(y,m);
 
-      // 先頭空白
       for(let i=0;i<start;i++){
         const c = document.createElement("div");
         c.className = "cell blank";
         gridEl.appendChild(c);
       }
 
-      // 日付
       for(let d=1; d<=last; d++){
         const dateStr = ymd(y,m,d);
         const dow = new Date(y, m-1, d).getDay();
@@ -503,16 +544,15 @@
         day.textContent = String(d);
         cell.appendChild(day);
 
-        // 休み判定（休みが最優先）
         const off = isBaseOff(y,m,d) || manualOff.has(dateStr);
+
         if(off){
-          cell.classList.add("isOff"); // ✅ 背景色
+          cell.classList.add("isOff");
           const o = document.createElement("div");
           o.className = "off";
           o.textContent = "休";
           cell.appendChild(o);
         }else{
-          // 手動タグが優先、なければ自動2倍
           let tag = "";
           if(manualTags[dateStr]) tag = String(manualTags[dateStr]);
           else if(isAutoStampDay(d)) tag = "スタンプ\n2倍";
@@ -528,7 +568,6 @@
         gridEl.appendChild(cell);
       }
 
-      // 末尾空白（7列合わせ）
       const mod = gridEl.children.length % 7;
       if(mod !== 0){
         const need = 7 - mod;
