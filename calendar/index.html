@@ -1,538 +1,295 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>菜々カレンダー</title>
-  <meta name="description" content="たこ焼き 菜々：営業日カレンダー（自動切替 / A4印刷対応）" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>菜々カレンダー</title>
 
-  <style>
-    :root{
-      --paper:#ffffff;
-      --ink:#111;
-      --grid:#bfc7cf;
-      --band:#d85c61;
-      --band2:#c94d53;
-      --sun:#d04545;
-      --sat:#2f6bff;
-      --muted:#666;
-    }
+<style>
+:root{
+  --paper:#ffffff;
+  --ink:#111;
+  --grid:#c7cdd4;
+  --band:#d85c61;
+  --band2:#c94d53;
+  --sun:#d04545;
+  --sat:#2f6bff;
+}
 
-    *{ box-sizing:border-box; }
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, "Noto Sans JP", sans-serif;
-      color:var(--ink);
+/* ===== 背景（木目） ===== */
+body{
+  margin:0;
+  font-family: system-ui,-apple-system,"Noto Sans JP",sans-serif;
+  background:
+    linear-gradient(90deg,#caa67b,#b88f63),
+    repeating-linear-gradient(90deg,
+      rgba(120,80,40,.2) 0px,
+      rgba(120,80,40,.2) 3px,
+      rgba(140,95,50,.15) 3px,
+      rgba(140,95,50,.15) 8px);
+}
 
-      /* ✅ 木目っぽい背景（画像なしでそれっぽく） */
-      background:
-        linear-gradient(90deg,
-          rgba(120,80,40,.22) 0%,
-          rgba(140,95,50,.18) 12%,
-          rgba(110,70,35,.22) 24%,
-          rgba(155,105,60,.16) 36%,
-          rgba(115,75,40,.22) 48%,
-          rgba(145,95,55,.18) 60%,
-          rgba(105,65,35,.22) 72%,
-          rgba(150,100,58,.16) 84%,
-          rgba(120,80,40,.22) 100%
-        ),
-        radial-gradient(circle at 20% 10%, rgba(255,255,255,.35), rgba(255,255,255,0) 55%),
-        radial-gradient(circle at 80% 30%, rgba(255,255,255,.25), rgba(255,255,255,0) 60%),
-        linear-gradient(#caa67b, #b88f63);
-      min-height:100svh;
-    }
+.wrap{max-width:980px;margin:auto;padding:16px}
+.sheet{
+  background:#fff;
+  border-radius:10px;
+  overflow:hidden;
+  box-shadow:0 15px 45px rgba(0,0,0,.2)
+}
 
-    .wrap{
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 18px 12px 40px;
-    }
+/* ===== 上帯 ===== */
+.band{
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  padding:14px;
+  background:linear-gradient(var(--band),var(--band2));
+  color:#fff;
+  font-weight:900;
+}
+.band-month{
+  font-size:32px;
+  color:#ffd56b;
+}
+.band-title{font-size:32px}
 
-    .sheet{
-      background:var(--paper);
-      border: 1px solid #d9d9d9;
-      box-shadow: 0 14px 40px rgba(0,0,0,.18);
-      border-radius: 8px;
-      overflow:hidden;
-    }
+/* ===== 曜日 ===== */
+.dow{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  background:#fafafa;
+  border-bottom:1px solid var(--grid);
+  font-weight:900;
+}
+.dow div{
+  text-align:center;
+  padding:8px 0;
+  border-right:1px solid var(--grid);
+}
+.dow div:last-child{border-right:none}
+.sun{color:var(--sun)}
+.sat{color:var(--sat)}
 
-    /* 上帯 */
-    .band{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:16px;
-      padding: 14px 12px;
-      background: linear-gradient(180deg,var(--band),var(--band2));
-      color:#fff;
-      font-weight: 900;
-      letter-spacing: .04em;
-    }
-    .band-month{
-      font-size: 30px;
-      color:#ffd56b;
-      text-shadow: 0 2px 0 rgba(0,0,0,.18);
-    }
-    .band-title{
-      font-size: 30px;
-    }
+/* ===== カレンダー ===== */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  grid-auto-rows:70px;
+}
+.cell{
+  position:relative;
+  border-right:1px solid var(--grid);
+  border-bottom:1px solid var(--grid);
+  padding:6px;
+}
+.cell:nth-child(7n){border-right:none}
+.day{font-size:22px;font-weight:900}
 
-    /* 曜日 */
-    .dow{
-      display:grid;
-      grid-template-columns: repeat(7,1fr);
-      border-top: 1px solid var(--grid);
-      border-bottom: 1px solid var(--grid);
-      background:#fafafa;
-      font-weight: 900;
-    }
-    .dow > div{
-      padding: 10px 0;
-      text-align:center;
-      border-right:1px solid var(--grid);
-    }
-    .dow > div:last-child{ border-right:none; }
-    .dow .sun{ color:var(--sun); }
-    .dow .sat{ color:var(--sat); }
+/* ===== 休 ===== */
+.off{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:42px;
+  color:#d24a4a;
+  font-weight:1000;
+}
 
-    /* グリッド */
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(7,1fr);
-      grid-auto-rows: minmax(74px, 1fr);
-    }
-    .cell{
-      position:relative;
-      border-right:1px solid var(--grid);
-      border-bottom:1px solid var(--grid);
-      padding: 8px 8px;
-      background:#fff;
-    }
-    .cell:nth-child(7n){ border-right:none; }
-    .cell.blank{ background:#fff; opacity:.35; }
+/* ===== スタンプ2倍（ズレ対策版） ===== */
+.noteTag{
+  position:absolute;
+  right:6px;
+  bottom:6px;
+  font-size:13px;
+  font-weight:900;
+  color:#a04a4a;
+  transform:rotate(-8deg);
+  white-space:pre;
+  text-align:right;
+}
 
-    .day{
-      font-weight: 900;
-      font-size: 24px;
-      line-height: 1;
-    }
-    .sun .day{ color:var(--sun); }
-    .sat .day{ color:var(--sat); }
+/* ===== 下部 ===== */
+.foot{padding:14px}
+.hours{display:flex;gap:10px;align-items:flex-end}
+.hours-label{font-weight:900}
+.hours-time{font-size:52px;font-weight:1000}
+.shoprow{
+  margin-top:8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+}
+.shopname{font-size:40px;font-weight:1000}
+.telbadge{
+  background:#333;color:#fff;
+  padding:6px 10px;border-radius:6px;
+  font-size:12px;font-weight:900;
+}
+.tel .num{font-size:26px;font-weight:1000}
 
-    /* 休 */
-    .off{
-      position:absolute;
-      inset:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight: 1000;
-      font-size: 44px;
-      color:#d24a4a;
-      opacity:.9;
-      pointer-events:none;
-    }
+/* ===== ボタン ===== */
+.bars{
+  margin-top:12px;
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+button{
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid #ccc;
+  background:#fff;
+  font-weight:900;
+}
 
-    /* スタンプ2倍 */
-    .noteTag{
-      position:absolute;
-      right:8px;
-      top:36px;
-      font-size: 14px;
-      font-weight: 900;
-      color:#a04a4a;
-      opacity:.95;
-      transform: rotate(-8deg);
-      pointer-events:none;
-      white-space: pre-line; /* \n改行を生かす */
-    }
-
-    /* 下部 */
-    .foot{
-      padding: 16px 14px 18px;
-    }
-    .hours{
-      display:flex;
-      align-items:flex-end;
-      gap:12px;
-    }
-    .hours-label{
-      font-weight: 900;
-      font-size: 18px;
-    }
-    .hours-time{
-      font-weight: 1000;
-      font-size: 56px;
-      letter-spacing:.02em;
-    }
-    .lo{
-      font-size: 14px;
-      font-weight: 900;
-      margin-left: 6px;
-      color:#333;
-    }
-    .note{
-      margin-top: 6px;
-      color:#333;
-      font-size: 13px;
-    }
-    .shoprow{
-      margin-top: 12px;
-      display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap:12px;
-    }
-    .shopname{
-      font-weight: 1000;
-      font-size: 44px;
-      letter-spacing:.03em;
-    }
-    .telbox{
-      text-align:right;
-      min-width: 220px;
-    }
-    .telbadge{
-      display:inline-block;
-      background:#333;
-      color:#fff;
-      font-weight: 900;
-      font-size: 12px;
-      padding: 6px 10px;
-      border-radius: 6px;
-      margin-bottom: 6px;
-    }
-    .tel{
-      font-weight: 900;
-      font-size: 16px;
-    }
-    .tel .num{
-      font-weight: 1000;
-      font-size: 26px;
-    }
-
-    /* 操作バー */
-    .bars{
-      margin-top: 12px;
-      display:flex;
-      gap:10px;
-      justify-content:center;
-      flex-wrap:wrap;
-    }
-    .bars button{
-      border:1px solid rgba(0,0,0,.18);
-      background:rgba(255,255,255,.85);
-      padding: 10px 12px;
-      border-radius: 10px;
-      font-weight: 900;
-      cursor:pointer;
-    }
-
-    /* スマホ */
-    @media (max-width: 520px){
-      .grid{ grid-auto-rows: 62px; }
-      .day{ font-size: 20px; }
-      .off{ font-size: 38px; }
-      .hours-time{ font-size: 42px; }
-      .shopname{ font-size: 34px; }
-      .tel .num{ font-size: 22px; }
-    }
-
-    /* ===========================
-       ✅ A4印刷 最適化（縦）
-       =========================== */
-    @page{
-      size: A4 portrait;
-      margin: 6mm; /* 家庭用プリンタで切れにくい安全値 */
-    }
-    @media print{
-      *{
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-      }
-      body{
-        margin:0 !important;
-        background:#fff !important; /* 木目は印刷では不要 */
-      }
-      .wrap{
-        max-width:none !important;
-        margin:0 !important;
-        padding:0 !important;
-      }
-      .bars{ display:none !important; }
-
-      .sheet{
-        width: 198mm;   /* A4(210) - 左右margin(6*2)=198 */
-        height: 285mm;  /* A4(297) - 上下margin(6*2)=285 */
-        border: 0.3mm solid #999 !important;
-        box-shadow:none !important;
-        border-radius:0 !important;
-        overflow:hidden !important;
-      }
-
-      .band{ padding: 8mm 4mm !important; }
-      .band-month{ font-size: 12mm !important; }
-      .band-title{ font-size: 12mm !important; }
-
-      .dow{
-        border-top: 0.3mm solid #999 !important;
-        border-bottom: 0.3mm solid #999 !important;
-      }
-      .dow > div{
-        padding: 3mm 0 !important;
-        font-size: 4mm !important;
-        border-right: 0.3mm solid #999 !important;
-      }
-
-      /* 5〜6週でも綺麗に収める：高さを固定して均等割り */
-      .grid{
-        height: 150mm;
-        grid-auto-rows: auto !important;
-      }
-      .cell{
-        border-right: 0.3mm solid #999 !important;
-        border-bottom: 0.3mm solid #999 !important;
-        padding: 2.6mm 2.6mm !important;
-      }
-      .day{ font-size: 6mm !important; }
-      .off{ font-size: 13mm !important; }
-
-      .noteTag{
-        font-size: 3.4mm !important;
-        top: 10mm !important;
-        right: 2.6mm !important;
-      }
-
-      .foot{ padding: 6mm 6mm 6mm !important; }
-      .hours-label{ font-size: 5mm !important; }
-      .hours-time{ font-size: 16mm !important; }
-      .lo{ font-size: 3.5mm !important; }
-      .note{ font-size: 3.6mm !important; margin-top: 2mm !important; }
-      .shopname{ font-size: 14mm !important; }
-      .telbadge{ font-size: 3.4mm !important; padding: 2mm 3mm !important; }
-      .tel{ font-size: 4mm !important; }
-      .tel .num{ font-size: 7mm !important; }
-
-      .sheet, .band, .dow, .grid, .foot{
-        break-inside: avoid !important;
-        page-break-inside: avoid !important;
-      }
-    }
-  </style>
+/* ===== A4印刷 ===== */
+@page{size:A4 portrait;margin:6mm}
+@media print{
+  body{background:#fff}
+  .bars{display:none}
+  .sheet{
+    width:198mm;
+    height:285mm;
+    box-shadow:none;
+    border-radius:0;
+  }
+  .grid{height:150mm}
+}
+</style>
 </head>
 
 <body>
-  <main class="wrap">
-    <section class="sheet" aria-label="営業日カレンダー">
-      <div class="band">
-        <div class="band-month" id="bandMonth">3月</div>
-        <div class="band-title">菜々カレンダー</div>
-      </div>
+<main class="wrap">
 
-      <div class="dow">
-        <div class="sun">日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div class="sat">土</div>
-      </div>
+<section class="sheet">
 
-      <div class="grid" id="calGrid"></div>
+<div class="band">
+<div class="band-month" id="bandMonth"></div>
+<div class="band-title">菜々カレンダー</div>
+</div>
 
-      <div class="foot">
-        <div class="hours">
-          <div class="hours-label">営業時間</div>
-          <div class="hours-time">11:00 ～ 19:30 <span class="lo">(L.O.)</span></div>
-        </div>
+<div class="dow">
+<div class="sun">日</div><div>月</div><div>火</div>
+<div>水</div><div>木</div><div>金</div><div class="sat">土</div>
+</div>
 
-        <div class="note">
-          ※材料、または店主の元気がなくなり次第終了する場合があります。
-        </div>
+<div class="grid" id="grid"></div>
 
-        <div class="shoprow">
-          <div class="shopname">たこ焼き 菜々</div>
+<div class="foot">
+<div class="hours">
+<div class="hours-label">営業時間</div>
+<div class="hours-time">11:00 ～ 19:30 (L.O.)</div>
+</div>
 
-          <div class="telbox">
-            <div class="telbadge">電話予約受付ます</div>
-            <div class="tel">TEL <span class="num">070-4077-7732</span></div>
-          </div>
-        </div>
-      </div>
-    </section>
+<div class="shoprow">
+<div class="shopname">たこ焼き 菜々</div>
+<div>
+<div class="telbadge">電話予約受付ます</div>
+<div class="tel">TEL <span class="num">070-4077-7732</span></div>
+</div>
+</div>
+</div>
 
-    <div class="bars">
-      <button id="prevBtn" type="button">← 先月</button>
-      <button id="todayBtn" type="button">今月</button>
-      <button id="nextBtn" type="button">来月 →</button>
-      <button id="printBtn" type="button">A4で印刷</button>
-    </div>
-  </main>
+</section>
 
-  <script>
-  (() => {
-    "use strict";
+<div class="bars">
+<button onclick="change(-1)">←先月</button>
+<button onclick="today()">今月</button>
+<button onclick="change(1)">来月→</button>
+<button onclick="window.print()">A4で印刷</button>
+</div>
 
-    const $ = (s, el=document) => el.querySelector(s);
+</main>
 
-    const gridEl = $("#calGrid");
-    const bandMonthEl = $("#bandMonth");
-    const prevBtn = $("#prevBtn");
-    const nextBtn = $("#nextBtn");
-    const todayBtn = $("#todayBtn");
-    const printBtn = $("#printBtn");
+<script>
+let now=new Date()
+let viewY=now.getFullYear()
+let viewM=now.getMonth()+1
 
-    // 表示中の年月（初期＝今月）
-    let view = (() => {
-      const d = new Date();
-      return { y: d.getFullYear(), m: d.getMonth() + 1 };
-    })();
+function pad(n){return String(n).padStart(2,"0")}
 
-    // 手動上書きJSON（管理画面A案の出力を貼る先）
-    // ここでは「存在すれば assets/calendar-data.json を読む」
-    let DATA = { overrides: {} };
+function baseOff(y,m,d){
+const dt=new Date(y,m-1,d)
+const dow=dt.getDay()
 
-    async function loadData(){
-      try{
-        const res = await fetch("assets/calendar-data.json", { cache: "no-store" });
-        if(!res.ok) throw new Error("calendar-data.json not found");
-        const json = await res.json();
-        if(json && typeof json === "object") DATA = json;
-      }catch(e){
-        // JSONが無くても表示は動く（臨時休業なし扱い）
-        DATA = { overrides: {} };
-      }
-    }
+if(dow===3)return true //水曜
 
-    function pad2(n){ return String(n).padStart(2,"0"); }
-    function ymKey(y,m){ return `${y}-${pad2(m)}`; }
-    function ymd(y,m,d){ return `${y}-${pad2(m)}-${pad2(d)}`; }
-    function daysInMonth(y,m){ return new Date(y, m, 0).getDate(); }
-    function firstDow(y,m){ return new Date(y, m-1, 1).getDay(); }
-    function monthLabel(m){ return `${m}月`; }
+if(dow===4){
+let count=0
+for(let i=1;i<=d;i++){
+if(new Date(y,m-1,i).getDay()===4)count++
+}
+return count===2||count===3
+}
+return false
+}
 
-    // 基本休み：毎週水曜＋第2/第3木曜
-    function isBaseOff(y,m,d){
-      const dt = new Date(y, m-1, d);
-      const dow = dt.getDay(); // 0=日 3=水 4=木
-      if(dow === 3) return true; // 水曜
+function stamp(d){return d===7||d===17||d===27}
 
-      if(dow === 4){
-        let count = 0;
-        for(let i=1;i<=d;i++){
-          if(new Date(y, m-1, i).getDay() === 4) count++;
-        }
-        return (count === 2 || count === 3); // 第2/第3木曜
-      }
-      return false;
-    }
+async function render(){
+document.getElementById("bandMonth").textContent=viewM+"月"
+const grid=document.getElementById("grid")
+grid.innerHTML=""
 
-    // 自動：7のつく日（7,17,27）スタンプ2倍
-    function isAutoStampDay(d){
-      return (d === 7 || d === 17 || d === 27);
-    }
+let data={overrides:{}}
+try{
+const r=await fetch("assets/calendar-data.json",{cache:"no-store"})
+if(r.ok)data=await r.json()
+}catch{}
 
-    function getMonthOverride(y,m){
-      const key = ymKey(y,m);
-      return (DATA && DATA.overrides && DATA.overrides[key]) ? DATA.overrides[key] : null;
-    }
+const key=viewY+"-"+pad(viewM)
+const ov=data.overrides[key]||{}
+const offSet=new Set(ov.off||{})
+const tags=ov.tags||{}
 
-    function render(){
-      const {y,m} = view;
+const first=new Date(viewY,viewM-1,1).getDay()
+const last=new Date(viewY,viewM,0).getDate()
 
-      bandMonthEl.textContent = monthLabel(m);
-      gridEl.innerHTML = "";
+for(let i=0;i<first;i++){
+grid.innerHTML+='<div class="cell"></div>'
+}
 
-      const start = firstDow(y,m);
-      const last = daysInMonth(y,m);
+for(let d=1;d<=last;d++){
+const date=viewY+"-"+pad(viewM)+"-"+pad(d)
+let html='<div class="cell '+(new Date(viewY,viewM-1,d).getDay()===0?'sun':'')+'">'
+html+='<div class="day">'+d+'</div>'
 
-      const ov = getMonthOverride(y,m);
-      const manualOff = new Set((ov && ov.off) ? ov.off : []);
-      const manualTags = (ov && ov.tags) ? ov.tags : {};
+const off=baseOff(viewY,viewM,d)||offSet.has(date)
 
-      // 1日より前の空白
-      for(let i=0;i<start;i++){
-        const cell = document.createElement("div");
-        cell.className = "cell blank";
-        gridEl.appendChild(cell);
-      }
+if(off){
+html+='<div class="off">休</div>'
+}else{
+let t=tags[date]||(stamp(d)?"スタンプ\n2倍":"")
+if(t)html+='<div class="noteTag">'+t+'</div>'
+}
 
-      // 日付セル
-      for(let d=1; d<=last; d++){
-        const dateStr = ymd(y,m,d);
+html+='</div>'
+grid.innerHTML+=html
+}
 
-        const cell = document.createElement("div");
-        const dow = new Date(y, m-1, d).getDay();
+while(grid.children.length%7!==0){
+grid.innerHTML+='<div class="cell"></div>'
+}
+}
 
-        cell.className = "cell";
-        if(dow===0) cell.classList.add("sun");
-        if(dow===6) cell.classList.add("sat");
+function change(v){
+viewM+=v
+if(viewM<1){viewM=12;viewY--}
+if(viewM>12){viewM=1;viewY++}
+render()
+}
 
-        const day = document.createElement("div");
-        day.className = "day";
-        day.textContent = String(d);
-        cell.appendChild(day);
+function today(){
+viewY=now.getFullYear()
+viewM=now.getMonth()+1
+render()
+}
 
-        // 休み判定：基本休み OR 手動休み
-        const isOff = isBaseOff(y,m,d) || manualOff.has(dateStr);
+render()
+</script>
 
-        // ✅ 休み優先（休なら2倍表示は出さない）
-        if(isOff){
-          const off = document.createElement("div");
-          off.className = "off";
-          off.textContent = "休";
-          cell.appendChild(off);
-        }else{
-          // 休みでない時だけ：手動タグ or 自動(7/17/27)
-          let tagText = "";
-          if(manualTags[dateStr]) tagText = String(manualTags[dateStr]);
-          else if(isAutoStampDay(d)) tagText = "スタンプ\n2倍";
-
-          if(tagText){
-            const t = document.createElement("div");
-            t.className = "noteTag";
-            t.textContent = tagText;
-            cell.appendChild(t);
-          }
-        }
-
-        gridEl.appendChild(cell);
-      }
-
-      // 末尾空白で7列揃える
-      const total = gridEl.children.length;
-      const mod = total % 7;
-      if(mod !== 0){
-        const need = 7 - mod;
-        for(let i=0;i<need;i++){
-          const cell = document.createElement("div");
-          cell.className = "cell blank";
-          gridEl.appendChild(cell);
-        }
-      }
-    }
-
-    function addMonth(delta){
-      let y = view.y;
-      let m = view.m + delta;
-      while(m <= 0){ m += 12; y -= 1; }
-      while(m >= 13){ m -= 12; y += 1; }
-      view = { y, m };
-      render();
-    }
-
-    async function init(){
-      await loadData();
-      render();
-
-      prevBtn?.addEventListener("click", () => addMonth(-1));
-      nextBtn?.addEventListener("click", () => addMonth(1));
-      todayBtn?.addEventListener("click", () => {
-        const d = new Date();
-        view = { y:d.getFullYear(), m:d.getMonth()+1 };
-        render();
-      });
-      printBtn?.addEventListener("click", () => window.print());
-    }
-
-    init();
-  })();
-  </script>
 </body>
 </html>
