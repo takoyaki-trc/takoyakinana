@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>菜々カレンダー</title>
-  <meta name="description" content="たこ焼き 菜々：営業日カレンダー（自動切替 / A4印刷対応）" />
+  <meta name="description" content="たこ焼き 菜々：営業日カレンダー（自動切替 / A4横印刷対応）" />
 
   <style>
     :root{
@@ -48,7 +48,7 @@
     .wrap{
       max-width:980px;
       margin:0 auto;
-      padding:14px 12px 24px; /* ✅ 全体を少し詰める */
+      padding:14px 12px 24px;
     }
 
     .sheet{
@@ -59,7 +59,7 @@
       overflow:hidden;
     }
 
-    /* 上帯 */
+    /* ===== 上帯 ===== */
     .band{
       display:flex;
       align-items:center;
@@ -78,7 +78,14 @@
     }
     .band-title{ font-size:30px; }
 
-    /* 曜日 */
+    /* ===== 横レイアウト用の本体 ===== */
+    .main{
+      display:block; /* 画面表示は基本縦（スマホ向け） */
+    }
+    .calArea{ }
+    .infoArea{ }
+
+    /* ===== 曜日 ===== */
     .dow{
       display:grid;
       grid-template-columns:repeat(7,1fr);
@@ -96,7 +103,7 @@
     .dow .sun{ color:var(--sun); }
     .dow .sat{ color:var(--sat); }
 
-    /* カレンダー */
+    /* ===== カレンダー ===== */
     .grid{
       display:grid;
       grid-template-columns:repeat(7,1fr);
@@ -126,16 +133,13 @@
       background: linear-gradient(180deg, var(--offbg2), var(--offbg));
     }
 
-    /* ✅ 休：右下隅に寄せる */
+    /* 休：右下 */
     .off{
       position:absolute;
       right:8px;
       bottom:6px;
-      left:auto;
-      top:auto;
-
       font-weight:1000;
-      font-size:30px; /* 右下に置くので少し小さめが上品 */
+      font-size:30px;
       color:var(--offink);
       opacity:.92;
       pointer-events:none;
@@ -147,7 +151,6 @@
       position:absolute;
       right:8px;
       bottom:8px;
-      top:auto;
       font-size:13px;
       font-weight:1000;
       color:#a04a4a;
@@ -160,34 +163,30 @@
       letter-spacing:-0.02em;
     }
 
-    /* ===== 下段（崩れないレイアウト） ===== */
+    /* ===== 右側情報（印刷時は右カラムへ） ===== */
     .foot{
-      padding:12px 14px 12px; /* ✅ さらに詰める */
+      padding:12px 14px 12px;
+      border-top: 1px solid #eee;
     }
 
-    /* ✅ 営業時間：絶対に崩れないように「2列＋固定文字」 */
     .hours{
       display:grid;
       grid-template-columns: 76px 1fr;
       align-items:end;
       column-gap:12px;
     }
-
     .hours-label{
       font-weight:1000;
       font-size:16px;
       line-height:1.05;
-      white-space:nowrap; /* ✅ 変な改行禁止 */
+      white-space:nowrap;
     }
-
     .hours-time{
       font-weight:1000;
       font-size:48px;
       letter-spacing:.01em;
       line-height:1;
-      white-space:nowrap;   /* ✅ ここで折り返さない */
-      overflow:hidden;
-      text-overflow:clip;
+      white-space:nowrap;
     }
     .hours-time .lo{
       font-size:13px;
@@ -196,7 +195,6 @@
       color:#333;
       white-space:nowrap;
     }
-
     .note{
       margin-top:6px;
       font-size:12px;
@@ -212,11 +210,14 @@
       gap:10px;
     }
 
+    /* ✅ 店名：改行禁止 */
     .shopname{
       font-weight:1000;
       font-size:38px;
       letter-spacing:.03em;
       line-height:1;
+      white-space:nowrap;      /* ←改行させない */
+      word-break:keep-all;
     }
 
     .telbox{
@@ -238,7 +239,7 @@
       font-weight:1000;
       font-size:14px;
       line-height:1.1;
-      white-space:nowrap; /* ✅ TELで折り返さない */
+      white-space:nowrap;
     }
     .tel .num{
       font-weight:1000;
@@ -263,18 +264,14 @@
       cursor:pointer;
     }
 
-    /* ✅ スマホ最適化：下段をさらに詰めて崩れ防止 */
+    /* スマホ最適化（縦のまま） */
     @media (max-width: 520px){
       .wrap{ padding:12px 10px 18px; }
 
       .grid{ grid-auto-rows:62px; min-height: 320px; }
       .day{ font-size:20px; }
 
-      .off{
-        right:6px;
-        bottom:5px;
-        font-size:26px;
-      }
+      .off{ right:6px; bottom:5px; font-size:26px; }
 
       .noteTag{
         font-size:12px;
@@ -285,29 +282,21 @@
 
       .foot{ padding:10px 12px 10px; }
 
-      .hours{
-        grid-template-columns: 64px 1fr; /* ラベル幅を縮める */
-        column-gap:10px;
-      }
+      .hours{ grid-template-columns: 64px 1fr; column-gap:10px; }
       .hours-label{ font-size:14px; }
       .hours-time{ font-size:40px; }
       .hours-time .lo{ font-size:12px; }
 
-      .shoprow{
-        grid-template-columns: 1fr auto;
-        gap:8px;
-      }
-      .shopname{ font-size:32px; }
-
+      .shopname{ font-size:34px; } /* ✅ 小さくしても改行しない */
       .telbox{ min-width: 180px; }
       .telbadge{ font-size:11px; padding:5px 9px; }
       .tel{ font-size:13px; }
       .tel .num{ font-size:20px; }
     }
 
-    /* A4印刷 */
+    /* ===== A4横印刷（ここが本命） ===== */
     @page{
-      size: A4 portrait;
+      size: A4 landscape;
       margin: 6mm;
     }
     @media print{
@@ -315,29 +304,32 @@
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
-      body{
-        background:#fff !important;
-        margin:0 !important;
-      }
-      .wrap{
-        max-width:none !important;
-        padding:0 !important;
-        margin:0 !important;
-      }
+      body{ background:#fff !important; margin:0 !important; }
+      .wrap{ max-width:none !important; padding:0 !important; margin:0 !important; }
       .bars{ display:none !important; }
 
       .sheet{
-        width:198mm;
-        height:285mm;
+        width:285mm;
+        height:198mm;
         border:0.3mm solid #999 !important;
         box-shadow:none !important;
         border-radius:0 !important;
-        overflow:hidden !important;
       }
 
-      .band{ padding: 8mm 4mm !important; }
-      .band-month{ font-size:12mm !important; }
-      .band-title{ font-size:12mm !important; }
+      /* ✅ 横長2カラム：左=カレンダー / 右=情報 */
+      .main{
+        display:grid !important;
+        grid-template-columns: 1fr 98mm; /* 右カラム固定 */
+        height: calc(198mm - 22mm); /* 上帯分をざっくり差し引き（下で調整） */
+      }
+
+      .band{ padding: 7mm 4mm !important; }
+      .band-month{ font-size:11mm !important; }
+      .band-title{ font-size:11mm !important; }
+
+      .calArea{
+        border-right:0.3mm solid #999 !important;
+      }
 
       .dow{
         border-top:0.3mm solid #999 !important;
@@ -349,53 +341,64 @@
         font-size:4mm !important;
       }
 
+      /* ✅ 横印刷なのでカレンダーは縦を少し詰める */
       .grid{
-        height:150mm !important;
-        min-height:150mm !important;
+        height: 140mm !important;
+        min-height: 140mm !important;
       }
       .cell{
         border-right:0.3mm solid #999 !important;
         border-bottom:0.3mm solid #999 !important;
-        padding:2.6mm 2.6mm !important;
+        padding:2.4mm 2.4mm !important;
       }
       .day{ font-size:6mm !important; }
 
       .cell.isOff{
         background: linear-gradient(180deg, rgba(210,74,74,.14), rgba(210,74,74,.08)) !important;
       }
-
-      /* ✅ 印刷時の休：右下寄せ＆小さめ */
       .off{
-        right: 2.4mm !important;
-        bottom: 2.0mm !important;
-        font-size: 9mm !important;
+        right: 2.2mm !important;
+        bottom: 1.8mm !important;
+        font-size: 8.5mm !important;
       }
-
       .noteTag{
-        font-size:3.4mm !important;
-        right:2.6mm !important;
-        bottom:2.6mm !important;
-        top:auto !important;
+        font-size:3.3mm !important;
+        right:2.2mm !important;
+        bottom:2.2mm !important;
         transform:rotate(-10deg) !important;
         white-space:pre !important;
         line-height:1.05 !important;
-        text-align:right !important;
       }
 
-      /* 下段：A4で詰めて崩さない */
-      .foot{ padding:6mm 6mm 6mm !important; }
-      .hours{ grid-template-columns: 22mm 1fr !important; column-gap: 4mm !important; }
-      .hours-label{ font-size:4.6mm !important; }
-      .hours-time{ font-size:15mm !important; white-space:nowrap !important; }
-      .hours-time .lo{ font-size:3.2mm !important; }
+      /* ✅ 右カラム（情報） */
+      .foot{
+        border-top:none !important;
+        padding: 10mm 8mm 8mm !important;
+      }
 
-      .note{ font-size:3.4mm !important; margin-top:2mm !important; }
+      .hours{
+        grid-template-columns: 22mm 1fr !important;
+        column-gap: 4mm !important;
+      }
+      .hours-label{ font-size:5mm !important; }
+      .hours-time{ font-size:16mm !important; white-space:nowrap !important; }
+      .hours-time .lo{ font-size:3.4mm !important; }
 
-      .shoprow{ grid-template-columns: 1fr auto !important; gap: 4mm !important; }
-      .shopname{ font-size:12.5mm !important; }
-      .telbadge{ font-size:3.2mm !important; padding:2mm 3mm !important; }
-      .tel{ font-size:3.8mm !important; white-space:nowrap !important; }
-      .tel .num{ font-size:6.6mm !important; }
+      .note{ font-size:3.6mm !important; margin-top:2.5mm !important; }
+
+      .shoprow{
+        grid-template-columns: 1fr !important;
+        gap: 4mm !important;
+        margin-top: 8mm !important;
+      }
+      .shopname{
+        font-size:14mm !important;
+        white-space:nowrap !important; /* ✅ 印刷でも改行禁止 */
+      }
+      .telbox{ text-align:left !important; min-width:auto !important; }
+      .telbadge{ font-size:3.4mm !important; padding:2.2mm 3.2mm !important; }
+      .tel{ font-size:4.2mm !important; white-space:nowrap !important; }
+      .tel .num{ font-size:7mm !important; }
 
       .sheet, .band, .dow, .grid, .foot{
         break-inside:avoid !important;
@@ -413,25 +416,34 @@
         <div class="band-title">菜々カレンダー</div>
       </div>
 
-      <div class="dow">
-        <div class="sun">日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div class="sat">土</div>
-      </div>
-
-      <div class="grid" id="calGrid"></div>
-
-      <div class="foot">
-        <div class="hours">
-          <div class="hours-label">営業時間</div>
-          <div class="hours-time">11:00 ～ 19:30 <span class="lo">(L.O.)</span></div>
+      <div class="main">
+        <!-- 左：カレンダー -->
+        <div class="calArea">
+          <div class="dow">
+            <div class="sun">日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div class="sat">土</div>
+          </div>
+          <div class="grid" id="calGrid"></div>
         </div>
 
-        <div class="note">※材料、または店主の元気がなくなり次第終了する場合があります。</div>
+        <!-- 右：情報（印刷時に右カラムになる） -->
+        <div class="infoArea">
+          <div class="foot">
+            <div class="hours">
+              <div class="hours-label">営業時間</div>
+              <div class="hours-time">11:00 ～ 19:30 <span class="lo">(L.O.)</span></div>
+            </div>
 
-        <div class="shoprow">
-          <div class="shopname">たこ焼き 菜々</div>
-          <div class="telbox">
-            <div class="telbadge">電話予約受付ます</div>
-            <div class="tel">TEL <span class="num">070-4077-7732</span></div>
+            <div class="note">※材料、または店主の元気がなくなり次第終了する場合があります。</div>
+
+            <div class="shoprow">
+              <!-- ✅ &nbsp; + nowrap で絶対に改行させない -->
+              <div class="shopname">たこ焼き&nbsp;菜々</div>
+
+              <div class="telbox">
+                <div class="telbadge">電話予約受付ます</div>
+                <div class="tel">TEL <span class="num">070-4077-7732</span></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -471,22 +483,20 @@
     function daysInMonth(y,m){ return new Date(y, m, 0).getDate(); }
     function firstDow(y,m){ return new Date(y, m-1, 1).getDay(); }
 
-    // 基本休み：毎週水曜 + 第2/第3木曜
     function isBaseOff(y,m,d){
       const dt = new Date(y, m-1, d);
       const dow = dt.getDay();
-      if(dow === 3) return true;
+      if(dow === 3) return true; // 水曜
       if(dow === 4){
         let count = 0;
         for(let i=1;i<=d;i++){
           if(new Date(y, m-1, i).getDay() === 4) count++;
         }
-        return (count === 2 || count === 3);
+        return (count === 2 || count === 3); // 第2/第3木曜
       }
       return false;
     }
 
-    // 7のつく日（7,17,27）
     function isAutoStampDay(d){
       return (d === 7 || d === 17 || d === 27);
     }
