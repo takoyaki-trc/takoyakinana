@@ -1,236 +1,348 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>菜々カレンダー</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>3月 菜々カレンダー</title>
 
 <style>
-body{
-  margin:0;
-  background:#b78a55;
-  font-family:sans-serif;
-}
+  :root{
+    --ink:#111;
+    --grid:#9aa0a6;
+    --head:#c95353;
+    --headText:#fff;
+    --holidayBg:#f4d7d7;
+    --holidayInk:#c33;
+    --sun:#d22;
+    --sat:#2a60c8;
 
-/* ===== カレンダー本体 ===== */
-.paper{
-  width:297mm;
-  height:210mm;
-  margin:10px auto;
-  background:#fff;
-  box-shadow:0 0 10px rgba(0,0,0,.3);
-  padding:12mm;
-  box-sizing:border-box;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-}
+    /* 画面用：自動スケール（スマホでも崩れない） */
+    --pad: clamp(10px, 2.2vw, 22px);
+    --title: clamp(16px, 2.2vw, 26px);
+    --dow: clamp(12px, 1.3vw, 16px);
+    --day: clamp(14px, 1.9vw, 20px);
 
-/* ===== タイトル ===== */
-.header{
-  background:#c95353;
-  color:#fff;
-  text-align:center;
-  font-weight:bold;
-  font-size:28px;
-  padding:8px 0;
-}
+    --holidayMark: clamp(16px, 2.8vw, 26px);
 
-/* ===== カレンダー表 ===== */
-table{
-  width:100%;
-  border-collapse:collapse;
-  table-layout:fixed;
-}
-th,td{
-  border:1px solid #999;
-  height:24mm;
-  position:relative;
-}
-th{
-  background:#eee;
-}
-td{
-  vertical-align:top;
-  padding:4px;
-  font-size:20px;
-}
+    --stampFont: clamp(10px, 1.2vw, 12px);
+    --stampPadY: 2px;
+    --stampPadX: 7px;
 
-/* ===== 日曜土曜色 ===== */
-.sun{color:#d22;}
-.sat{color:#2a60c8;}
-
-/* ===== 休日 ===== */
-.holiday{
-  background:#f4d7d7;
-}
-.holiday span{
-  color:#d22;
-  font-size:26px;
-  font-weight:bold;
-  position:absolute;
-  bottom:6px;
-  left:50%;
-  transform:translateX(-50%);
-}
-
-/* ===== スタンプ2倍 ===== */
-.stamp{
-  position:absolute;
-  right:4px;
-  bottom:4px;
-  font-size:12px;
-  background:#ffd24a;
-  padding:2px 6px;
-  border-radius:8px;
-  transform:rotate(-10deg);
-}
-
-/* ===== 下段エリア ===== */
-.bottom{
-  text-align:center;
-}
-
-/* 営業時間 */
-.hours{
-  font-size:26px;
-  margin-top:8px;
-}
-
-/* 注意文 */
-.note{
-  font-size:14px;
-  margin:4px 0 10px;
-}
-
-/* 店名＋電話横並び */
-.shopRow{
-  display:flex;
-  justify-content:center;
-  align-items:flex-end;
-  gap:30px;
-}
-
-/* 店名 */
-.shop{
-  font-size:48px;
-  font-weight:900;
-}
-
-/* 電話ブロック */
-.telBlock{
-  text-align:center;
-}
-.telLabel{
-  background:#333;
-  color:#fff;
-  padding:3px 8px;
-  border-radius:4px;
-  font-size:14px;
-}
-.tel{
-  font-size:28px;
-  font-weight:bold;
-}
-
-/* ===== 印刷最適化 ===== */
-@media print{
-  body{background:none}
-  .paper{
-    margin:0;
-    box-shadow:none;
+    --hours: clamp(16px, 2.2vw, 26px);
+    --note: clamp(11px, 1.3vw, 14px);
+    --shop: clamp(22px, 3.8vw, 48px);
+    --telLabel: clamp(11px, 1.3vw, 14px);
+    --tel: clamp(16px, 2.4vw, 28px);
   }
-}
+
+  body{
+    margin:0;
+    font-family: system-ui,-apple-system,"Noto Sans JP",sans-serif;
+    background:#b78a55;
+    color:var(--ink);
+  }
+
+  /* ===== 画面表示：A4横比率でピッタリ収める ===== */
+  .sheet{
+    width: min(calc(100vw - 16px), 1100px);
+    aspect-ratio: 297 / 210; /* A4横 */
+    margin: 12px auto 24px;
+    background:#fff;
+    border-radius: 8px;
+    box-shadow: 0 10px 26px rgba(0,0,0,.22);
+    overflow:hidden;
+
+    display:grid;
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .wrap{
+    padding: var(--pad);
+    display:grid;
+    grid-template-rows: auto 1fr auto;
+    gap: clamp(8px, 1.2vw, 14px);
+    height:100%;
+    box-sizing:border-box;
+  }
+
+  /* ===== タイトル帯 ===== */
+  .header{
+    background: var(--head);
+    color: var(--headText);
+    text-align:center;
+    font-weight: 900;
+    font-size: var(--title);
+    padding: clamp(8px, 1.2vw, 12px) 10px;
+    border-radius: 6px;
+    letter-spacing: .03em;
+  }
+
+  /* ===== カレンダー（tableではなくgridで安定させる） ===== */
+  .cal{
+    border: 1px solid var(--grid);
+    border-radius: 6px;
+    overflow:hidden;
+    display:grid;
+    grid-template-rows: auto 1fr;
+    background:#fff;
+  }
+
+  .dowRow{
+    display:grid;
+    grid-template-columns: repeat(7, 1fr);
+    background:#eee;
+    border-bottom:1px solid var(--grid);
+  }
+  .dow{
+    text-align:center;
+    font-weight: 800;
+    font-size: var(--dow);
+    padding: clamp(6px, .8vw, 10px) 0;
+    border-right:1px solid var(--grid);
+  }
+  .dow:last-child{ border-right:none; }
+  .dow.sun{ color: var(--sun); }
+  .dow.sat{ color: var(--sat); }
+
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+  }
+
+  .cell{
+    position:relative;
+    border-right:1px solid var(--grid);
+    border-bottom:1px solid var(--grid);
+    padding: clamp(6px, .9vw, 10px);
+    box-sizing:border-box;
+    background:#fff;
+  }
+  .cell:nth-child(7n){ border-right:none; }
+  .cell:nth-last-child(-n+7){ border-bottom:none; }
+
+  /* 日付（左上固定） */
+  .date{
+    position:absolute;
+    top: clamp(6px, .9vw, 10px);
+    left: clamp(6px, .9vw, 10px);
+    font-size: var(--day);
+    font-weight: 900;
+    line-height: 1;
+    z-index: 3;
+  }
+  .date.sun{ color: var(--sun); }
+  .date.sat{ color: var(--sat); }
+
+  /* 休日背景 */
+  .cell.holiday{ background: var(--holidayBg); }
+
+  /* 休（下中央） */
+  .holidayMark{
+    position:absolute;
+    left:50%;
+    bottom: clamp(10px, 1.2vw, 14px);
+    transform: translateX(-50%);
+    font-size: var(--holidayMark);
+    font-weight: 900;
+    color: var(--holidayInk);
+    line-height:1;
+    z-index: 2;
+    user-select:none;
+    pointer-events:none;
+  }
+
+  /* スタンプ：右下固定（絶対に日付と被らない） */
+  .stamp{
+    position:absolute;
+    right: clamp(6px, .9vw, 10px);
+    bottom: clamp(6px, .9vw, 10px);
+    font-size: var(--stampFont);
+    font-weight: 900;
+    background:#ffd24a;
+    color:#111;
+    padding: var(--stampPadY) var(--stampPadX);
+    border-radius: 999px;
+    transform: rotate(-10deg);
+    box-shadow: 0 2px 0 rgba(0,0,0,.18);
+    max-width: 70%;
+    white-space: nowrap;
+    z-index: 2;
+  }
+
+  /* 日付が絶対に見えるよう、右下のスタンプ領域ぶん余白を確保（念押し） */
+  .cell.hasStamp{
+    padding-bottom: clamp(22px, 3vw, 34px);
+  }
+
+  /* ===== 下段（全部中央寄せ） ===== */
+  .bottom{
+    text-align:center;
+    border-top: 2px solid var(--grid);
+    padding-top: clamp(8px, 1.2vw, 12px);
+  }
+
+  .hours{
+    font-size: var(--hours);
+    font-weight: 900;
+    letter-spacing:.02em;
+    margin-bottom: 4px;
+  }
+  .hours small{
+    font-size: .55em;
+    font-weight: 800;
+    margin-left: 8px;
+  }
+
+  .note{
+    font-size: var(--note);
+    opacity:.9;
+    margin: 0 0 clamp(8px, 1.2vw, 12px);
+  }
+
+  /* 店名＋電話（PC/印刷は横並び、スマホは自然に折り返し） */
+  .shopRow{
+    display:flex;
+    justify-content:center;
+    align-items:flex-end;
+    gap: clamp(14px, 2.6vw, 30px);
+    flex-wrap:wrap;
+  }
+
+  /* “江戸っぽい太さ”の代用：明朝寄り＋太字（端末依存だけど一番安全） */
+  .shop{
+    font-size: var(--shop);
+    font-weight: 1000;
+    letter-spacing:.06em;
+    font-family: "Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;
+  }
+
+  .telBlock{
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap: 6px;
+  }
+
+  .telLabel{
+    background:#333;
+    color:#fff;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: var(--telLabel);
+    font-weight: 900;
+    white-space: nowrap;
+  }
+
+  .tel{
+    font-size: var(--tel);
+    font-weight: 1000;
+    letter-spacing:.03em;
+    white-space: nowrap;
+  }
+
+  /* ===== 印刷：A4横1枚にピッタリ ===== */
+  @page{
+    size: A4 landscape;
+    margin: 0;
+  }
+  @media print{
+    body{ background:#fff; }
+    .sheet{
+      width: 297mm;
+      height: 210mm;
+      aspect-ratio: auto;
+      margin: 0;
+      border-radius: 0;
+      box-shadow:none;
+    }
+    .wrap{ padding: 12mm; }
+  }
 </style>
 </head>
 
 <body>
+  <div class="sheet">
+    <div class="wrap">
 
-<div class="paper">
+      <div class="header">3月 菜々カレンダー</div>
 
-<div class="header">3月 菜々カレンダー</div>
+      <section class="cal" aria-label="3月のカレンダー">
+        <div class="dowRow">
+          <div class="dow sun">日</div>
+          <div class="dow">月</div>
+          <div class="dow">火</div>
+          <div class="dow">水</div>
+          <div class="dow">木</div>
+          <div class="dow">金</div>
+          <div class="dow sat">土</div>
+        </div>
 
-<table>
-<tr>
-<th class="sun">日</th>
-<th>月</th>
-<th>火</th>
-<th>水</th>
-<th>木</th>
-<th>金</th>
-<th class="sat">土</th>
-</tr>
+        <!-- 3月（画像の内容に合わせて固定配置） -->
+        <div class="grid">
+          <!-- 1週目 -->
+          <div class="cell"><div class="date sun">1</div></div>
+          <div class="cell"><div class="date">2</div></div>
+          <div class="cell"><div class="date">3</div></div>
+          <div class="cell holiday"><div class="date">4</div><div class="holidayMark">休</div></div>
+          <div class="cell"><div class="date">5</div></div>
+          <div class="cell"><div class="date">6</div></div>
+          <div class="cell hasStamp"><div class="date sat">7</div><div class="stamp">スタンプ2倍</div></div>
 
-<tr>
-<td class="sun">1</td>
-<td>2</td>
-<td>3</td>
-<td class="holiday">4<span>休</span></td>
-<td>5</td>
-<td>6</td>
-<td class="sat">7<div class="stamp">スタンプ2倍</div></td>
-</tr>
+          <!-- 2週目 -->
+          <div class="cell"><div class="date sun">8</div></div>
+          <div class="cell"><div class="date">9</div></div>
+          <div class="cell"><div class="date">10</div></div>
+          <div class="cell holiday"><div class="date">11</div><div class="holidayMark">休</div></div>
+          <div class="cell holiday"><div class="date">12</div><div class="holidayMark">休</div></div>
+          <div class="cell"><div class="date">13</div></div>
+          <div class="cell"><div class="date sat">14</div></div>
 
-<tr>
-<td class="sun">8</td>
-<td>9</td>
-<td>10</td>
-<td class="holiday">11<span>休</span></td>
-<td class="holiday">12<span>休</span></td>
-<td>13</td>
-<td class="sat">14</td>
-</tr>
+          <!-- 3週目 -->
+          <div class="cell"><div class="date sun">15</div></div>
+          <div class="cell"><div class="date">16</div></div>
+          <div class="cell hasStamp"><div class="date">17</div><div class="stamp">スタンプ2倍</div></div>
+          <div class="cell holiday"><div class="date">18</div><div class="holidayMark">休</div></div>
+          <div class="cell holiday"><div class="date">19</div><div class="holidayMark">休</div></div>
+          <div class="cell"><div class="date">20</div></div>
+          <div class="cell"><div class="date sat">21</div></div>
 
-<tr>
-<td class="sun">15</td>
-<td>16</td>
-<td>17<div class="stamp">スタンプ2倍</div></td>
-<td class="holiday">18<span>休</span></td>
-<td class="holiday">19<span>休</span></td>
-<td>20</td>
-<td class="sat">21</td>
-</tr>
+          <!-- 4週目 -->
+          <div class="cell"><div class="date sun">22</div></div>
+          <div class="cell"><div class="date">23</div></div>
+          <div class="cell"><div class="date">24</div></div>
+          <div class="cell holiday"><div class="date">25</div><div class="holidayMark">休</div></div>
+          <div class="cell"><div class="date">26</div></div>
+          <div class="cell hasStamp"><div class="date">27</div><div class="stamp">スタンプ2倍</div></div>
+          <div class="cell"><div class="date sat">28</div></div>
 
-<tr>
-<td class="sun">22</td>
-<td>23</td>
-<td>24</td>
-<td class="holiday">25<span>休</span></td>
-<td>26</td>
-<td>27<div class="stamp">スタンプ2倍</div></td>
-<td class="sat">28</td>
-</tr>
+          <!-- 5週目 -->
+          <div class="cell"><div class="date sun">29</div></div>
+          <div class="cell"><div class="date">30</div></div>
+          <div class="cell"><div class="date">31</div></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+        </div>
+      </section>
 
-<tr>
-<td class="sun">29</td>
-<td>30</td>
-<td>31</td>
-<td></td><td></td><td></td><td></td>
-</tr>
-</table>
+      <footer class="bottom">
+        <div class="hours">営業時間　11:00 ～ 19:30 <small>（L.O.）</small></div>
+        <p class="note">※材料、または店主の元気がなくなり次第終了する場合があります。</p>
 
-<div class="bottom">
+        <div class="shopRow">
+          <div class="shop">たこ焼き 菜々</div>
 
-<div class="hours">
-営業時間　11:00 ～ 19:30
-</div>
+          <div class="telBlock">
+            <div class="telLabel">電話予約受付けます</div>
+            <div class="tel">TEL 070-4077-7732</div>
+          </div>
+        </div>
+      </footer>
 
-<div class="note">
-※材料、または店主の元気がなくなり次第終了する場合があります。
-</div>
-
-<div class="shopRow">
-<div class="shop">たこ焼き 菜々</div>
-
-<div class="telBlock">
-<div class="telLabel">電話予約受付けます</div>
-<div class="tel">TEL 070-4077-7732</div>
-</div>
-</div>
-
-</div>
-
-</div>
-
+    </div>
+  </div>
 </body>
 </html>
