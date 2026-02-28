@@ -29,10 +29,12 @@
       --stampYellow:#ffd54a;
       --stampBorder:#c79b18;
 
-      --edoBold: "HGP太行書体","HGS太行書体","DFP太行書体","Yuji Syuku","Yuji Mai","Klee One","Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;
+      /* 画像っぽい太め書体寄せ（環境依存。無ければ近い系へフォールバック） */
+      --edoBold: "HGS創英角ﾎﾟｯﾌﾟ体","HGP創英角ﾎﾟｯﾌﾟ体","HGP行書体","HGS行書体","Yuji Syuku","Klee One","Noto Sans JP","Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
 
-      /* ✅ バッジ用の“安全領域”(日付が侵入しない) */
-      --stampSafeW: 58px;
+      /* ✅ バッジが右下に来るので「右下の安全領域」を確保 */
+      --stampSafeW: 56px;
+      --stampSafeH: 34px;
     }
 
     *{ box-sizing:border-box; }
@@ -138,16 +140,28 @@
       font-weight:1000;
       font-size: 26px;
       line-height:1;
-      z-index: 10; /* ✅ バッジより前 */
+      z-index: 10;
       pointer-events:none;
       text-shadow: 0 1px 0 rgba(255,255,255,.55);
     }
     .cell.sun .day{ color:var(--sun); }
     .cell.sat .day{ color:var(--sat); }
 
-    /* ✅ スタンプ日の安全領域（右上を日付が侵さない） */
-    .cell.hasStamp .day{
-      padding-right: var(--stampSafeW);
+    /* ✅ スタンプがある日は「右下の安全領域」を確保 */
+    .cell.hasStamp{
+      padding-right: 8px;
+      padding-bottom: 8px;
+    }
+    .cell.hasStamp::after{
+      content:"";
+      position:absolute;
+      right:0;
+      bottom:0;
+      width: var(--stampSafeW);
+      height: var(--stampSafeH);
+      background: transparent;
+      z-index:1;
+      pointer-events:none;
     }
 
     /* 休みマスだけ背景色 */
@@ -166,13 +180,13 @@
       z-index:3;
     }
 
-    /* ✅ スタンプ2倍：日付を絶対に隠さないため、日付は入れない */
+    /* ✅ スタンプ2倍：右下固定（被り防止のため日付は入れない） */
     .stampBadge{
       position:absolute;
-      right: 4px;
-      top: 4px;
+      right: 6px;
+      bottom: 6px;
       transform: rotate(-8deg);
-      transform-origin: top right;
+      transform-origin: bottom right;
       background: radial-gradient(circle at 30% 25%, #fff7c7 0%, var(--stampYellow) 45%, #ffbf2f 100%);
       border: 2px solid var(--stampBorder);
       border-radius: 11px;
@@ -183,7 +197,7 @@
       color: var(--stampRed);
       box-shadow: 0 3px 0 rgba(0,0,0,.14);
       pointer-events:none;
-      z-index:2; /* 日付より後ろ */
+      z-index:2;
       line-height:1;
     }
     .stampBadge .top{
@@ -197,49 +211,41 @@
       white-space:nowrap;
       line-height:1;
       margin-top:0;
-    }
-    .stampBadge::before{
-      content:"✦";
-      position:absolute;
-      left:-6px;
-      top:-10px;
-      font-size: 12px;
-      color:#fff;
-      text-shadow: 0 0 6px rgba(255,255,255,.9), 0 1px 0 rgba(0,0,0,.08);
-      transform: rotate(10deg);
-      opacity:.95;
+      letter-spacing:.02em;
     }
 
-    /* ===== 下段（要望どおり調整） ===== */
+    /* ===== 下段：画像のレイアウトに寄せる ===== */
     .foot{
-      padding: 14px 14px 16px;
+      padding: 14px 16px 16px;
       background:#fff;
     }
 
-    /* ✅ 営業時間：中央寄せ */
-    .hoursBlock{
-      text-align:center;
-      margin-top: 2px;
+    /* 営業時間 行（左：営業時間 / 右：時間 / 右端：L.O.） */
+    .hoursRow{
+      display:grid;
+      grid-template-columns: 120px 1fr auto;
+      align-items:end;
+      column-gap: 14px;
     }
     .hoursLabel{
       font-weight:1000;
-      font-size: 20px;
-      letter-spacing:.03em;
+      font-size: 22px;
+      letter-spacing:.02em;
+      white-space:nowrap;
     }
     .hoursTime{
-      margin-top: 6px;
       font-weight:1000;
-      font-size: 54px;
+      font-size: 56px;
+      line-height:1;
       letter-spacing:.01em;
       white-space:nowrap;
-      line-height:1;
     }
-    .hoursTime .lo{
+    .hoursLo{
+      font-weight:900;
       font-size: 18px;
-      margin-left: 8px;
       color: var(--muted);
-      font-weight: 900;
       white-space:nowrap;
+      padding-bottom: 6px;
     }
 
     .warn{
@@ -247,53 +253,55 @@
       font-size: 16px;
       color: var(--muted);
       line-height:1.35;
-      text-align:center;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
 
-    /* ✅ たこ焼き菜々：大きく太く中央 */
-    .shopName{
+    /* 最下段：左＝店名 / 右＝電話ブロック（上：予約、下：TEL） */
+    .bottomRow{
       margin-top: 10px;
-      text-align:center;
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      align-items:end;
+      column-gap: 18px;
+    }
+
+    .shopName{
       font-family: var(--edoBold);
-      font-weight: 1000;
-      font-size: 52px;
-      letter-spacing:.08em;
-      line-height:1.05;
+      font-weight:1000;
+      font-size: 58px;
+      line-height:1;
+      letter-spacing:.06em;
       white-space:nowrap;
       text-shadow:
         0 1px 0 rgba(0,0,0,.14),
-        1px 0 0 rgba(0,0,0,.10),
-        -1px 0 0 rgba(0,0,0,.10),
-        0 -1px 0 rgba(0,0,0,.10);
+        1px 0 0 rgba(0,0,0,.08),
+        -1px 0 0 rgba(0,0,0,.08);
     }
 
-    /* ✅ 電話：離れすぎ禁止（右側に寄せて一体感） */
-    .telRow{
-      margin-top: 10px;
-      display:flex;
-      justify-content:center; /* 真ん中にまとまる */
-      align-items:center;
-      gap: 14px;              /* 離れすぎない */
-      flex-wrap:nowrap;
+    .telBox{
+      display:grid;
+      grid-template-rows: auto auto;
+      justify-items:end;
+      row-gap: 8px;
     }
-    .telBadge{
-      flex:0 0 auto;
+    .telReserve{
       background:#333;
       color:#fff;
       font-weight:1000;
       font-size: 16px;
-      padding: 10px 12px;
+      padding: 10px 14px;
       border-radius: 6px;
       white-space:nowrap;
     }
     .telLine{
-      flex:0 0 auto;
       font-weight:1000;
-      white-space:nowrap;
       font-size: 18px;
+      white-space:nowrap;
     }
     .telLine .num{
-      font-size: 34px; /* ✅ 電話番号を大きく */
+      font-size: 34px;
       letter-spacing:.02em;
     }
 
@@ -319,43 +327,57 @@
       .grid{ grid-auto-rows: 64px; }
 
       .day{ font-size: 22px; left:6px; top:6px; }
-      .cell.hasStamp .day{ padding-right: 48px; }
-
       .offMark{ font-size: 18px; right: 6px; bottom: 6px; }
 
+      /* スタンプも小さめ */
+      :root{ --stampSafeW: 50px; --stampSafeH: 30px; }
       .stampBadge{
         width: 44px;
         padding: 3px 4px;
         border-radius: 10px;
-        right: 3px;
-        top: 3px;
+        right: 5px;
+        bottom: 5px;
       }
       .stampBadge .top{ font-size: 9px; }
       .stampBadge .bottom{ font-size: 11px; }
 
+      /* 営業時間：崩れないよう縮小 */
+      .hoursRow{
+        grid-template-columns: 86px 1fr auto;
+        column-gap: 10px;
+      }
       .hoursLabel{ font-size: 16px; }
       .hoursTime{ font-size: 40px; }
-      .hoursTime .lo{ font-size: 14px; }
+      .hoursLo{ font-size: 14px; padding-bottom: 4px; }
 
-      .shopName{ font-size: 44px; }
-
-      /* ✅ スマホでも“横並び固定” */
-      .telRow{
-        gap: 10px;
-        flex-wrap:nowrap;
-      }
-      .telBadge{
+      .warn{
         font-size: 13px;
-        padding: 8px 10px;
+        white-space:normal;
+        overflow:visible;
+        text-overflow:clip;
       }
+
+      /* 店名＋電話：2段にしてでも見切れ防止 */
+      .bottomRow{
+        grid-template-columns: 1fr;
+        row-gap: 10px;
+      }
+      .shopName{
+        text-align:left;
+        font-size: 44px;
+      }
+      .telBox{
+        justify-items:start;
+      }
+      .telReserve{ font-size: 14px; padding: 9px 12px; }
       .telLine{ font-size: 14px; }
-      .telLine .num{ font-size: 22px; }
+      .telLine .num{ font-size: 24px; }
     }
 
     /* ===== 印刷（A4横・1枚固定） ===== */
     @page{
       size: A4 landscape;
-      margin: 3mm; /* 余白を減らして 1枚に寄せる */
+      margin: 3mm;
     }
     @media print{
       *{
@@ -373,10 +395,9 @@
       }
       .bars{ display:none !important; }
 
-      /* ✅ 1ページ化の保険：中で絶対に分割させない */
       .sheet{
         width: 100% !important;
-        height: calc(210mm - 6mm) !important; /* A4横の“高さ”固定（余白分を引く） */
+        height: calc(210mm - 6mm) !important; /* A4横の高さ固定 */
         border: 0.35mm solid #777 !important;
         box-shadow:none !important;
         border-radius:0 !important;
@@ -385,7 +406,6 @@
         break-inside:avoid !important;
       }
 
-      /* 印刷用に若干大きく */
       .band{ padding: 6mm 5mm !important; }
       .band-month{ font-size: 10.5mm !important; }
       .band-title{ font-size: 10.5mm !important; }
@@ -395,56 +415,50 @@
         font-size: 4.2mm !important;
       }
 
-      /* ✅ 高さをmmで管理して 6行+下段 が必ず1枚に収まるよう調整 */
       .grid{
         border-bottom:0.4mm solid #666 !important;
-        grid-auto-rows: 20mm !important; /* ←ここで1枚固定 */
+        grid-auto-rows: 20mm !important; /* 1枚に収める核 */
       }
 
       .day{
         font-size: 6.6mm !important;
         left: 2.4mm !important;
         top: 2.2mm !important;
-        z-index: 10 !important;
       }
-      .cell.hasStamp .day{ padding-right: 18mm !important; }
-
       .offMark{
         font-size: 6.0mm !important;
         right: 2.4mm !important;
         bottom: 2.2mm !important;
       }
 
-      /* バッジは“被りゼロ”最優先で小さめ */
+      /* 右下バッジ */
+      :root{ --stampSafeW: 18mm; --stampSafeH: 11mm; }
       .stampBadge{
         width: 15mm !important;
         padding: 1.4mm 1.1mm !important;
         border-radius: 3mm !important;
         right: 2mm !important;
-        top: 2mm !important;
+        bottom: 2mm !important;
         border-width: 0.6mm !important;
       }
       .stampBadge .top{ font-size: 3.0mm !important; }
       .stampBadge .bottom{ font-size: 3.4mm !important; }
 
-      .foot{
-        padding: 4.5mm 6mm 5mm !important;
-      }
+      .foot{ padding: 4.5mm 6mm 5mm !important; }
 
-      .hoursLabel{ font-size: 5.2mm !important; }
-      .hoursTime{ font-size: 13.8mm !important; }
+      /* 印刷時は文字を“画像くらい大きく” */
+      .hoursLabel{ font-size: 5.4mm !important; }
+      .hoursTime{ font-size: 14.2mm !important; }
+      .hoursLo{ font-size: 4.2mm !important; padding-bottom: 1.2mm !important; }
 
       .warn{ font-size: 4.0mm !important; }
 
-      .shopName{
-        font-size: 13.0mm !important; /* ✅ 印刷は大きく太く */
-      }
-
-      .telBadge{ font-size: 4.2mm !important; padding: 2.2mm 3mm !important; }
+      .bottomRow{ grid-template-columns: 1fr 90mm !important; }
+      .shopName{ font-size: 15.0mm !important; }
+      .telReserve{ font-size: 4.2mm !important; padding: 2.2mm 3mm !important; }
       .telLine{ font-size: 4.4mm !important; }
-      .telLine .num{ font-size: 7.6mm !important; } /* ✅ 電話番号大きく */
+      .telLine .num{ font-size: 7.8mm !important; }
 
-      /* ✅ どこにも改ページさせない */
       .band, .dow, .grid, .foot{ page-break-inside:avoid !important; break-inside:avoid !important; }
     }
   </style>
@@ -465,18 +479,21 @@
       <div class="grid" id="calGrid"></div>
 
       <div class="foot">
-        <div class="hoursBlock">
+        <div class="hoursRow">
           <div class="hoursLabel">営業時間</div>
-          <div class="hoursTime">11:00 ～ 19:30 <span class="lo">(L.O.)</span></div>
+          <div class="hoursTime">11:00 ～ 19:30</div>
+          <div class="hoursLo">(L.O.)</div>
         </div>
 
         <div class="warn">※材料、または店主の元気がなくなり次第終了する場合があります。</div>
 
-        <div class="shopName">たこ焼き&nbsp;菜々</div>
+        <div class="bottomRow">
+          <div class="shopName">たこ焼き 菜々</div>
 
-        <div class="telRow">
-          <div class="telBadge">電話注文受付ます</div>
-          <div class="telLine">TEL <span class="num">070-4077-7732</span></div>
+          <div class="telBox">
+            <div class="telReserve">電話予約受け付けます</div>
+            <div class="telLine">TEL <span class="num">070-4077-7732</span></div>
+          </div>
         </div>
       </div>
     </section>
@@ -604,7 +621,7 @@
           const shouldAuto = isAutoStampDay(d);
 
           if(tag || shouldAuto){
-            cell.classList.add("hasStamp"); // ✅ 日付安全領域
+            cell.classList.add("hasStamp"); // ✅ 右下の安全領域
 
             const badge = document.createElement("div");
             badge.className = "stampBadge";
