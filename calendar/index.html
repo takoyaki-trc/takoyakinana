@@ -58,6 +58,11 @@
       padding: 14px 12px 24px;
     }
 
+    /* ✅ 印刷時に安全に縮小するためのラッパ */
+    .printScale{
+      display:block;
+    }
+
     .sheet{
       background: var(--paper);
       border: 1px solid #d9d9d9;
@@ -66,7 +71,7 @@
       overflow: hidden;
     }
 
-    /* ===== 上帯（写真っぽく） ===== */
+    /* ===== 上帯 ===== */
     .band{
       display:flex;
       align-items:center;
@@ -131,7 +136,7 @@
     .cell.sun .day{ color:var(--sun); }
     .cell.sat .day{ color:var(--sat); }
 
-    /* ✅ 写真どおり：休は中央に大きく（背景色は塗らない） */
+    /* ✅ 写真どおり：休は中央に大きく */
     .off{
       position:absolute;
       inset:0;
@@ -161,7 +166,7 @@
       pointer-events:none;
     }
 
-    /* ===== 下段（写真の配置に寄せる） ===== */
+    /* ===== 下段 ===== */
     .foot{
       padding: 14px 14px 16px;
       background:#fff;
@@ -199,7 +204,7 @@
       font-size: 16px;
       color: var(--muted);
       line-height:1.4;
-      white-space:nowrap; /* ✅ 写真みたいに1行を優先（スマホでは下で解除） */
+      white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
     }
@@ -217,7 +222,7 @@
       font-size: 56px;
       line-height:1;
       letter-spacing:.02em;
-      white-space:nowrap;         /* ✅ 改行禁止 */
+      white-space:nowrap;
       word-break: keep-all;
     }
 
@@ -263,7 +268,7 @@
       cursor:pointer;
     }
 
-    /* ===== スマホ（崩れ防止） ===== */
+    /* ===== スマホ ===== */
     @media (max-width: 520px){
       .grid{ grid-auto-rows: 64px; }
       .day{ font-size: 22px; }
@@ -275,7 +280,7 @@
       .hoursTime .lo{ font-size: 14px; }
 
       .warn{
-        white-space:normal;  /* ✅ スマホは省略せず自然改行 */
+        white-space:normal;
         overflow:visible;
       }
 
@@ -291,7 +296,7 @@
       .telLine .num{ font-size: 28px; }
     }
 
-    /* ===== A4横印刷（landscape） ===== */
+    /* ===== A4横印刷（安全スケール方式） ===== */
     @page{
       size: A4 landscape;
       margin: 6mm;
@@ -301,47 +306,61 @@
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
+
       body{ background:#fff !important; }
-      .wrap{ max-width:none !important; padding:0 !important; margin:0 !important; }
+      .wrap{
+        max-width:none !important;
+        padding:0 !important;
+        margin:0 !important;
+      }
       .bars{ display:none !important; }
 
-      /* 横向き用紙に“写真レイアウト”を中央配置 */
+      /* ✅ Android印刷で勝手に拡大されても切れないように「少し縮小」 */
+      .printScale{
+        transform: scale(0.90);
+        transform-origin: top left;
+        width: calc(100% / 0.90);
+      }
+
+      /* ✅ mm固定をやめて、用紙幅100%に追従 */
       .sheet{
-        width: 270mm;
-        height: 186mm;
-        margin: 0 auto;
+        width: 100% !important;
+        height: auto !important;
+        margin: 0 !important;
         border: 0.3mm solid #999 !important;
         box-shadow:none !important;
         border-radius:0 !important;
       }
 
-      .band{ padding: 7mm 4mm !important; }
-      .band-month{ font-size: 11mm !important; }
-      .band-title{ font-size: 11mm !important; }
+      /* 印刷用：少し詰めて安全に1枚 */
+      .band{ padding: 6mm 4mm !important; }
+      .band-month{ font-size: 10mm !important; }
+      .band-title{ font-size: 10mm !important; }
 
-      .dow{ border-top:0.4mm solid #777 !important; border-bottom:0.4mm solid #777 !important; }
-      .dow > div{ border-right:0.25mm solid #999 !important; padding: 2.8mm 0 !important; font-size: 4.2mm !important; }
+      .dow{ border-top:0.35mm solid #777 !important; border-bottom:0.35mm solid #777 !important; }
+      .dow > div{ border-right:0.25mm solid #999 !important; padding: 2.4mm 0 !important; font-size: 4mm !important; }
 
       .grid{
-        grid-auto-rows: 22mm !important;
-        border-bottom:0.4mm solid #777 !important;
+        grid-auto-rows: 20mm !important; /* ✅ ちょい小さくして下が切れない */
+        border-bottom:0.35mm solid #777 !important;
       }
-      .cell{ border-right:0.25mm solid #999 !important; border-bottom:0.25mm solid #999 !important; padding: 2.4mm 2.4mm !important; }
-      .day{ font-size: 7mm !important; }
-      .off{ font-size: 14mm !important; }
-      .noteTag{ font-size: 3.6mm !important; right: 2.4mm !important; bottom: 2.4mm !important; }
+      .cell{ border-right:0.25mm solid #999 !important; border-bottom:0.25mm solid #999 !important; padding: 2.2mm 2.2mm !important; }
+      .day{ font-size: 6.5mm !important; }
+      .off{ font-size: 13mm !important; }
+      .noteTag{ font-size: 3.4mm !important; right: 2.2mm !important; bottom: 2.2mm !important; }
 
       .foot{ padding: 5mm 6mm 6mm !important; }
-      .hoursLabel{ font-size: 6mm !important; }
-      .hoursTime{ font-size: 16mm !important; }
-      .hoursTime .lo{ font-size: 4mm !important; }
 
-      .warn{ font-size: 4mm !important; white-space:nowrap !important; }
+      .hoursLabel{ font-size: 5.4mm !important; }
+      .hoursTime{ font-size: 15mm !important; }
+      .hoursTime .lo{ font-size: 3.8mm !important; }
 
-      .shopName{ font-size: 14mm !important; white-space:nowrap !important; }
-      .telBadge{ font-size: 4mm !important; padding: 2.2mm 3mm !important; }
-      .telLine{ font-size: 4.2mm !important; }
-      .telLine .num{ font-size: 7.5mm !important; }
+      .warn{ font-size: 3.8mm !important; white-space:nowrap !important; }
+
+      .shopName{ font-size: 13mm !important; white-space:nowrap !important; }
+      .telBadge{ font-size: 3.8mm !important; padding: 2mm 2.8mm !important; }
+      .telLine{ font-size: 4mm !important; }
+      .telLine .num{ font-size: 7mm !important; }
 
       .sheet, .band, .dow, .grid, .foot{
         break-inside:avoid !important;
@@ -353,36 +372,38 @@
 
 <body>
   <main class="wrap">
-    <section class="sheet" aria-label="営業日カレンダー">
-      <div class="band">
-        <div class="band-month" id="bandMonth">3月</div>
-        <div class="band-title">菜々カレンダー</div>
-      </div>
-
-      <div class="dow">
-        <div class="sun">日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div class="sat">土</div>
-      </div>
-
-      <div class="grid" id="calGrid"></div>
-
-      <div class="foot">
-        <div class="hoursLine">
-          <div class="hoursLabel">営業時間</div>
-          <div class="hoursTime">11:00 ～ 19:30 <span class="lo">(L.O.)</span></div>
+    <div class="printScale">
+      <section class="sheet" aria-label="営業日カレンダー">
+        <div class="band">
+          <div class="band-month" id="bandMonth">3月</div>
+          <div class="band-title">菜々カレンダー</div>
         </div>
 
-        <div class="warn">※材料、または店主の元気がなくなり次第終了する場合があります。</div>
+        <div class="dow">
+          <div class="sun">日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div class="sat">土</div>
+        </div>
 
-        <div class="shopRow">
-          <div class="shopName">たこ焼き&nbsp;菜々</div>
+        <div class="grid" id="calGrid"></div>
 
-          <div class="telBox">
-            <div class="telBadge">電話予約受付ます</div>
-            <div class="telLine">TEL <span class="num">070-4077-7732</span></div>
+        <div class="foot">
+          <div class="hoursLine">
+            <div class="hoursLabel">営業時間</div>
+            <div class="hoursTime">11:00 ～ 19:30 <span class="lo">(L.O.)</span></div>
+          </div>
+
+          <div class="warn">※材料、または店主の元気がなくなり次第終了する場合があります。</div>
+
+          <div class="shopRow">
+            <div class="shopName">たこ焼き&nbsp;菜々</div>
+
+            <div class="telBox">
+              <div class="telBadge">電話予約受付ます</div>
+              <div class="telLine">TEL <span class="num">070-4077-7732</span></div>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
 
     <div class="bars">
       <button id="prevBtn" type="button">← 先月</button>
@@ -422,7 +443,7 @@
     // 基本休み：毎週水曜 + 第2/第3木曜
     function isBaseOff(y,m,d){
       const dt = new Date(y, m-1, d);
-      const dow = dt.getDay(); // 0=日 3=水 4=木
+      const dow = dt.getDay();
       if(dow === 3) return true;
       if(dow === 4){
         let count = 0;
@@ -472,7 +493,6 @@
       const start = firstDow(y,m);
       const last = daysInMonth(y,m);
 
-      // 先頭空白
       for(let i=0;i<start;i++){
         const c = document.createElement("div");
         c.className = "cell blank";
@@ -501,7 +521,6 @@
           o.textContent = "休";
           cell.appendChild(o);
         }else{
-          // 手動タグが優先、なければ自動「スタンプ2倍」
           let tag = "";
           if(manualTags[dateStr]) tag = String(manualTags[dateStr]);
           else if(isAutoStampDay(d)) tag = "スタンプ\n2倍";
@@ -512,12 +531,11 @@
             t.textContent = tag;
             cell.appendChild(t);
           }
-        }
+}
 
         gridEl.appendChild(cell);
       }
 
-      // 末尾空白（7列合わせ）
       const mod = gridEl.children.length % 7;
       if(mod !== 0){
         const need = 7 - mod;
