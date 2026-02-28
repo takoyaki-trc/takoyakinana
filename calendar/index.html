@@ -15,6 +15,11 @@
       --band2:#c94d53;
       --sun:#d04545;
       --sat:#2f6bff;
+
+      /* ✅ 休みマスの背景色（薄い赤） */
+      --offbg: rgba(210, 74, 74, .08);
+      --offbg2: rgba(210, 74, 74, .12);
+      --offink:#d24a4a;
     }
 
     *{ box-sizing:border-box; }
@@ -25,7 +30,7 @@
       color:var(--ink);
       min-height:100svh;
 
-      /* 木目っぽい背景 */
+      /* 木目背景 */
       background:
         linear-gradient(90deg,
           rgba(120,80,40,.22) 0%,
@@ -99,8 +104,7 @@
       display:grid;
       grid-template-columns:repeat(7,1fr);
       grid-auto-rows:minmax(74px, 1fr);
-      /* ここで「絶対に見える高さ」を確保（万一でも潰れない） */
-      min-height: 360px;
+      min-height: 360px; /* つぶれ防止 */
     }
     .cell{
       position:relative;
@@ -120,7 +124,13 @@
     .cell.sun .day{ color:var(--sun); }
     .cell.sat .day{ color:var(--sat); }
 
-    /* 休 */
+    /* ✅ 休みマス（背景色をつける） */
+    .cell.isOff{
+      background:
+        linear-gradient(180deg, var(--offbg2), var(--offbg));
+    }
+
+    /* ✅ 休（小さめ＆中央の圧を軽く） */
     .off{
       position:absolute;
       inset:0;
@@ -128,13 +138,14 @@
       align-items:center;
       justify-content:center;
       font-weight:1000;
-      font-size:44px;
-      color:#d24a4a;
-      opacity:.9;
+      font-size:36px;      /* ← 44→36に縮小 */
+      color:var(--offink);
+      opacity:.88;
       pointer-events:none;
+      letter-spacing:.08em;
     }
 
-    /* スタンプ2倍（ズレ防止：途中改行しない） */
+    /* スタンプ2倍（途中折返し禁止） */
     .noteTag{
       position:absolute;
       right:8px;
@@ -147,41 +158,46 @@
       transform:rotate(-10deg);
       pointer-events:none;
 
-      white-space:pre;      /* ←これが最重要：途中で折り返さない */
+      white-space:pre;
       line-height:1.05;
       text-align:right;
       letter-spacing:-0.02em;
     }
 
-    /* 下部（写真の文章） */
-    .foot{ padding:16px 14px 18px; }
+    /* ===== 下部（サイズを少し小さくして整える） ===== */
+    .foot{ padding:14px 14px 16px; } /* 少し詰める */
+
     .hours{
       display:flex;
-      gap:12px;
+      gap:10px;
       align-items:flex-end;
     }
     .hours-label{
       font-weight:1000;
-      font-size:18px;
+      font-size:16px;   /* 18→16 */
+      line-height:1.1;
     }
     .hours-time{
       font-weight:1000;
-      font-size:56px;
-      letter-spacing:.02em;
+      font-size:50px;   /* 56→50 */
+      letter-spacing:.01em;
+      line-height:1;
     }
     .lo{
-      font-size:14px;
+      font-size:13px;   /* 14→13 */
       font-weight:1000;
       margin-left:6px;
       color:#333;
     }
     .note{
       margin-top:6px;
-      font-size:13px;
+      font-size:12px;   /* 13→12 */
       color:#333;
+      line-height:1.45;
     }
+
     .shoprow{
-      margin-top:12px;
+      margin-top:10px;  /* 12→10 */
       display:flex;
       justify-content:space-between;
       align-items:flex-end;
@@ -189,8 +205,9 @@
     }
     .shopname{
       font-weight:1000;
-      font-size:44px;
+      font-size:40px;   /* 44→40 */
       letter-spacing:.03em;
+      line-height:1;
     }
     .telbox{
       text-align:right;
@@ -208,11 +225,12 @@
     }
     .tel{
       font-weight:1000;
-      font-size:16px;
+      font-size:14px;  /* 16→14 */
+      line-height:1.1;
     }
     .tel .num{
       font-weight:1000;
-      font-size:26px;
+      font-size:24px;  /* 26→24 */
     }
 
     /* 操作ボタン */
@@ -236,16 +254,18 @@
     @media (max-width: 520px){
       .grid{ grid-auto-rows:62px; min-height: 320px; }
       .day{ font-size:20px; }
-      .off{ font-size:38px; }
+      .off{ font-size:30px; } /* スマホはさらに小さく */
       .noteTag{
         font-size:12px;
         right:6px;
         bottom:6px;
         transform:rotate(-8deg);
       }
-      .hours-time{ font-size:42px; }
-      .shopname{ font-size:34px; }
-      .tel .num{ font-size:22px; }
+
+      .hours-time{ font-size:40px; }
+      .shopname{ font-size:32px; }
+      .tel .num{ font-size:20px; }
+      .telbox{ min-width: 180px; }
     }
 
     /* A4印刷 */
@@ -302,7 +322,14 @@
         padding:2.6mm 2.6mm !important;
       }
       .day{ font-size:6mm !important; }
-      .off{ font-size:13mm !important; }
+
+      /* ✅ 印刷時の休（少し小さめ） */
+      .off{ font-size:11mm !important; }
+
+      /* ✅ 印刷時の休み背景も出す */
+      .cell.isOff{
+        background: linear-gradient(180deg, rgba(210,74,74,.14), rgba(210,74,74,.08)) !important;
+      }
 
       .noteTag{
         font-size:3.4mm !important;
@@ -310,20 +337,21 @@
         bottom:2.6mm !important;
         top:auto !important;
         transform:rotate(-10deg) !important;
-        white-space:pre !important;   /* ←印刷でも途中折り返し禁止 */
+        white-space:pre !important;
         line-height:1.05 !important;
         text-align:right !important;
       }
 
+      /* ✅ 下段を少し詰める（A4で綺麗に） */
       .foot{ padding:6mm 6mm 6mm !important; }
-      .hours-label{ font-size:5mm !important; }
-      .hours-time{ font-size:16mm !important; }
-      .lo{ font-size:3.5mm !important; }
-      .note{ font-size:3.6mm !important; margin-top:2mm !important; }
-      .shopname{ font-size:14mm !important; }
-      .telbadge{ font-size:3.4mm !important; padding:2mm 3mm !important; }
-      .tel{ font-size:4mm !important; }
-      .tel .num{ font-size:7mm !important; }
+      .hours-label{ font-size:4.6mm !important; }
+      .hours-time{ font-size:15mm !important; }
+      .lo{ font-size:3.2mm !important; }
+      .note{ font-size:3.4mm !important; margin-top:2mm !important; }
+      .shopname{ font-size:13mm !important; }
+      .telbadge{ font-size:3.2mm !important; padding:2mm 3mm !important; }
+      .tel{ font-size:3.8mm !important; }
+      .tel .num{ font-size:6.6mm !important; }
 
       .sheet, .band, .dow, .grid, .foot{
         break-inside:avoid !important;
@@ -478,6 +506,7 @@
         // 休み判定（休みが最優先）
         const off = isBaseOff(y,m,d) || manualOff.has(dateStr);
         if(off){
+          cell.classList.add("isOff"); // ✅ 背景色
           const o = document.createElement("div");
           o.className = "off";
           o.textContent = "休";
