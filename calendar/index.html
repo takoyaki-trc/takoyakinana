@@ -21,13 +21,16 @@
       --sun:#d04545;
       --sat:#2f6bff;
 
-      --cellbg:#ffffff;     /* ✅ 通常は白 */
-      --offbg:#ffe9eb;      /* ✅ 休みだけ薄ピンク */
+      --cellbg:#ffffff;     /* 通常は白 */
+      --offbg:#ffe9eb;      /* 休みだけ薄ピンク */
       --off:#d24a4a;
 
       --stampRed:#d53737;
       --stampYellow:#ffd54a;
       --stampBorder:#c79b18;
+
+      /* 江戸文字っぽい（端末にあれば優先） */
+      --edoFont: "HGP行書体","HGS行書体","DFP行書体","Yuji Syuku","Yuji Mai","Klee One","Shippori Mincho B1","Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;
     }
 
     *{ box-sizing:border-box; }
@@ -61,7 +64,6 @@
       padding: 14px 12px 24px;
     }
 
-    /* 印刷時スケール用 */
     .printScale{ display:block; }
 
     .sheet{
@@ -95,7 +97,7 @@
     .dow{
       display:grid;
       grid-template-columns:repeat(7, 1fr);
-      background: #fff; /* 白 */
+      background: #fff;
       border-top: 2px solid var(--grid);
       border-bottom: 2px solid var(--grid);
       font-weight: 1000;
@@ -140,12 +142,10 @@
     .cell.sun .day{ color:var(--sun); }
     .cell.sat .day{ color:var(--sat); }
 
-    /* ✅ 休みマスだけ背景色 */
-    .cell.isOff{
-      background: var(--offbg);
-    }
+    /* 休みマスだけ背景色 */
+    .cell.isOff{ background: var(--offbg); }
 
-    /* ✅ 休：右下に寄せて小さく（日付を隠さない） */
+    /* 休：右下 */
     .offMark{
       position:absolute;
       right: 8px;
@@ -160,13 +160,13 @@
       text-shadow: 0 1px 0 rgba(0,0,0,.08);
     }
 
-    /* ✅ スタンプ2倍：元気なバッジ（ワクワク） */
+    /* ✅ スタンプ2倍：右上固定（＝日付と被らない） */
     .stampBadge{
       position:absolute;
       right: 6px;
-      bottom: 6px;
+      top: 6px;
       transform: rotate(-8deg);
-      transform-origin: bottom right;
+      transform-origin: top right;
       background: radial-gradient(circle at 30% 25%, #fff7c7 0%, var(--stampYellow) 45%, #ffbf2f 100%);
       border: 2px solid var(--stampBorder);
       border-radius: 12px;
@@ -180,18 +180,8 @@
       z-index:3;
       width: 62px;
     }
-    .stampBadge .top{
-      font-size: 12px;
-      letter-spacing:.02em;
-      white-space:nowrap;
-    }
-    .stampBadge .bottom{
-      font-size: 14px;
-      letter-spacing:.04em;
-      margin-top: 1px;
-      white-space:nowrap;
-    }
-    /* キラっと感（小さい星） */
+    .stampBadge .top{ font-size: 12px; white-space:nowrap; }
+    .stampBadge .bottom{ font-size: 14px; margin-top: 1px; white-space:nowrap; }
     .stampBadge::before{
       content:"✦";
       position:absolute;
@@ -224,12 +214,11 @@
     }
     .hoursTime{
       font-weight:1000;
-      font-size: 56px;     /* ✅ 少し小さくして見切れ回避 */
+      font-size: 54px;
       letter-spacing:.01em;
       white-space:nowrap;
       line-height:1;
       overflow:hidden;
-      text-overflow:clip;
     }
     .hoursTime .lo{
       font-size: 18px;
@@ -244,30 +233,29 @@
       font-size: 16px;
       color: var(--muted);
       line-height:1.35;
-      white-space:normal; /* ✅ 画面は自然改行 */
+      white-space:normal;
     }
 
-    .shopRow{
+    /* ✅ 店名：中央 / 少し小さく / 江戸文字っぽく */
+    .shopName{
+      margin-top: 10px;
+      text-align:center;
+      font-family: var(--edoFont);
+      font-weight: 900;
+      font-size: 46px;
+      letter-spacing:.04em;
+      line-height:1.05;
+      white-space:nowrap;
+    }
+
+    /* ✅ 電話：バッジ右横に番号（同じ行） */
+    .telRow{
       margin-top: 10px;
       display:flex;
       justify-content:space-between;
-      align-items:flex-end;
-      gap: 14px;
-    }
-
-    .shopName{
-      font-weight:1000;
-      font-size: 52px;     /* ✅ 少し下げて安定 */
-      line-height:1;
-      letter-spacing:.02em;
-      white-space:nowrap;
-      word-break: keep-all;
-    }
-
-    .telBox{
-      text-align:right;
-      min-width: 320px;
-      flex: 0 0 auto;
+      align-items:center;
+      gap: 12px;
+      flex-wrap:wrap;
     }
     .telBadge{
       display:inline-block;
@@ -277,7 +265,6 @@
       font-size: 16px;
       padding: 8px 12px;
       border-radius: 6px;
-      margin-bottom: 8px;
       white-space:nowrap;
     }
     .telLine{
@@ -286,7 +273,7 @@
       white-space:nowrap;
     }
     .telLine .num{
-      font-size: 32px;  /* ✅ ちょい縮小 */
+      font-size: 32px;
       letter-spacing:.02em;
     }
 
@@ -307,47 +294,37 @@
       cursor:pointer;
     }
 
-    /* ===== スマホ（崩れ防止） ===== */
+    /* ===== スマホ ===== */
     @media (max-width: 520px){
       .grid{ grid-auto-rows: 64px; }
       .day{ font-size: 22px; }
 
-      /* ✅ スマホでは休をもっと小さく */
-      .offMark{
-        font-size: 20px;
-        right: 6px;
-        bottom: 6px;
-      }
+      .offMark{ font-size: 20px; right: 6px; bottom: 6px; }
 
       .stampBadge{
         width: 56px;
         padding: 5px 6px;
         border-radius: 11px;
         right: 5px;
-        bottom: 5px;
+        top: 5px;
       }
       .stampBadge .top{ font-size: 11px; }
       .stampBadge .bottom{ font-size: 13px; }
       .stampBadge::before{ left:-6px; top:-10px; font-size: 13px; }
 
-      /* ✅ 営業時間が見切れないように下げる */
       .hoursLabel{ font-size: 18px; }
       .hoursTime{ font-size: 40px; }
       .hoursTime .lo{ font-size: 14px; }
 
-      .shopRow{
-        flex-direction:column;
-        align-items:flex-start;
-        gap: 10px;
-      }
-      .shopName{ font-size: 42px; }
-      .telBox{ min-width:auto; text-align:left; }
+      .shopName{ font-size: 38px; }
+
+      .telRow{ justify-content:flex-start; }
       .telBadge{ font-size: 14px; }
       .telLine{ font-size: 16px; }
       .telLine .num{ font-size: 26px; }
     }
 
-    /* ===== 印刷（A4横）：絶対1枚に収める ===== */
+    /* ===== 印刷（A4横） ===== */
     @page{
       size: A4 landscape;
       margin: 6mm;
@@ -362,7 +339,6 @@
       .wrap{ max-width:none !important; padding:0 !important; margin:0 !important; }
       .bars{ display:none !important; }
 
-      /* ✅ 念のため少し縮小（Android印刷の拡大癖対策） */
       .printScale{
         transform: scale(0.90);
         transform-origin: top left;
@@ -377,46 +353,31 @@
         border-radius:0 !important;
       }
 
-      /* 印刷用：少し詰める */
       .band{ padding: 6mm 4mm !important; }
       .band-month{ font-size: 10mm !important; }
       .band-title{ font-size: 10mm !important; }
 
       .dow{ border-top:0.35mm solid #777 !important; border-bottom:0.35mm solid #777 !important; }
-      .dow > div{
-        border-right:0.25mm solid #999 !important;
-        padding: 2.4mm 0 !important;
-        font-size: 4mm !important;
-        background:#fff !important;
-      }
+      .dow > div{ border-right:0.25mm solid #999 !important; padding: 2.4mm 0 !important; font-size: 4mm !important; }
 
       .grid{
-        grid-auto-rows: 19mm !important; /* ✅ さらに安全側 */
+        grid-auto-rows: 19mm !important;
         border-bottom:0.35mm solid #777 !important;
         background:#fff !important;
       }
 
-      .cell{
-        border-right:0.25mm solid #999 !important;
-        border-bottom:0.25mm solid #999 !important;
-        padding: 2.1mm 2.1mm !important;
-        background:#fff !important;
-      }
+      .cell{ border-right:0.25mm solid #999 !important; border-bottom:0.25mm solid #999 !important; padding: 2.1mm 2.1mm !important; background:#fff !important; }
       .cell.isOff{ background: var(--offbg) !important; }
 
       .day{ font-size: 6.2mm !important; }
-      .offMark{
-        font-size: 6.0mm !important; /* ✅ 印刷も日付を隠さない */
-        right: 2.2mm !important;
-        bottom: 2.0mm !important;
-      }
+      .offMark{ font-size: 6.0mm !important; right: 2.2mm !important; bottom: 2.0mm !important; }
 
       .stampBadge{
         width: 18mm !important;
         padding: 1.8mm 1.6mm !important;
         border-radius: 3mm !important;
         right: 2mm !important;
-        bottom: 1.8mm !important;
+        top: 1.8mm !important;
         border-width: 0.55mm !important;
         box-shadow: 0 1mm 0 rgba(0,0,0,.14) !important;
       }
@@ -427,23 +388,18 @@
       .foot{ padding: 4.6mm 6mm 5.2mm !important; }
 
       .hoursLabel{ font-size: 5.2mm !important; }
-      .hoursTime{
-        font-size: 13.5mm !important;  /* ✅ 見切れ防止で下げる */
-        white-space:nowrap !important;
-      }
+      .hoursTime{ font-size: 13.2mm !important; }
       .hoursTime .lo{ font-size: 3.6mm !important; }
 
       .warn{ font-size: 3.6mm !important; }
 
-      .shopName{ font-size: 12.2mm !important; white-space:nowrap !important; }
+      .shopName{ font-size: 10.8mm !important; }
+
       .telBadge{ font-size: 3.6mm !important; padding: 1.8mm 2.6mm !important; }
       .telLine{ font-size: 3.8mm !important; }
-      .telLine .num{ font-size: 6.6mm !important; }
+      .telLine .num{ font-size: 6.4mm !important; }
 
-      .sheet, .band, .dow, .grid, .foot{
-        break-inside:avoid !important;
-        page-break-inside:avoid !important;
-      }
+      .sheet, .band, .dow, .grid, .foot{ break-inside:avoid !important; page-break-inside:avoid !important; }
     }
   </style>
 </head>
@@ -471,13 +427,11 @@
 
           <div class="warn">※材料、または店主の元気がなくなり次第終了する場合があります。</div>
 
-          <div class="shopRow">
-            <div class="shopName">たこ焼き&nbsp;菜々</div>
+          <div class="shopName">たこ焼き&nbsp;菜々</div>
 
-            <div class="telBox">
-              <div class="telBadge">電話予約受付ます</div>
-              <div class="telLine">TEL <span class="num">070-4077-7732</span></div>
-            </div>
+          <div class="telRow">
+            <div class="telBadge">電話予約受付ます</div>
+            <div class="telLine">TEL <span class="num">070-4077-7732</span></div>
           </div>
         </div>
       </section>
@@ -509,7 +463,6 @@
       return { y: d.getFullYear(), m: d.getMonth()+1 };
     })();
 
-    // 上書きデータ（assets/calendar-data.json があれば読まれる）
     let DATA = { overrides: {} };
 
     function pad2(n){ return String(n).padStart(2,"0"); }
@@ -518,12 +471,11 @@
     function daysInMonth(y,m){ return new Date(y, m, 0).getDate(); }
     function firstDow(y,m){ return new Date(y, m-1, 1).getDay(); }
 
-    // 基本休み：毎週水曜 + 第2/第3木曜
     function isBaseOff(y,m,d){
       const dt = new Date(y, m-1, d);
       const dow = dt.getDay();
-      if(dow === 3) return true;
-      if(dow === 4){
+      if(dow === 3) return true; // 水
+      if(dow === 4){ // 木：第2/第3
         let count = 0;
         for(let i=1;i<=d;i++){
           if(new Date(y, m-1, i).getDay() === 4) count++;
@@ -533,10 +485,7 @@
       return false;
     }
 
-    // 7のつく日（7,17,27）
-    function isAutoStampDay(d){
-      return (d === 7 || d === 17 || d === 27);
-    }
+    function isAutoStampDay(d){ return (d === 7 || d === 17 || d === 27); }
 
     async function loadData(){
       try{
@@ -571,7 +520,6 @@
       const start = firstDow(y,m);
       const last = daysInMonth(y,m);
 
-      // 先頭空白
       for(let i=0;i<start;i++){
         const c = document.createElement("div");
         c.className = "cell blank";
@@ -596,17 +544,17 @@
 
         if(off){
           cell.classList.add("isOff");
-
           const o = document.createElement("div");
           o.className = "offMark";
           o.textContent = "休";
           cell.appendChild(o);
         }else{
-          // 手動タグが優先、なければ自動「スタンプ2倍」
+          // 手動タグがあればそれを（スタンプの代わりに表示）
           let tag = "";
           if(manualTags[dateStr]) tag = String(manualTags[dateStr]);
 
           const shouldAuto = isAutoStampDay(d);
+
           if(tag || shouldAuto){
             const badge = document.createElement("div");
             badge.className = "stampBadge";
@@ -628,7 +576,6 @@
         gridEl.appendChild(cell);
       }
 
-      // 末尾空白（7列合わせ）
       const mod = gridEl.children.length % 7;
       if(mod !== 0){
         const need = 7 - mod;
