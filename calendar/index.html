@@ -29,8 +29,11 @@
       --stampYellow:#ffd54a;
       --stampBorder:#c79b18;
 
-      /* 太めの“和っぽい”候補（端末にあれば優先） */
       --edoBold: "HGP太行書体","HGS太行書体","DFP太行書体","Yuji Syuku","Yuji Mai","Klee One","Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;
+
+      /* ✅ “日付を守る”ための安全領域（右上に確保） */
+      --stampSafeW: 56px;   /* バッジが入る横幅分 */
+      --stampSafeH: 44px;   /* バッジが入る高さ分 */
     }
 
     *{ box-sizing:border-box; }
@@ -39,8 +42,6 @@
       font-family: system-ui,-apple-system,"Noto Sans JP",sans-serif;
       color:var(--ink);
       min-height:100svh;
-
-      /* 木目背景 */
       background:
         linear-gradient(90deg,
           rgba(120,80,40,.22) 0%,
@@ -127,12 +128,13 @@
       background: var(--cellbg);
       border-right: 1px solid var(--grid2);
       border-bottom: 1px solid var(--grid2);
-      padding: 8px 8px;
+      padding: 8px;
+      overflow:hidden;
     }
     .cell:nth-child(7n){ border-right:none; }
     .cell.blank{ opacity:.28; background:#fff; }
 
-    /* ✅ 日付は「必ず左上」に固定（これでバッジと絶対被らない） */
+    /* ✅ 日付は左上固定 */
     .day{
       position:absolute;
       left: 8px;
@@ -140,13 +142,17 @@
       font-weight:1000;
       font-size: 26px;
       line-height:1;
-      z-index:4;              /* バッジより上にして“消え”を防ぐ */
-      text-shadow: 0 1px 0 rgba(255,255,255,.55);
-      background: transparent; /* 念のため */
+      z-index:5;                 /* 常に最前面 */
       pointer-events:none;
+      text-shadow: 0 1px 0 rgba(255,255,255,.55);
     }
     .cell.sun .day{ color:var(--sun); }
     .cell.sat .day{ color:var(--sat); }
+
+    /* ✅ スタンプが付く日は “右上安全領域” を先に確保（=日付の右側に空き） */
+    .cell.hasStamp .day{
+      padding-right: var(--stampSafeW);
+    }
 
     /* 休みマスだけ背景色 */
     .cell.isOff{ background: var(--offbg); }
@@ -160,40 +166,52 @@
       font-size: 26px;
       color: var(--off);
       opacity:.95;
-      letter-spacing:.06em;
       pointer-events:none;
       z-index:3;
-      text-shadow: 0 1px 0 rgba(0,0,0,.08);
     }
 
-    /* ✅ スタンプ2倍：さらに小さく、右上に寄せる（被り防止） */
+    /* ✅ スタンプ2倍：さらに小型化＆行間圧縮＆右上に完全固定 */
     .stampBadge{
       position:absolute;
-      right: 6px;
-      top: 6px;
+      right: 4px;
+      top: 4px;
       transform: rotate(-8deg);
       transform-origin: top right;
       background: radial-gradient(circle at 30% 25%, #fff7c7 0%, var(--stampYellow) 45%, #ffbf2f 100%);
       border: 2px solid var(--stampBorder);
-      border-radius: 12px;
-      padding: 5px 6px;
-      line-height: 1.05;
+      border-radius: 11px;
+      padding: 4px 5px;
       text-align:center;
       font-weight:1000;
       color: var(--stampRed);
       box-shadow: 0 3px 0 rgba(0,0,0,.14);
       pointer-events:none;
-      z-index:2; /* 日付より下 */
-      width: 54px;
+      z-index:2; /* 日付より後ろ */
+      width: 50px;
+
+      /* ✅ 文字が増えても高さを取りすぎない */
+      line-height: 1;
     }
-    .stampBadge .top{ font-size: 11px; white-space:nowrap; }
-    .stampBadge .bottom{ font-size: 13px; margin-top: 1px; white-space:nowrap; }
+    .stampBadge .top{
+      font-size: 10px;
+      letter-spacing: 0;
+      white-space:nowrap;
+      margin:0;
+      padding:0;
+      line-height: 1;
+    }
+    .stampBadge .bottom{
+      font-size: 12px;
+      margin-top: 0px;      /* 行間を詰める */
+      white-space:nowrap;
+      line-height: 1;
+    }
     .stampBadge::before{
       content:"✦";
       position:absolute;
       left:-6px;
       top:-10px;
-      font-size: 13px;
+      font-size: 12px;
       color:#fff;
       text-shadow: 0 0 6px rgba(255,255,255,.9), 0 1px 0 rgba(0,0,0,.08);
       transform: rotate(10deg);
@@ -239,10 +257,8 @@
       font-size: 16px;
       color: var(--muted);
       line-height:1.35;
-      white-space:normal;
     }
 
-    /* ✅ 店名：中央 / 太く見えるように（太字＋軽い縁取り） */
     .shopName{
       margin-top: 10px;
       text-align:center;
@@ -252,7 +268,6 @@
       letter-spacing:.06em;
       line-height:1.05;
       white-space:nowrap;
-      /* “太く見える”ための軽い縁取り */
       text-shadow:
         0 1px 0 rgba(0,0,0,.12),
         1px 0 0 rgba(0,0,0,.08),
@@ -260,14 +275,13 @@
         0 -1px 0 rgba(0,0,0,.08);
     }
 
-    /* ✅ 電話：必ず同一行（スマホでも折り返さない） */
     .telRow{
       margin-top: 10px;
       display:flex;
       justify-content:space-between;
       align-items:center;
       gap: 10px;
-      flex-wrap:nowrap;        /* ←折り返し禁止 */
+      flex-wrap:nowrap;
       min-width:0;
     }
     .telBadge{
@@ -314,36 +328,33 @@
     @media (max-width: 520px){
       .grid{ grid-auto-rows: 64px; }
 
-      /* 日付：左上固定で小さめ */
       .day{ font-size: 22px; left:6px; top:6px; }
+      .cell.hasStamp .day{ padding-right: 50px; } /* スマホは安全領域も少し小さめ */
 
       .offMark{ font-size: 20px; right: 6px; bottom: 6px; }
 
-      /* ✅ バッジをさらに小さくして日付領域を守る */
+      /* ✅ バッジをさらに縮小して“絶対に被らない” */
       .stampBadge{
-        width: 46px;
-        padding: 4px 5px;
+        width: 44px;
+        padding: 3px 4px;
         border-radius: 10px;
-        right: 4px;
-        top: 4px;
+        right: 3px;
+        top: 3px;
         border-width: 2px;
       }
-      .stampBadge .top{ font-size: 10px; }
-      .stampBadge .bottom{ font-size: 12px; }
-      .stampBadge::before{ left:-6px; top:-10px; font-size: 12px; }
+      .stampBadge .top{ font-size: 9px; }
+      .stampBadge .bottom{ font-size: 11px; }
+      .stampBadge::before{ left:-6px; top:-10px; font-size: 11px; }
 
       .hoursLabel{ font-size: 18px; }
       .hoursTime{ font-size: 40px; }
       .hoursTime .lo{ font-size: 14px; }
 
-      /* 店名：少し小さく、太く見えるのは維持 */
       .shopName{ font-size: 40px; }
 
-      /* ✅ 電話：スマホでも横並び維持するため詰める */
       .telBadge{
         font-size: 13px;
         padding: 7px 9px;
-        border-radius: 6px;
       }
       .telLine{ font-size: 14px; }
       .telLine .num{ font-size: 22px; }
@@ -352,7 +363,7 @@
     /* ===== 印刷（A4横） ===== */
     @page{
       size: A4 landscape;
-      margin: 6mm;
+      margin: 5mm; /* 少しだけ余白、用紙いっぱい感 */
     }
     @media print{
       *{
@@ -364,73 +375,95 @@
       .wrap{ max-width:none !important; padding:0 !important; margin:0 !important; }
       .bars{ display:none !important; }
 
+      /* ✅ 用紙いっぱい：縮小しない */
       .printScale{
-        transform: scale(0.90);
-        transform-origin: top left;
-        width: calc(100% / 0.90);
+        transform: none !important;
+        width: 100% !important;
       }
 
       .sheet{
         width: 100% !important;
         margin: 0 !important;
-        border: 0.3mm solid #999 !important;
+        border: 0.35mm solid #777 !important;
         box-shadow:none !important;
         border-radius:0 !important;
       }
 
-      .band{ padding: 6mm 4mm !important; }
-      .band-month{ font-size: 10mm !important; }
-      .band-title{ font-size: 10mm !important; }
+      /* ✅ 印刷は文字を大きく */
+      .band{ padding: 7mm 5mm !important; }
+      .band-month{ font-size: 11mm !important; }
+      .band-title{ font-size: 11mm !important; }
 
-      .dow{ border-top:0.35mm solid #777 !important; border-bottom:0.35mm solid #777 !important; }
-      .dow > div{ border-right:0.25mm solid #999 !important; padding: 2.4mm 0 !important; font-size: 4mm !important; }
-
-      .grid{
-        grid-auto-rows: 19mm !important;
-        border-bottom:0.35mm solid #777 !important;
-        background:#fff !important;
+      .dow{ border-top:0.4mm solid #666 !important; border-bottom:0.4mm solid #666 !important; }
+      .dow > div{
+        border-right:0.25mm solid #999 !important;
+        padding: 2.8mm 0 !important;
+        font-size: 4.4mm !important;
       }
 
-      .cell{ border-right:0.25mm solid #999 !important; border-bottom:0.25mm solid #999 !important; padding: 2.1mm 2.1mm !important; background:#fff !important; }
+      .grid{
+        grid-auto-rows: 21mm !important; /* 少し大きく */
+        border-bottom:0.4mm solid #666 !important;
+        background:#fff !important;
+      }
+      .cell{
+        border-right:0.25mm solid #999 !important;
+        border-bottom:0.25mm solid #999 !important;
+        padding: 2.4mm 2.4mm !important;
+        background:#fff !important;
+      }
       .cell.isOff{ background: var(--offbg) !important; }
 
-      /* ✅ 印刷でも日付左上固定 */
-      .day{ font-size: 6.2mm !important; left: 2.2mm !important; top: 2.0mm !important; z-index:4 !important; }
+      .day{
+        font-size: 7.0mm !important; /* 日付も大きく */
+        left: 2.4mm !important;
+        top: 2.2mm !important;
+        z-index:5 !important;
+      }
+      .cell.hasStamp .day{
+        padding-right: 18mm !important; /* 印刷でも安全領域確保 */
+      }
 
-      .offMark{ font-size: 6.0mm !important; right: 2.2mm !important; bottom: 2.0mm !important; }
+      .offMark{
+        font-size: 6.2mm !important;
+        right: 2.4mm !important;
+        bottom: 2.2mm !important;
+      }
 
-      /* ✅ 印刷のバッジも少し小さめ */
+      /* 印刷バッジ：小さめ維持（被りゼロ優先） */
       .stampBadge{
         width: 16mm !important;
-        padding: 1.6mm 1.4mm !important;
+        padding: 1.5mm 1.2mm !important;
         border-radius: 3mm !important;
         right: 2mm !important;
-        top: 1.8mm !important;
-        border-width: 0.55mm !important;
+        top: 2mm !important;
+        border-width: 0.6mm !important;
         box-shadow: 0 1mm 0 rgba(0,0,0,.14) !important;
         z-index:2 !important;
       }
-      .stampBadge .top{ font-size: 3.0mm !important; }
-      .stampBadge .bottom{ font-size: 3.3mm !important; }
-      .stampBadge::before{ font-size: 3.6mm !important; left:-1.6mm !important; top:-2.8mm !important; }
+      .stampBadge .top{ font-size: 3.1mm !important; }
+      .stampBadge .bottom{ font-size: 3.4mm !important; margin-top:0 !important; }
+      .stampBadge::before{ font-size: 3.8mm !important; left:-1.6mm !important; top:-2.8mm !important; }
 
-      .foot{ padding: 4.6mm 6mm 5.2mm !important; }
+      .foot{ padding: 5mm 7mm 5.5mm !important; }
 
-      .hoursLabel{ font-size: 5.2mm !important; }
-      .hoursTime{ font-size: 13.2mm !important; }
-      .hoursTime .lo{ font-size: 3.6mm !important; }
+      .hoursLabel{ font-size: 5.6mm !important; }
+      .hoursTime{ font-size: 14.2mm !important; }
+      .hoursTime .lo{ font-size: 4.0mm !important; }
 
-      .warn{ font-size: 3.6mm !important; }
+      .warn{ font-size: 4.0mm !important; }
 
-      .shopName{ font-size: 10.8mm !important; }
+      .shopName{ font-size: 12.0mm !important; }
 
-      /* 電話は必ず横並び */
       .telRow{ flex-wrap:nowrap !important; gap: 3mm !important; }
-      .telBadge{ font-size: 3.6mm !important; padding: 1.8mm 2.6mm !important; }
-      .telLine{ font-size: 3.8mm !important; }
-      .telLine .num{ font-size: 6.4mm !important; }
+      .telBadge{ font-size: 4.0mm !important; padding: 2.0mm 2.8mm !important; }
+      .telLine{ font-size: 4.2mm !important; }
+      .telLine .num{ font-size: 7.0mm !important; }
 
-      .sheet, .band, .dow, .grid, .foot{ break-inside:avoid !important; page-break-inside:avoid !important; }
+      .sheet, .band, .dow, .grid, .foot{
+        break-inside:avoid !important;
+        page-break-inside:avoid !important;
+      }
     }
   </style>
 </head>
@@ -586,6 +619,8 @@
           const shouldAuto = isAutoStampDay(d);
 
           if(tag || shouldAuto){
+            cell.classList.add("hasStamp"); // ✅ 安全領域確保
+
             const badge = document.createElement("div");
             badge.className = "stampBadge";
 
