@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>菜々カレンダー管理</title>
+  <style>
+    :root{
+      --bg:#0b0d17;
+      --panel:rgba(255,255,255,.08);
+      --line:rgba(255,255,255,.14);
+      --text:#fff;
+      --muted:rgba(255,255,255,.75);
+      --accent:#7fd0ff;
+      --danger:#ff6b6b;
+      --ok:#61ffa0;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui,-apple-system,"Noto Sans JP",sans-serif;
+      background: radial-gradient(circle at 50% 10%, #1b2350 0%, #070812 60%), linear-gradient(#07060b,#0c0b12);
+      color:var(--text);
+      min-height:100svh;
+    }
+    .wrap{ max-width:980px; margin:0 auto; padding:16px 12px 40px; }
+    .title{ font-size:20px; font-weight:900; letter-spacing:.02em; }
+    .sub{ color:var(--muted); font-size:12px; margin-top:4px; line-height:1.6; }
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      margin-top:12px;
+    }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    button{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.10);
+      color:var(--text);
+      border-radius:12px;
+      padding:10px 12px;
+      font-weight:900;
+      cursor:pointer;
+    }
+    button.primary{
+      border-color:rgba(127,208,255,.55);
+      box-shadow:0 0 0 2px rgba(127,208,255,.14) inset;
+    }
+    button.good{
+      border-color:rgba(97,255,160,.55);
+      box-shadow:0 0 0 2px rgba(97,255,160,.14) inset;
+    }
+    button.danger{
+      border-color:rgba(255,107,107,.55);
+      box-shadow:0 0 0 2px rgba(255,107,107,.14) inset;
+    }
+    .ym{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .ym h2{ margin:0; font-size:18px; font-weight:1000; }
+    .dow{
+      display:grid;
+      grid-template-columns: repeat(7,1fr);
+      gap:8px;
+      margin-top:10px;
+      color:var(--muted);
+      font-weight:900;
+      font-size:12px;
+    }
+    .dow div{ text-align:center; }
+    .grid{
+      margin-top:10px;
+      display:grid;
+      grid-template-columns: repeat(7,1fr);
+      gap:8px;
+    }
+    .cell{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
+      border-radius:12px;
+      padding:10px 8px;
+      min-height:78px;
+    }
+    .cell.blank{ opacity:.25; }
+    .daynum{
+      font-size:16px;
+      font-weight:1000;
+      line-height:1;
+    }
+    .mini{
+      margin-top:6px;
+      font-size:11px;
+      color:rgba(255,255,255,.75);
+      line-height:1.4;
+    }
+    .badges{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+      margin-top:8px;
+    }
+    .badge{
+      font-size:11px;
+      font-weight:1000;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.08);
+      cursor:pointer;
+      user-select:none;
+    }
+    .badge.off.on{ border-color:rgba(255,107,107,.55); box-shadow:0 0 0 2px rgba(255,107,107,.14) inset; }
+    .badge.stamp.on{ border-color:rgba(127,208,255,.55); box-shadow:0 0 0 2px rgba(127,208,255,.14) inset; }
+    textarea{
+      width:100%;
+      min-height:220px;
+      background:rgba(0,0,0,.35);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      color:var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Noto Sans Mono", monospace;
+      font-size:12px;
+      line-height:1.5;
+      margin-top:10px;
+      white-space:pre;
+    }
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:8px;
+      line-height:1.6;
+    }
+    .toast{
+      position:fixed;
+      left:12px; right:12px;
+      bottom: calc(12px + env(safe-area-inset-bottom));
+      background: rgba(0,0,0,.7);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:14px;
+      padding:12px 12px;
+      font-weight:900;
+      opacity:0;
+      transform: translateY(10px);
+      transition:.18s ease;
+      pointer-events:none;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+    .toast.on{ opacity:1; transform:none; }
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <div class="title">菜々カレンダー管理（休日/スタンプ2倍）</div>
+  <div class="sub">
+    ✅ 基本休み：<b>毎週水曜</b>＋<b>第2・第3木曜</b>は自動<br>
+    ✅ 自動2倍：<b>7/17/27（7のつく日）</b>は表示ページ側で自動（休みなら表示しない）<br>
+    ✅ 変則：臨時休業の追加だけここでON → JSONを書き出し → <code>assets/calendar-data.json</code> にコピペしてcommit
+  </div>
+
+  <section class="panel">
+    <div class="ym">
+      <div class="row">
+        <button id="prevBtn" type="button">← 前月</button>
+        <button id="todayBtn" type="button" class="primary">今月</button>
+        <button id="nextBtn" type="button">次月 →</button>
+      </div>
+      <h2 id="ymTitle">2026-03</h2>
+    </div>
+
+    <div class="dow">
+      <div style="color:#ff8b8b;">日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div style="color:#8bb3ff;">土</div>
+    </div>
+    <div class="grid" id="grid"></div>
+
+    <div class="hint">
+      ・「休み」ON：臨時休業を追加（基本休みとは別に上書き）<br>
+      ・「スタンプ2倍」ON：特別に追加したい時だけ（通常は7/17/27が自動）<br>
+      ・「（基）」表示＝その日が基本休み（水曜 or 第2/第3木曜）
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="row" style="justify-content:space-between;">
+      <div class="row">
+        <button id="exportBtn" type="button" class="good">JSONを書き出し</button>
+        <button id="copyBtn" type="button">コピー</button>
+      </div>
+      <div class="row">
+        <button id="clearBtn" type="button" class="danger">この端末の設定を全削除</button>
+      </div>
+    </div>
+    <textarea id="out" spellcheck="false" placeholder="ここにJSONが出ます"></textarea>
+    <div class="hint">
+      ※保存先はこの端末内（localStorage）です。<b>GitHubへ反映するにはコピペ→commitが必要</b>です。
+    </div>
+  </section>
+
+  <div class="toast" id="toast"></div>
+</main>
+
+<script>
+(() => {
+  "use strict";
+  const STORE_KEY = "nana_calendar_admin_v1";
+  const $ = (s, el=document) => el.querySelector(s);
+
+  const gridEl = $("#grid");
+  const ymTitleEl = $("#ymTitle");
+  const outEl = $("#out");
+  const toastEl = $("#toast");
+
+  let toastT=null;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add("on");
+    clearTimeout(toastT);
+    toastT = setTimeout(()=>toastEl.classList.remove("on"), 1200);
+  }
+
+  let view = (() => {
+    const d = new Date();
+    return { y: d.getFullYear(), m: d.getMonth()+1 };
+  })();
+
+  // 月ごとの手動設定：{ "YYYY-MM": { off:[], tags:{} } }
+  let OV = loadOV();
+
+  function loadOV(){
+    try{
+      const raw = localStorage.getItem(STORE_KEY);
+      if(!raw) return {};
+      const obj = JSON.parse(raw);
+      return (obj && typeof obj === "object") ? obj : {};
+    }catch(e){ return {}; }
+  }
+  function saveOV(){ localStorage.setItem(STORE_KEY, JSON.stringify(OV)); }
+
+  function pad2(n){ return String(n).padStart(2,"0"); }
+  function ymKey(y,m){ return `${y}-${pad2(m)}`; }
+  function ymd(y,m,d){ return `${y}-${pad2(m)}-${pad2(d)}`; }
+  function daysInMonth(y,m){ return new Date(y, m, 0).getDate(); }
+  function firstDow(y,m){ return new Date(y, m-1, 1).getDay(); }
+
+  function monthObj(y,m){
+    const key = ymKey(y,m);
+    if(!OV[key]) OV[key] = { off: [], tags: {} };
+    OV[key].off = Array.isArray(OV[key].off) ? OV[key].off : [];
+    OV[key].tags = (OV[key].tags && typeof OV[key].tags==="object") ? OV[key].tags : {};
+    return OV[key];
+  }
+
+  // 基本休み：水曜＋第2/第3木曜
+  function isBaseOff(y,m,d){
+    const dt = new Date(y, m-1, d);
+    const dow = dt.getDay();
+    if(dow === 3) return true;
+    if(dow === 4){
+      let count = 0;
+      for(let i=1;i<=d;i++){
+        if(new Date(y, m-1, i).getDay() === 4) count++;
+      }
+      return (count===2 || count===3);
+    }
+    return false;
+  }
+
+  function isAutoStampDay(d){
+    return (d===7 || d===17 || d===27);
+  }
+
+  function toggleOff(y,m,d){
+    const mo = monthObj(y,m);
+    const dateStr = ymd(y,m,d);
+    const idx = mo.off.indexOf(dateStr);
+    if(idx >= 0){
+      mo.off.splice(idx,1);
+      toast(`${dateStr}：休みOFF`);
+    }else{
+      mo.off.push(dateStr);
+      toast(`${dateStr}：休みON`);
+    }
+    saveOV();
+    render();
+  }
+
+  function toggleStamp(y,m,d){
+    const mo = monthObj(y,m);
+    const dateStr = ymd(y,m,d);
+    if(mo.tags[dateStr]){
+      delete mo.tags[dateStr];
+      toast(`${dateStr}：2倍OFF`);
+    }else{
+      mo.tags[dateStr] = "スタンプ\n2倍";
+      toast(`${dateStr}：2倍ON`);
+    }
+    saveOV();
+    render();
+  }
+
+  function render(){
+    const {y,m} = view;
+    const key = ymKey(y,m);
+    ymTitleEl.textContent = key;
+    gridEl.innerHTML = "";
+
+    const start = firstDow(y,m);
+    const last = daysInMonth(y,m);
+    const mo = monthObj(y,m);
+
+    for(let i=0;i<start;i++){
+      const b = document.createElement("div");
+      b.className = "cell blank";
+      gridEl.appendChild(b);
+    }
+
+    for(let d=1; d<=last; d++){
+      const dateStr = ymd(y,m,d);
+      const baseOff = isBaseOff(y,m,d);
+      const manualOff = mo.off.includes(dateStr);
+      const manualStamp = !!mo.tags[dateStr];
+      const autoStamp = isAutoStampDay(d);
+
+      const cell = document.createElement("div");
+      cell.className = "cell";
+
+      const n = document.createElement("div");
+      n.className = "daynum";
+      n.textContent = d + (baseOff ? "（基）" : "");
+      cell.appendChild(n);
+
+      const mini = document.createElement("div");
+      mini.className = "mini";
+      mini.textContent =
+        ( (baseOff || manualOff) ? "休み" : "営業" ) +
+        ( autoStamp ? " / 自動2倍" : "" ) +
+        ( manualStamp ? " / 手動2倍" : "" );
+      cell.appendChild(mini);
+
+      const badges = document.createElement("div");
+      badges.className = "badges";
+
+      const bOff = document.createElement("div");
+      bOff.className = "badge off" + (manualOff ? " on" : "");
+      bOff.textContent = "休み";
+      bOff.addEventListener("click", () => toggleOff(y,m,d));
+      badges.appendChild(bOff);
+
+      const bStamp = document.createElement("div");
+      bStamp.className = "badge stamp" + (manualStamp ? " on" : "");
+      bStamp.textContent = "スタンプ2倍";
+      bStamp.addEventListener("click", () => toggleStamp(y,m,d));
+      badges.appendChild(bStamp);
+
+      cell.appendChild(badges);
+
+      // 補足：自動2倍の日は、休みと被ると表示ページ側で「休」優先になる
+      gridEl.appendChild(cell);
+    }
+
+    const total = gridEl.children.length;
+    const mod = total % 7;
+    if(mod !== 0){
+      for(let i=0;i<7-mod;i++){
+        const b = document.createElement("div");
+        b.className = "cell blank";
+        gridEl.appendChild(b);
+      }
+    }
+  }
+
+  function addMonth(delta){
+    let y=view.y, m=view.m + delta;
+    while(m<=0){ m+=12; y--; }
+    while(m>=13){ m-=12; y++; }
+    view = { y, m };
+    render();
+  }
+
+  function exportJSON(){
+    // 表示ページが読む形式：{ overrides: { "YYYY-MM": { off:[...], tags:{...} } } }
+    // ここで出す off は「手動の追加休みのみ」でOK（基本休みは表示JSで自動だから）。
+    const out = { overrides: {} };
+    const keys = Object.keys(OV).sort();
+    for(const key of keys){
+      const mo = OV[key];
+      if(!mo) continue;
+
+      const off = Array.isArray(mo.off) ? mo.off.slice() : [];
+      const tags = (mo.tags && typeof mo.tags==="object") ? mo.tags : {};
+
+      // 空なら出力しない（JSONをスッキリ）
+      if(off.length === 0 && Object.keys(tags).length === 0) continue;
+
+      out.overrides[key] = { off, tags };
+    }
+
+    outEl.value = JSON.stringify(out, null, 2);
+    toast("JSONを書き出しました");
+  }
+
+  $("#prevBtn").addEventListener("click", () => addMonth(-1));
+  $("#nextBtn").addEventListener("click", () => addMonth(1));
+  $("#todayBtn").addEventListener("click", () => {
+    const d = new Date();
+    view = { y:d.getFullYear(), m:d.getMonth()+1 };
+    render();
+  });
+
+  $("#exportBtn").addEventListener("click", exportJSON);
+
+  $("#copyBtn").addEventListener("click", async () => {
+    if(!outEl.value.trim()) exportJSON();
+    try{
+      await navigator.clipboard.writeText(outEl.value);
+      toast("コピーしました");
+    }catch(e){
+      outEl.focus(); outEl.select();
+      toast("手動でコピーしてください");
+    }
+  });
+
+  $("#clearBtn").addEventListener("click", () => {
+    localStorage.removeItem(STORE_KEY);
+    OV = loadOV();
+    outEl.value = "";
+    toast("削除しました");
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
