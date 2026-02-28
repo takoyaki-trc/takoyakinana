@@ -1,348 +1,685 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>3月 菜々カレンダー</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>菜々カレンダー</title>
+  <meta name="description" content="たこ焼き 菜々：営業日カレンダー（A4横印刷 1枚固定）" />
 
-<style>
-  :root{
-    --ink:#111;
-    --grid:#9aa0a6;
-    --head:#c95353;
-    --headText:#fff;
-    --holidayBg:#f4d7d7;
-    --holidayInk:#c33;
-    --sun:#d22;
-    --sat:#2a60c8;
+  <style>
+    :root{
+      --paper:#fff;
+      --ink:#111;
+      --muted:#333;
 
-    /* 画面用：自動スケール（スマホでも崩れない） */
-    --pad: clamp(10px, 2.2vw, 22px);
-    --title: clamp(16px, 2.2vw, 26px);
-    --dow: clamp(12px, 1.3vw, 16px);
-    --day: clamp(14px, 1.9vw, 20px);
+      --grid:#8f9aa5;
+      --grid2:#c4ccd4;
 
-    --holidayMark: clamp(16px, 2.8vw, 26px);
+      --band:#d85c61;
+      --band2:#c94d53;
 
-    --stampFont: clamp(10px, 1.2vw, 12px);
-    --stampPadY: 2px;
-    --stampPadX: 7px;
+      --sun:#d04545;
+      --sat:#2f6bff;
 
-    --hours: clamp(16px, 2.2vw, 26px);
-    --note: clamp(11px, 1.3vw, 14px);
-    --shop: clamp(22px, 3.8vw, 48px);
-    --telLabel: clamp(11px, 1.3vw, 14px);
-    --tel: clamp(16px, 2.4vw, 28px);
-  }
+      --cellbg:#ffffff;
+      --offbg:#ffe9eb;
+      --off:#d24a4a;
 
-  body{
-    margin:0;
-    font-family: system-ui,-apple-system,"Noto Sans JP",sans-serif;
-    background:#b78a55;
-    color:var(--ink);
-  }
+      --stampRed:#d53737;
+      --stampYellow:#ffd54a;
+      --stampBorder:#c79b18;
 
-  /* ===== 画面表示：A4横比率でピッタリ収める ===== */
-  .sheet{
-    width: min(calc(100vw - 16px), 1100px);
-    aspect-ratio: 297 / 210; /* A4横 */
-    margin: 12px auto 24px;
-    background:#fff;
-    border-radius: 8px;
-    box-shadow: 0 10px 26px rgba(0,0,0,.22);
-    overflow:hidden;
+      /* 画像っぽい太め書体寄せ（環境依存。無ければ近い系へフォールバック） */
+      --edoBold: "HGS創英角ﾎﾟｯﾌﾟ体","HGP創英角ﾎﾟｯﾌﾟ体","HGP行書体","HGS行書体","Yuji Syuku","Klee One","Noto Sans JP","Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
 
-    display:grid;
-    grid-template-rows: auto 1fr auto;
-  }
-
-  .wrap{
-    padding: var(--pad);
-    display:grid;
-    grid-template-rows: auto 1fr auto;
-    gap: clamp(8px, 1.2vw, 14px);
-    height:100%;
-    box-sizing:border-box;
-  }
-
-  /* ===== タイトル帯 ===== */
-  .header{
-    background: var(--head);
-    color: var(--headText);
-    text-align:center;
-    font-weight: 900;
-    font-size: var(--title);
-    padding: clamp(8px, 1.2vw, 12px) 10px;
-    border-radius: 6px;
-    letter-spacing: .03em;
-  }
-
-  /* ===== カレンダー（tableではなくgridで安定させる） ===== */
-  .cal{
-    border: 1px solid var(--grid);
-    border-radius: 6px;
-    overflow:hidden;
-    display:grid;
-    grid-template-rows: auto 1fr;
-    background:#fff;
-  }
-
-  .dowRow{
-    display:grid;
-    grid-template-columns: repeat(7, 1fr);
-    background:#eee;
-    border-bottom:1px solid var(--grid);
-  }
-  .dow{
-    text-align:center;
-    font-weight: 800;
-    font-size: var(--dow);
-    padding: clamp(6px, .8vw, 10px) 0;
-    border-right:1px solid var(--grid);
-  }
-  .dow:last-child{ border-right:none; }
-  .dow.sun{ color: var(--sun); }
-  .dow.sat{ color: var(--sat); }
-
-  .grid{
-    display:grid;
-    grid-template-columns: repeat(7, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-  }
-
-  .cell{
-    position:relative;
-    border-right:1px solid var(--grid);
-    border-bottom:1px solid var(--grid);
-    padding: clamp(6px, .9vw, 10px);
-    box-sizing:border-box;
-    background:#fff;
-  }
-  .cell:nth-child(7n){ border-right:none; }
-  .cell:nth-last-child(-n+7){ border-bottom:none; }
-
-  /* 日付（左上固定） */
-  .date{
-    position:absolute;
-    top: clamp(6px, .9vw, 10px);
-    left: clamp(6px, .9vw, 10px);
-    font-size: var(--day);
-    font-weight: 900;
-    line-height: 1;
-    z-index: 3;
-  }
-  .date.sun{ color: var(--sun); }
-  .date.sat{ color: var(--sat); }
-
-  /* 休日背景 */
-  .cell.holiday{ background: var(--holidayBg); }
-
-  /* 休（下中央） */
-  .holidayMark{
-    position:absolute;
-    left:50%;
-    bottom: clamp(10px, 1.2vw, 14px);
-    transform: translateX(-50%);
-    font-size: var(--holidayMark);
-    font-weight: 900;
-    color: var(--holidayInk);
-    line-height:1;
-    z-index: 2;
-    user-select:none;
-    pointer-events:none;
-  }
-
-  /* スタンプ：右下固定（絶対に日付と被らない） */
-  .stamp{
-    position:absolute;
-    right: clamp(6px, .9vw, 10px);
-    bottom: clamp(6px, .9vw, 10px);
-    font-size: var(--stampFont);
-    font-weight: 900;
-    background:#ffd24a;
-    color:#111;
-    padding: var(--stampPadY) var(--stampPadX);
-    border-radius: 999px;
-    transform: rotate(-10deg);
-    box-shadow: 0 2px 0 rgba(0,0,0,.18);
-    max-width: 70%;
-    white-space: nowrap;
-    z-index: 2;
-  }
-
-  /* 日付が絶対に見えるよう、右下のスタンプ領域ぶん余白を確保（念押し） */
-  .cell.hasStamp{
-    padding-bottom: clamp(22px, 3vw, 34px);
-  }
-
-  /* ===== 下段（全部中央寄せ） ===== */
-  .bottom{
-    text-align:center;
-    border-top: 2px solid var(--grid);
-    padding-top: clamp(8px, 1.2vw, 12px);
-  }
-
-  .hours{
-    font-size: var(--hours);
-    font-weight: 900;
-    letter-spacing:.02em;
-    margin-bottom: 4px;
-  }
-  .hours small{
-    font-size: .55em;
-    font-weight: 800;
-    margin-left: 8px;
-  }
-
-  .note{
-    font-size: var(--note);
-    opacity:.9;
-    margin: 0 0 clamp(8px, 1.2vw, 12px);
-  }
-
-  /* 店名＋電話（PC/印刷は横並び、スマホは自然に折り返し） */
-  .shopRow{
-    display:flex;
-    justify-content:center;
-    align-items:flex-end;
-    gap: clamp(14px, 2.6vw, 30px);
-    flex-wrap:wrap;
-  }
-
-  /* “江戸っぽい太さ”の代用：明朝寄り＋太字（端末依存だけど一番安全） */
-  .shop{
-    font-size: var(--shop);
-    font-weight: 1000;
-    letter-spacing:.06em;
-    font-family: "Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;
-  }
-
-  .telBlock{
-    text-align:center;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap: 6px;
-  }
-
-  .telLabel{
-    background:#333;
-    color:#fff;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: var(--telLabel);
-    font-weight: 900;
-    white-space: nowrap;
-  }
-
-  .tel{
-    font-size: var(--tel);
-    font-weight: 1000;
-    letter-spacing:.03em;
-    white-space: nowrap;
-  }
-
-  /* ===== 印刷：A4横1枚にピッタリ ===== */
-  @page{
-    size: A4 landscape;
-    margin: 0;
-  }
-  @media print{
-    body{ background:#fff; }
-    .sheet{
-      width: 297mm;
-      height: 210mm;
-      aspect-ratio: auto;
-      margin: 0;
-      border-radius: 0;
-      box-shadow:none;
+      /* ✅ バッジが右下に来るので「右下の安全領域」を確保 */
+      --stampSafeW: 56px;
+      --stampSafeH: 34px;
     }
-    .wrap{ padding: 12mm; }
-  }
-</style>
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui,-apple-system,"Noto Sans JP",sans-serif;
+      color:var(--ink);
+      min-height:100svh;
+      background:
+        linear-gradient(90deg,
+          rgba(120,80,40,.22) 0%,
+          rgba(140,95,50,.18) 12%,
+          rgba(110,70,35,.22) 24%,
+          rgba(155,105,60,.16) 36%,
+          rgba(115,75,40,.22) 48%,
+          rgba(145,95,55,.18) 60%,
+          rgba(105,65,35,.22) 72%,
+          rgba(150,100,58,.16) 84%,
+          rgba(120,80,40,.22) 100%
+        ),
+        radial-gradient(circle at 20% 10%, rgba(255,255,255,.35), rgba(255,255,255,0) 55%),
+        radial-gradient(circle at 80% 30%, rgba(255,255,255,.25), rgba(255,255,255,0) 60%),
+        linear-gradient(#caa67b, #b88f63);
+    }
+
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 14px 12px 24px;
+    }
+
+    .sheet{
+      background: var(--paper);
+      border: 1px solid #d9d9d9;
+      box-shadow: 0 14px 40px rgba(0,0,0,.18);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    /* ===== 上帯 ===== */
+    .band{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:16px;
+      padding: 14px 12px;
+      background: linear-gradient(180deg,var(--band),var(--band2));
+      color:#fff;
+      font-weight: 1000;
+      letter-spacing:.04em;
+    }
+    .band-month{
+      font-size: 30px;
+      color:#ffd56b;
+      text-shadow: 0 2px 0 rgba(0,0,0,.18);
+    }
+    .band-title{ font-size: 30px; }
+
+    /* ===== 曜日 ===== */
+    .dow{
+      display:grid;
+      grid-template-columns:repeat(7, 1fr);
+      background:#fff;
+      border-top: 2px solid var(--grid);
+      border-bottom: 2px solid var(--grid);
+      font-weight: 1000;
+    }
+    .dow > div{
+      text-align:center;
+      padding: 10px 0;
+      border-right: 1px solid var(--grid2);
+      font-size: 18px;
+    }
+    .dow > div:last-child{ border-right:none; }
+    .dow .sun{ color:var(--sun); }
+    .dow .sat{ color:var(--sat); }
+
+    /* ===== カレンダーグリッド ===== */
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(7, 1fr);
+      grid-auto-rows: 78px;
+      background:#fff;
+      border-bottom: 2px solid var(--grid);
+    }
+
+    .cell{
+      position:relative;
+      background: var(--cellbg);
+      border-right: 1px solid var(--grid2);
+      border-bottom: 1px solid var(--grid2);
+      padding: 8px;
+      overflow:hidden;
+    }
+    .cell:nth-child(7n){ border-right:none; }
+    .cell.blank{ opacity:.28; background:#fff; }
+
+    /* ✅ 日付：左上固定（最前面） */
+    .day{
+      position:absolute;
+      left: 8px;
+      top: 8px;
+      font-weight:1000;
+      font-size: 26px;
+      line-height:1;
+      z-index: 10;
+      pointer-events:none;
+      text-shadow: 0 1px 0 rgba(255,255,255,.55);
+    }
+    .cell.sun .day{ color:var(--sun); }
+    .cell.sat .day{ color:var(--sat); }
+
+    /* ✅ スタンプがある日は「右下の安全領域」を確保 */
+    .cell.hasStamp{
+      padding-right: 8px;
+      padding-bottom: 8px;
+    }
+    .cell.hasStamp::after{
+      content:"";
+      position:absolute;
+      right:0;
+      bottom:0;
+      width: var(--stampSafeW);
+      height: var(--stampSafeH);
+      background: transparent;
+      z-index:1;
+      pointer-events:none;
+    }
+
+    /* 休みマスだけ背景色 */
+    .cell.isOff{ background: var(--offbg); }
+
+    /* 休：右下 */
+    .offMark{
+      position:absolute;
+      right: 8px;
+      bottom: 8px;
+      font-weight:1000;
+      font-size: 24px;
+      color: var(--off);
+      opacity:.95;
+      pointer-events:none;
+      z-index:3;
+    }
+
+    /* ✅ スタンプ2倍：右下固定（被り防止のため日付は入れない） */
+    .stampBadge{
+      position:absolute;
+      right: 6px;
+      bottom: 6px;
+      transform: rotate(-8deg);
+      transform-origin: bottom right;
+      background: radial-gradient(circle at 30% 25%, #fff7c7 0%, var(--stampYellow) 45%, #ffbf2f 100%);
+      border: 2px solid var(--stampBorder);
+      border-radius: 11px;
+      padding: 4px 5px;
+      width: 50px;
+      text-align:center;
+      font-weight:1000;
+      color: var(--stampRed);
+      box-shadow: 0 3px 0 rgba(0,0,0,.14);
+      pointer-events:none;
+      z-index:2;
+      line-height:1;
+    }
+    .stampBadge .top{
+      font-size: 10px;
+      white-space:nowrap;
+      line-height:1;
+      margin:0;
+    }
+    .stampBadge .bottom{
+      font-size: 12px;
+      white-space:nowrap;
+      line-height:1;
+      margin-top:0;
+      letter-spacing:.02em;
+    }
+
+    /* ===== 下段：画像のレイアウトに寄せる ===== */
+    .foot{
+      padding: 14px 16px 16px;
+      background:#fff;
+    }
+
+    /* 営業時間 行（左：営業時間 / 右：時間 / 右端：L.O.） */
+    .hoursRow{
+      display:grid;
+      grid-template-columns: 120px 1fr auto;
+      align-items:end;
+      column-gap: 14px;
+    }
+    .hoursLabel{
+      font-weight:1000;
+      font-size: 22px;
+      letter-spacing:.02em;
+      white-space:nowrap;
+    }
+    .hoursTime{
+      font-weight:1000;
+      font-size: 56px;
+      line-height:1;
+      letter-spacing:.01em;
+      white-space:nowrap;
+    }
+    .hoursLo{
+      font-weight:900;
+      font-size: 18px;
+      color: var(--muted);
+      white-space:nowrap;
+      padding-bottom: 6px;
+    }
+
+    .warn{
+      margin-top: 8px;
+      font-size: 16px;
+      color: var(--muted);
+      line-height:1.35;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    /* 最下段：左＝店名 / 右＝電話ブロック（上：予約、下：TEL） */
+    .bottomRow{
+      margin-top: 10px;
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      align-items:end;
+      column-gap: 18px;
+    }
+
+    .shopName{
+      font-family: var(--edoBold);
+      font-weight:1000;
+      font-size: 58px;
+      line-height:1;
+      letter-spacing:.06em;
+      white-space:nowrap;
+      text-shadow:
+        0 1px 0 rgba(0,0,0,.14),
+        1px 0 0 rgba(0,0,0,.08),
+        -1px 0 0 rgba(0,0,0,.08);
+    }
+
+    .telBox{
+      display:grid;
+      grid-template-rows: auto auto;
+      justify-items:end;
+      row-gap: 8px;
+    }
+    .telReserve{
+      background:#333;
+      color:#fff;
+      font-weight:1000;
+      font-size: 16px;
+      padding: 10px 14px;
+      border-radius: 6px;
+      white-space:nowrap;
+    }
+    .telLine{
+      font-weight:1000;
+      font-size: 18px;
+      white-space:nowrap;
+    }
+    .telLine .num{
+      font-size: 34px;
+      letter-spacing:.02em;
+    }
+
+    /* 操作ボタン */
+    .bars{
+      margin-top: 10px;
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+    .bars button{
+      border:1px solid rgba(0,0,0,.18);
+      background:rgba(255,255,255,.9);
+      padding:10px 12px;
+      border-radius:10px;
+      font-weight:1000;
+      cursor:pointer;
+    }
+
+    /* ===== スマホ ===== */
+    @media (max-width: 520px){
+      .grid{ grid-auto-rows: 64px; }
+
+      .day{ font-size: 22px; left:6px; top:6px; }
+      .offMark{ font-size: 18px; right: 6px; bottom: 6px; }
+
+      /* スタンプも小さめ */
+      :root{ --stampSafeW: 50px; --stampSafeH: 30px; }
+      .stampBadge{
+        width: 44px;
+        padding: 3px 4px;
+        border-radius: 10px;
+        right: 5px;
+        bottom: 5px;
+      }
+      .stampBadge .top{ font-size: 9px; }
+      .stampBadge .bottom{ font-size: 11px; }
+
+      /* 営業時間：崩れないよう縮小 */
+      .hoursRow{
+        grid-template-columns: 86px 1fr auto;
+        column-gap: 10px;
+      }
+      .hoursLabel{ font-size: 16px; }
+      .hoursTime{ font-size: 40px; }
+      .hoursLo{ font-size: 14px; padding-bottom: 4px; }
+
+      .warn{
+        font-size: 13px;
+        white-space:normal;
+        overflow:visible;
+        text-overflow:clip;
+      }
+
+      /* 店名＋電話：2段にしてでも見切れ防止 */
+      .bottomRow{
+        grid-template-columns: 1fr;
+        row-gap: 10px;
+      }
+      .shopName{
+        text-align:left;
+        font-size: 44px;
+      }
+      .telBox{
+        justify-items:start;
+      }
+      .telReserve{ font-size: 14px; padding: 9px 12px; }
+      .telLine{ font-size: 14px; }
+      .telLine .num{ font-size: 24px; }
+    }
+
+    /* ===== 印刷（A4横・1枚固定） ===== */
+    @page{
+      size: A4 landscape;
+      margin: 3mm;
+    }
+    @media print{
+      *{
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      html, body{
+        background:#fff !important;
+        height: 100% !important;
+      }
+      .wrap{
+        max-width:none !important;
+        padding:0 !important;
+        margin:0 !important;
+      }
+      .bars{ display:none !important; }
+
+      .sheet{
+        width: 100% !important;
+        height: calc(210mm - 6mm) !important; /* A4横の高さ固定 */
+        border: 0.35mm solid #777 !important;
+        box-shadow:none !important;
+        border-radius:0 !important;
+        overflow:hidden !important;
+        page-break-inside:avoid !important;
+        break-inside:avoid !important;
+      }
+
+      .band{ padding: 6mm 5mm !important; }
+      .band-month{ font-size: 10.5mm !important; }
+      .band-title{ font-size: 10.5mm !important; }
+
+      .dow > div{
+        padding: 2.5mm 0 !important;
+        font-size: 4.2mm !important;
+      }
+
+      .grid{
+        border-bottom:0.4mm solid #666 !important;
+        grid-auto-rows: 20mm !important; /* 1枚に収める核 */
+      }
+
+      .day{
+        font-size: 6.6mm !important;
+        left: 2.4mm !important;
+        top: 2.2mm !important;
+      }
+      .offMark{
+        font-size: 6.0mm !important;
+        right: 2.4mm !important;
+        bottom: 2.2mm !important;
+      }
+
+      /* 右下バッジ */
+      :root{ --stampSafeW: 18mm; --stampSafeH: 11mm; }
+      .stampBadge{
+        width: 15mm !important;
+        padding: 1.4mm 1.1mm !important;
+        border-radius: 3mm !important;
+        right: 2mm !important;
+        bottom: 2mm !important;
+        border-width: 0.6mm !important;
+      }
+      .stampBadge .top{ font-size: 3.0mm !important; }
+      .stampBadge .bottom{ font-size: 3.4mm !important; }
+
+      .foot{ padding: 4.5mm 6mm 5mm !important; }
+
+      /* 印刷時は文字を“画像くらい大きく” */
+      .hoursLabel{ font-size: 5.4mm !important; }
+      .hoursTime{ font-size: 14.2mm !important; }
+      .hoursLo{ font-size: 4.2mm !important; padding-bottom: 1.2mm !important; }
+
+      .warn{ font-size: 4.0mm !important; }
+
+      .bottomRow{ grid-template-columns: 1fr 90mm !important; }
+      .shopName{ font-size: 15.0mm !important; }
+      .telReserve{ font-size: 4.2mm !important; padding: 2.2mm 3mm !important; }
+      .telLine{ font-size: 4.4mm !important; }
+      .telLine .num{ font-size: 7.8mm !important; }
+
+      .band, .dow, .grid, .foot{ page-break-inside:avoid !important; break-inside:avoid !important; }
+    }
+  </style>
 </head>
 
 <body>
-  <div class="sheet">
-    <div class="wrap">
+  <main class="wrap">
+    <section class="sheet" aria-label="営業日カレンダー">
+      <div class="band">
+        <div class="band-month" id="bandMonth">3月</div>
+        <div class="band-title">菜々カレンダー</div>
+      </div>
 
-      <div class="header">3月 菜々カレンダー</div>
+      <div class="dow">
+        <div class="sun">日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div class="sat">土</div>
+      </div>
 
-      <section class="cal" aria-label="3月のカレンダー">
-        <div class="dowRow">
-          <div class="dow sun">日</div>
-          <div class="dow">月</div>
-          <div class="dow">火</div>
-          <div class="dow">水</div>
-          <div class="dow">木</div>
-          <div class="dow">金</div>
-          <div class="dow sat">土</div>
+      <div class="grid" id="calGrid"></div>
+
+      <div class="foot">
+        <div class="hoursRow">
+          <div class="hoursLabel">営業時間</div>
+          <div class="hoursTime">11:00 ～ 19:30</div>
+          <div class="hoursLo">(L.O.)</div>
         </div>
 
-        <!-- 3月（画像の内容に合わせて固定配置） -->
-        <div class="grid">
-          <!-- 1週目 -->
-          <div class="cell"><div class="date sun">1</div></div>
-          <div class="cell"><div class="date">2</div></div>
-          <div class="cell"><div class="date">3</div></div>
-          <div class="cell holiday"><div class="date">4</div><div class="holidayMark">休</div></div>
-          <div class="cell"><div class="date">5</div></div>
-          <div class="cell"><div class="date">6</div></div>
-          <div class="cell hasStamp"><div class="date sat">7</div><div class="stamp">スタンプ2倍</div></div>
+        <div class="warn">※材料、または店主の元気がなくなり次第終了する場合があります。</div>
 
-          <!-- 2週目 -->
-          <div class="cell"><div class="date sun">8</div></div>
-          <div class="cell"><div class="date">9</div></div>
-          <div class="cell"><div class="date">10</div></div>
-          <div class="cell holiday"><div class="date">11</div><div class="holidayMark">休</div></div>
-          <div class="cell holiday"><div class="date">12</div><div class="holidayMark">休</div></div>
-          <div class="cell"><div class="date">13</div></div>
-          <div class="cell"><div class="date sat">14</div></div>
+        <div class="bottomRow">
+          <div class="shopName">たこ焼き 菜々</div>
 
-          <!-- 3週目 -->
-          <div class="cell"><div class="date sun">15</div></div>
-          <div class="cell"><div class="date">16</div></div>
-          <div class="cell hasStamp"><div class="date">17</div><div class="stamp">スタンプ2倍</div></div>
-          <div class="cell holiday"><div class="date">18</div><div class="holidayMark">休</div></div>
-          <div class="cell holiday"><div class="date">19</div><div class="holidayMark">休</div></div>
-          <div class="cell"><div class="date">20</div></div>
-          <div class="cell"><div class="date sat">21</div></div>
-
-          <!-- 4週目 -->
-          <div class="cell"><div class="date sun">22</div></div>
-          <div class="cell"><div class="date">23</div></div>
-          <div class="cell"><div class="date">24</div></div>
-          <div class="cell holiday"><div class="date">25</div><div class="holidayMark">休</div></div>
-          <div class="cell"><div class="date">26</div></div>
-          <div class="cell hasStamp"><div class="date">27</div><div class="stamp">スタンプ2倍</div></div>
-          <div class="cell"><div class="date sat">28</div></div>
-
-          <!-- 5週目 -->
-          <div class="cell"><div class="date sun">29</div></div>
-          <div class="cell"><div class="date">30</div></div>
-          <div class="cell"><div class="date">31</div></div>
-          <div class="cell"></div>
-          <div class="cell"></div>
-          <div class="cell"></div>
-          <div class="cell"></div>
-        </div>
-      </section>
-
-      <footer class="bottom">
-        <div class="hours">営業時間　11:00 ～ 19:30 <small>（L.O.）</small></div>
-        <p class="note">※材料、または店主の元気がなくなり次第終了する場合があります。</p>
-
-        <div class="shopRow">
-          <div class="shop">たこ焼き 菜々</div>
-
-          <div class="telBlock">
-            <div class="telLabel">電話予約受付けます</div>
-            <div class="tel">TEL 070-4077-7732</div>
+          <div class="telBox">
+            <div class="telReserve">電話予約受け付けます</div>
+            <div class="telLine">TEL <span class="num">070-4077-7732</span></div>
           </div>
         </div>
-      </footer>
+      </div>
+    </section>
 
+    <div class="bars">
+      <button id="prevBtn" type="button">← 先月</button>
+      <button id="todayBtn" type="button">今月</button>
+      <button id="nextBtn" type="button">来月 →</button>
+      <button id="printBtn" type="button">A4で印刷</button>
     </div>
-  </div>
+  </main>
+
+  <script>
+  (() => {
+    "use strict";
+
+    const $ = (s, el=document) => el.querySelector(s);
+    const gridEl = $("#calGrid");
+    const bandMonthEl = $("#bandMonth");
+
+    const prevBtn = $("#prevBtn");
+    const nextBtn = $("#nextBtn");
+    const todayBtn = $("#todayBtn");
+    const printBtn = $("#printBtn");
+
+    let view = (() => {
+      const d = new Date();
+      return { y: d.getFullYear(), m: d.getMonth()+1 };
+    })();
+
+    let DATA = { overrides: {} };
+
+    function pad2(n){ return String(n).padStart(2,"0"); }
+    function ymKey(y,m){ return `${y}-${pad2(m)}`; }
+    function ymd(y,m,d){ return `${y}-${pad2(m)}-${pad2(d)}`; }
+    function daysInMonth(y,m){ return new Date(y, m, 0).getDate(); }
+    function firstDow(y,m){ return new Date(y, m-1, 1).getDay(); }
+
+    // 休み：水曜 + 第2/第3木曜
+    function isBaseOff(y,m,d){
+      const dt = new Date(y, m-1, d);
+      const dow = dt.getDay();
+      if(dow === 3) return true; // 水
+      if(dow === 4){ // 木：第2/第3
+        let count = 0;
+        for(let i=1;i<=d;i++){
+          if(new Date(y, m-1, i).getDay() === 4) count++;
+        }
+        return (count === 2 || count === 3);
+      }
+      return false;
+    }
+
+    // 自動：7/17/27 はスタンプ2倍
+    function isAutoStampDay(d){ return (d === 7 || d === 17 || d === 27); }
+
+    async function loadData(){
+      try{
+        const res = await fetch("assets/calendar-data.json", { cache:"no-store" });
+        if(!res.ok) throw new Error("calendar-data.json not found");
+        const json = await res.json();
+        if(json && typeof json === "object") DATA = json;
+      }catch(e){
+        DATA = { overrides: {} };
+      }
+    }
+
+    function getMonthOverride(y,m){
+      const key = ymKey(y,m);
+      return (DATA.overrides && DATA.overrides[key]) ? DATA.overrides[key] : null;
+    }
+
+    function clearGrid(){
+      while(gridEl.firstChild) gridEl.removeChild(gridEl.firstChild);
+    }
+
+    function render(){
+      const {y,m} = view;
+      bandMonthEl.textContent = `${m}月`;
+
+      const ov = getMonthOverride(y,m);
+      const manualOff = new Set((ov && ov.off) ? ov.off : []);
+      const manualTags = (ov && ov.tags) ? ov.tags : {};
+
+      clearGrid();
+
+      const start = firstDow(y,m);
+      const last = daysInMonth(y,m);
+
+      // ブランク
+      for(let i=0;i<start;i++){
+        const c = document.createElement("div");
+        c.className = "cell blank";
+        gridEl.appendChild(c);
+      }
+
+      for(let d=1; d<=last; d++){
+        const dateStr = ymd(y,m,d);
+        const dow = new Date(y, m-1, d).getDay();
+
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        if(dow === 0) cell.classList.add("sun");
+        if(dow === 6) cell.classList.add("sat");
+
+        // 日付
+        const day = document.createElement("div");
+        day.className = "day";
+        day.textContent = String(d);
+        cell.appendChild(day);
+
+        const off = isBaseOff(y,m,d) || manualOff.has(dateStr);
+
+        if(off){
+          cell.classList.add("isOff");
+          const o = document.createElement("div");
+          o.className = "offMark";
+          o.textContent = "休";
+          cell.appendChild(o);
+        }else{
+          // タグ（手動） or 自動スタンプ日
+          let tag = "";
+          if(manualTags[dateStr]) tag = String(manualTags[dateStr]);
+
+          const shouldAuto = isAutoStampDay(d);
+
+          if(tag || shouldAuto){
+            cell.classList.add("hasStamp"); // ✅ 右下の安全領域
+
+            const badge = document.createElement("div");
+            badge.className = "stampBadge";
+
+            const top = document.createElement("div");
+            top.className = "top";
+            top.textContent = tag ? tag : "スタンプ";
+
+            const bottom = document.createElement("div");
+            bottom.className = "bottom";
+            bottom.textContent = "2倍";
+
+            badge.appendChild(top);
+            badge.appendChild(bottom);
+            cell.appendChild(badge);
+          }
+        }
+
+        gridEl.appendChild(cell);
+      }
+
+      // 末尾ブランク
+      const mod = gridEl.children.length % 7;
+      if(mod !== 0){
+        const need = 7 - mod;
+        for(let i=0;i<need;i++){
+          const c = document.createElement("div");
+          c.className = "cell blank";
+          gridEl.appendChild(c);
+        }
+      }
+    }
+
+    function addMonth(delta){
+      let y = view.y;
+      let m = view.m + delta;
+      while(m <= 0){ m += 12; y--; }
+      while(m >= 13){ m -= 12; y++; }
+      view = { y, m };
+      render();
+    }
+
+    async function init(){
+      await loadData();
+      render();
+
+      prevBtn.addEventListener("click", () => addMonth(-1));
+      nextBtn.addEventListener("click", () => addMonth(1));
+      todayBtn.addEventListener("click", () => {
+        const d = new Date();
+        view = { y:d.getFullYear(), m:d.getMonth()+1 };
+        render();
+      });
+      printBtn.addEventListener("click", () => window.print());
+    }
+
+    init();
+  })();
+  </script>
 </body>
 </html>
