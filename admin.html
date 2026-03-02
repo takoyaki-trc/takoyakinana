@@ -8,36 +8,44 @@
 
   <style>
     :root{
-      /* ✅ 目に優しい紙背景 */
+      /* ===== Paper background ===== */
       --bg0:#fbfaf7;
       --bg1:#f3efe7;
-
       --paper:#ffffff;
       --paper2:#fffdf8;
 
       --ink:#1b1b1b;
       --muted:rgba(0,0,0,.62);
 
-      /* 枠線 */
       --line:rgba(0,0,0,.12);
-      --line2:rgba(0,0,0,.08);
 
-      /* アクセント */
-      --accent:#2f6bff;
-      --danger:#d24a4a;
+      /* ===== ✅ 確定色（ここを好みに変更OK） =====
+         forcedOpen(営業に戻す) = 青系
+         forcedOff(休みにする)  = 赤系
+      */
+      --fixedOpen:#2f6bff;   /* 営業＝青 */
+      --fixedOff:#d24a4a;    /* 休み＝赤 */
+
+      /* chip用の淡い背景 */
+      --fixedOpenBg: rgba(47,107,255,.10);
+      --fixedOffBg:  rgba(210,74,74,.10);
+
+      /* badge ON 時の枠/内側光 */
+      --fixedOpenBorder: rgba(47,107,255,.55);
+      --fixedOffBorder:  rgba(210,74,74,.55);
+
+      /* その他 */
       --ok:#1f8f52;
       --warn:#b8862a;
 
-      /* カード */
       --cellBg:#ffffff;
-
       --r:16px;
 
-      /* ✅ ボタン（スマホで縦に割れないように） */
+      /* ✅ ボタンが見切れないための設定 */
       --btnFont:12px;
       --btnPadY:7px;
       --btnPadX:10px;
-      --btnMinW: 64px;     /* 最低幅を確保 */
+      --btnMinW: 60px;
     }
 
     *{ box-sizing:border-box; }
@@ -46,8 +54,6 @@
       font-family: system-ui,-apple-system,"Noto Sans JP",sans-serif;
       color:var(--ink);
       min-height:100svh;
-
-      /* ✅ 紙っぽい白（暗い背景は撤廃） */
       background:
         radial-gradient(circle at 12% 10%, rgba(255,255,255,.92), rgba(255,255,255,0) 55%),
         radial-gradient(circle at 88% 18%, rgba(255,255,255,.80), rgba(255,255,255,0) 60%),
@@ -55,14 +61,8 @@
     }
 
     .wrap{ max-width:980px; margin:0 auto; padding:16px 12px 40px; }
-
     .title{ font-size:20px; font-weight:1000; letter-spacing:.02em; }
-    .sub{
-      color:var(--muted);
-      font-size:12px;
-      margin-top:6px;
-      line-height:1.75;
-    }
+    .sub{ color:var(--muted); font-size:12px; margin-top:6px; line-height:1.75; }
 
     .panel{
       background: linear-gradient(180deg, var(--paper), var(--paper2));
@@ -106,12 +106,7 @@
       justify-content:space-between;
       flex-wrap:wrap;
     }
-    .ym h2{
-      margin:0;
-      font-size:18px;
-      font-weight:1000;
-      letter-spacing:.02em;
-    }
+    .ym h2{ margin:0; font-size:18px; font-weight:1000; letter-spacing:.02em; }
 
     .dow{
       display:grid;
@@ -157,6 +152,8 @@
       line-height:1.05;
       white-space:nowrap;
     }
+
+    /* ===== 基本（緑/赤） ===== */
     .chipBase{
       font-size:10px;
       font-weight:1000;
@@ -170,6 +167,26 @@
     .chipBase.off{ border-color:rgba(210,74,74,.22); color:rgba(210,74,74,.92); background: rgba(210,74,74,.06); }
     .chipBase.on{ border-color:rgba(31,143,82,.20); color:rgba(31,143,82,.95); background: rgba(31,143,82,.06); }
 
+    /* ===== ✅ 確定日チップ（営業＝青、休み＝赤） ===== */
+    .chipFixed{
+      font-size:10px;
+      font-weight:1000;
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.12);
+      white-space:nowrap;
+    }
+    .chipFixed.open{
+      border-color: var(--fixedOpenBorder);
+      color: var(--fixedOpen);
+      background: var(--fixedOpenBg);
+    }
+    .chipFixed.off{
+      border-color: var(--fixedOffBorder);
+      color: var(--fixedOff);
+      background: var(--fixedOffBg);
+    }
+
     .stateLine{
       font-size:12px;
       font-weight:1000;
@@ -178,7 +195,6 @@
     }
     .stateLine .muted{ color:rgba(0,0,0,.55); font-weight:900; }
 
-    /* ✅ メモ短文（1行） */
     .mini{
       font-size:11px;
       font-weight:900;
@@ -192,14 +208,14 @@
       text-overflow: ellipsis;
     }
 
+    /* ✅ ボタンが見切れないように：常に4つを2列にする（スマホでも安定） */
     .badges{
-      display:flex;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
       gap:6px;
-      flex-wrap:wrap;
       margin-top:auto;
     }
 
-    /* ✅ ボタン内の「臨時」文字を撤廃：短いラベルに統一 */
     .badge{
       font-size: var(--btnFont);
       font-weight:1000;
@@ -210,8 +226,6 @@
       cursor:pointer;
       user-select:none;
       -webkit-tap-highlight-color: transparent;
-
-      /* ✅ スマホで縦割れ防止 */
       white-space: nowrap;
       word-break: keep-all;
       min-width: var(--btnMinW);
@@ -219,21 +233,22 @@
       line-height: 1;
     }
 
+    /* ✅ ON色（確定色に合わせて変更） */
     .badge.off.on{
-      border-color: rgba(210,74,74,.45);
-      box-shadow: 0 0 0 2px rgba(210,74,74,.10) inset;
+      border-color: var(--fixedOffBorder);
+      box-shadow:0 0 0 2px rgba(210,74,74,.12) inset;
     }
     .badge.open.on{
-      border-color: rgba(31,143,82,.45);
-      box-shadow: 0 0 0 2px rgba(31,143,82,.10) inset;
+      border-color: var(--fixedOpenBorder);
+      box-shadow:0 0 0 2px rgba(47,107,255,.12) inset;
     }
     .badge.stamp.on{
       border-color: rgba(47,107,255,.45);
-      box-shadow: 0 0 0 2px rgba(47,107,255,.10) inset;
+      box-shadow:0 0 0 2px rgba(47,107,255,.10) inset;
     }
     .badge.memo.on{
       border-color: rgba(184,134,42,.45);
-      box-shadow: 0 0 0 2px rgba(184,134,42,.10) inset;
+      box-shadow:0 0 0 2px rgba(184,134,42,.10) inset;
     }
 
     .hint{
@@ -277,11 +292,7 @@
       justify-content:space-between;
       gap:10px;
     }
-    .dlgTitle{
-      font-weight:1000;
-      font-size:14px;
-      letter-spacing:.02em;
-    }
+    .dlgTitle{ font-weight:1000; font-size:14px; letter-spacing:.02em; }
     .dlgBody{ padding: 12px 14px 14px; }
     .dlgBody label{
       display:block;
@@ -329,7 +340,7 @@
     }
     .toast.on{ opacity:1; transform:none; }
 
-    /* ✅ スマホ最適化：7列維持、ボタンが縦割れしないよう微調整 */
+    /* ✅ スマホ最適化：7列維持で詰める */
     @media (max-width: 560px){
       .wrap{ padding:14px 10px 34px; }
       .panel{ padding:12px; }
@@ -343,25 +354,25 @@
         gap: 5px;
       }
       .daynum{ font-size: 14px; }
-      .chipBase{ font-size: 9px; padding: 3px 7px; }
+      .chipBase, .chipFixed{ font-size: 9px; padding: 3px 7px; }
       .stateLine{ font-size: 11px; }
 
       :root{
         --btnFont:11px;
         --btnPadY:6px;
         --btnPadX:8px;
-        --btnMinW: 58px;
+        --btnMinW: 56px;
       }
+      .badges{ gap:6px; }
     }
 
     @media (max-width: 420px){
       .cell{ min-height: 78px; }
-      .badges{ gap:5px; }
       :root{
         --btnFont:10.5px;
         --btnPadY:6px;
         --btnPadX:7px;
-        --btnMinW: 54px;
+        --btnMinW: 52px;
       }
     }
   </style>
@@ -372,7 +383,7 @@
   <div class="title">菜々カレンダー管理（休み／営業切替／メモ／スタンプ2倍）</div>
   <div class="sub">
     ✅ 基本は <b>毎週水曜</b>＋<b>第2・第3木曜</b> が休み（自動）<br>
-    ✅ 例外で上書き：<b>休みにする</b>／<b>営業に戻す（基本休み解除）</b><br>
+    ✅ 例外で上書き：<b>休み</b>／<b>営業</b>（基本休み解除）<br>
     ✅ メモ：カレンダーに表示できる短文（例：イベント、早仕舞い など）<br>
     ✅ 自動2倍：<b>7/17/27</b>（7のつく日）は表示ページ側で自動（休みなら出さない）※手動2倍も可能
   </div>
@@ -388,13 +399,13 @@
     </div>
 
     <div class="dow">
-      <div style="color:var(--danger);">日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div style="color:var(--accent);">土</div>
+      <div style="color:var(--fixedOff);">日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div style="color:var(--fixedOpen);">土</div>
     </div>
     <div class="grid" id="grid"></div>
 
     <div class="hint">
-      ・「休みにする」：その日を休みにする（基本営業日でも休み）<br>
-      ・「営業に戻す」：基本休みの日でも営業に戻す（例：事情で営業したい時）<br>
+      ・「休み」：その日を休みにする（基本営業日でも休み）<br>
+      ・「営業」：基本休みの日でも営業に戻す（事情で営業したい時）<br>
       ・「メモ」：表示ページに短文表示（改行OK）<br>
       ・「2倍」：7/17/27以外で追加したい時だけ
     </div>
@@ -443,7 +454,7 @@
 (() => {
   "use strict";
 
-  const STORE_KEY = "nana_calendar_admin_v2_local"; // ★v2
+  const STORE_KEY = "nana_calendar_admin_v2_local";
   const $ = (s, el=document) => el.querySelector(s);
 
   const gridEl = $("#grid");
@@ -540,13 +551,12 @@
     const idx = mo.off.indexOf(dateStr);
     if(idx >= 0){
       mo.off.splice(idx,1);
-      toast(`${dateStr}：休みにする OFF`);
+      toast(`${dateStr}：休み OFF`);
     }else{
       mo.off.push(dateStr);
-      // 矛盾防止：同日に open があれば外す
       const j = mo.open.indexOf(dateStr);
       if(j >= 0) mo.open.splice(j,1);
-      toast(`${dateStr}：休みにする ON`);
+      toast(`${dateStr}：休み ON`);
     }
     saveOV();
     render();
@@ -559,13 +569,12 @@
     const idx = mo.open.indexOf(dateStr);
     if(idx >= 0){
       mo.open.splice(idx,1);
-      toast(`${dateStr}：営業に戻す OFF`);
+      toast(`${dateStr}：営業 OFF`);
     }else{
       mo.open.push(dateStr);
-      // 矛盾防止：同日に off があれば外す
       const j = mo.off.indexOf(dateStr);
       if(j >= 0) mo.off.splice(j,1);
-      toast(`${dateStr}：営業に戻す ON`);
+      toast(`${dateStr}：営業 ON`);
     }
     saveOV();
     render();
@@ -674,14 +683,20 @@
 
       cell.appendChild(top);
 
-      // 状態行（ここは情報として残す：ボタンの文言は短くする）
+      // ✅ 確定（forced）を色付きで表示（営業＝青、休み＝赤）
+      if(forcedOpen || forcedOff){
+        const fixed = document.createElement("div");
+        fixed.className = "chipFixed " + (forcedOff ? "off" : "open");
+        fixed.textContent = forcedOff ? "確定：休み" : "確定：営業";
+        cell.appendChild(fixed);
+      }
+
+      // 状態行
       const st = document.createElement("div");
       st.className = "stateLine";
 
       const stateTxt = isOff ? "休み" : "営業";
       const extra = [];
-      if(forcedOff) extra.push("休みにする");
-      if(forcedOpen) extra.push("営業に戻す");
       if(autoStamp) extra.push("自動2倍");
       if(manualStamp) extra.push("手動2倍");
       if(hasMemo) extra.push("メモ");
@@ -698,13 +713,13 @@
         cell.appendChild(memoLine);
       }
 
-      // ボタン群（短い文言・横並び維持）
+      // ボタン（見切れ防止：2列グリッド）
       const badges = document.createElement("div");
       badges.className = "badges";
 
       const bOff = document.createElement("div");
       bOff.className = "badge off" + (forcedOff ? " on" : "");
-      bOff.textContent = "休みに";
+      bOff.textContent = "休み";          /* ✅ 休みに → 休み */
       bOff.addEventListener("click", () => toggleOff(y,m,d));
       badges.appendChild(bOff);
 
