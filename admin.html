@@ -33,20 +33,24 @@
       --cellPadB:7px;
 
       /* ✅ ボタン（枠なし） */
-      --btnBg: rgba(0,0,0,.06);
-      --btnBgOn: rgba(0,0,0,.10);
-      --btnBgActive: rgba(0,0,0,.14);
-      --btnText: rgba(0,0,0,.86);
-      --btnTextOn: rgba(0,0,0,.92);
-
-      /* ✅ ここが効く：端末幅に合わせて自動縮小 */
       --btnFont: 12px;
       --btnPadY: 7px;
       --btnPadX: 10px;
       --btnRadius: 999px;
-
-      /* ✅ 1つのボタンがこれ以上小さくならない最低幅 */
       --btnMin: 44px;
+
+      /* ✅ ボタン色（見えやすく） */
+      --btnOffBg: rgba(210,74,74,.10);
+      --btnOffBgOn: rgba(210,74,74,.22);
+
+      --btnOpenBg: rgba(47,107,255,.10);
+      --btnOpenBgOn: rgba(47,107,255,.22);
+
+      --btnMemoBg: rgba(184,134,42,.10);
+      --btnMemoBgOn: rgba(184,134,42,.22);
+
+      --btnText: rgba(0,0,0,.86);
+      --btnTextOn: rgba(0,0,0,.92);
     }
 
     *{ box-sizing:border-box; }
@@ -133,7 +137,7 @@
       border-radius:14px;
       padding: var(--cellPadT) var(--cellPadX) var(--cellPadB);
       min-height: 86px;
-      overflow:hidden; /* ✅ はみ出し見切れの原因を固定（外へ出さない） */
+      overflow:hidden;
       display:flex;
       flex-direction:column;
       gap: 5px;
@@ -203,7 +207,7 @@
       text-overflow: ellipsis;
     }
 
-    /* ✅ ボタン（枠なし）を安定させる */
+    /* ✅ ボタン（枠なし） */
     .badges{
       margin-top:auto;
       display:grid;
@@ -213,9 +217,7 @@
     }
 
     .badge{
-      border: 0;                 /* ✅ 枠なし */
-      background: var(--btnBg);
-      color: var(--btnText);
+      border: 0;
       border-radius: var(--btnRadius);
       padding: var(--btnPadY) var(--btnPadX);
       font-size: var(--btnFont);
@@ -226,22 +228,26 @@
       user-select:none;
       -webkit-tap-highlight-color: transparent;
 
-      /* ✅ ここが超重要：縦積み防止＆はみ出し防止 */
       white-space: nowrap;
       word-break: keep-all;
       min-width: 0;
       overflow:hidden;
       text-overflow: ellipsis;
-    }
-    .badge:active{ background: var(--btnBgActive); }
 
-    .badge.on{
-      background: var(--btnBgOn);
-      color: var(--btnTextOn);
+      color: var(--btnText);
     }
-    .badge.off.on{ background: rgba(210,74,74,.14); }
-    .badge.open.on{ background: rgba(47,107,255,.14); }
-    .badge.memo.on{ background: rgba(184,134,42,.14); }
+    .badge:active{ filter: brightness(.95); }
+
+    /* ✅ それぞれ“常に薄色”で存在が分かる */
+    .badge.off{  background: var(--btnOffBg); }
+    .badge.open{ background: var(--btnOpenBg); }
+    .badge.memo{ background: var(--btnMemoBg); }
+
+    /* ✅ ON は濃くする */
+    .badge.on{ color: var(--btnTextOn); }
+    .badge.off.on{  background: var(--btnOffBgOn); }
+    .badge.open.on{ background: var(--btnOpenBgOn); }
+    .badge.memo.on{ background: var(--btnMemoBgOn); }
 
     .hint{
       font-size:12px;
@@ -333,7 +339,6 @@
     }
     .toast.on{ opacity:1; transform:none; }
 
-    /* ✅ スマホ：さらに詰める（7列維持） */
     @media (max-width: 560px){
       :root{
         --gap:6px;
@@ -350,13 +355,10 @@
       .dow{ gap: var(--gap); font-size:11px; }
       .grid{ gap: var(--gap); }
       .cell{ min-height: 82px; gap: 5px; }
-      .daynum{ font-size: 14px; }
-      .chipBase{ font-size: 9px; padding:3px 7px; }
       .stateLine{ font-size: 11.5px; }
       .extras{ font-size: 10.5px; }
     }
 
-    /* ✅ 超狭い端末だけ：3つを2段にして「見切れゼロ」優先 */
     @media (max-width: 380px){
       :root{
         --gap:5px;
@@ -366,11 +368,8 @@
         --btnMin: 44px;
       }
       .cell{ min-height: 78px; }
-      .badges{
-        grid-template-columns: 1fr 1fr; /* 2列 */
-        grid-auto-flow: row;
-      }
-      .badge.memo{ grid-column: 1 / -1; } /* メモだけ下段で全幅 */
+      .badges{ grid-template-columns: 1fr 1fr; }
+      .badge.memo{ grid-column: 1 / -1; }
     }
   </style>
 </head>
@@ -425,7 +424,6 @@
 
   <div class="toast" id="toast"></div>
 
-  <!-- メモ編集 -->
   <dialog id="memoDlg">
     <div class="dlgHead">
       <div class="dlgTitle" id="memoDlgTitle">メモ</div>
@@ -507,7 +505,6 @@
     return mo;
   }
 
-  // 基本休み：水曜＋第2/第3木曜
   function isBaseOff(y,m,d){
     const dt = new Date(y, m-1, d);
     const dow = dt.getDay();
@@ -522,7 +519,6 @@
     return false;
   }
 
-  // 優先：open（基本休み解除）→ off（最終的に休み）
   function calcOpenState(y,m,d){
     const mo = monthObj(y,m);
     const dateStr = ymd(y,m,d);
@@ -572,8 +568,7 @@
     render();
   }
 
-  // メモ編集
-  let editing = null; // {y,m,d,dateStr}
+  let editing = null;
   function openMemoDlg(y,m,d){
     const mo = monthObj(y,m);
     const dateStr = ymd(y,m,d);
@@ -724,7 +719,7 @@
     render();
   }
 
-  function exportJSON(){
+   function exportJSON(){
     const out = { overrides: {} };
     const keys = Object.keys(OV).sort();
     for(const key of keys){
@@ -737,11 +732,11 @@
 
       if(off.length===0 && open.length===0 && Object.keys(memo).length===0) continue;
 
-      out.overrides[key] = { off, open, memo, tags:{} }; // 表示ページ互換（tagsは空）
+      out.overrides[key] = { off, open, memo, tags:{} };
     }
 
     outEl.value = JSON.stringify(out, null, 2);
-    toast("JSONを書き出しました（バックアップ）");
+    toast("JSONを書き出し（バックアップ）");
   }
 
   $("#prevBtn").addEventListener("click", () => addMonth(-1));
