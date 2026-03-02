@@ -8,7 +8,6 @@
 
   <style>
     :root{
-      /* ===== 背景：目に優しい紙っぽい白 ===== */
       --bg0:#fbfaf7;
       --bg1:#f3efe7;
       --paper:#ffffff;
@@ -18,18 +17,17 @@
       --muted:rgba(0,0,0,.62);
       --line:rgba(0,0,0,.12);
 
-      /* ✅ 状態文字色（ここを変えればOK） */
-      --stateOpen:#2f6bff; /* 「営業」色 */
-      --stateOff:#d24a4a;  /* 「休み」色 */
+      /* ✅ 状態文字色（変更ポイント） */
+      --stateOpen:#2f6bff; /* 営業 */
+      --stateOff:#d24a4a;  /* 休み */
 
-      /* そのほか */
       --chipBg: rgba(0,0,0,.04);
       --chipBd: rgba(0,0,0,.12);
 
       --r:16px;
 
-      /* ✅ 余白詰め（スマホで崩れない） */
-      --gap:6px;          /* グリッド間隔 */
+      /* レイアウト詰め */
+      --gap:6px;
       --cellPadX:6px;
       --cellPadT:7px;
       --cellPadB:7px;
@@ -41,10 +39,14 @@
       --btnText: rgba(0,0,0,.86);
       --btnTextOn: rgba(0,0,0,.92);
 
+      /* ✅ ここが効く：端末幅に合わせて自動縮小 */
       --btnFont: 12px;
       --btnPadY: 7px;
       --btnPadX: 10px;
       --btnRadius: 999px;
+
+      /* ✅ 1つのボタンがこれ以上小さくならない最低幅 */
+      --btnMin: 44px;
     }
 
     *{ box-sizing:border-box; }
@@ -131,7 +133,7 @@
       border-radius:14px;
       padding: var(--cellPadT) var(--cellPadX) var(--cellPadB);
       min-height: 86px;
-      overflow:hidden;
+      overflow:hidden; /* ✅ はみ出し見切れの原因を固定（外へ出さない） */
       display:flex;
       flex-direction:column;
       gap: 5px;
@@ -168,7 +170,7 @@
     .chipBase.off{ border-color:rgba(210,74,74,.22); color:rgba(210,74,74,.92); background: rgba(210,74,74,.06); }
     .chipBase.on{  border-color:rgba(31,143,82,.20); color:rgba(31,143,82,.95); background: rgba(31,143,82,.06); }
 
-    /* ✅ 日付の下の「営業/休み」＝色変更対象 */
+    /* ✅ 日付の下：営業/休み（色変更対象） */
     .stateLine{
       font-size:12px;
       font-weight:1000;
@@ -201,18 +203,18 @@
       text-overflow: ellipsis;
     }
 
-    /* ✅ ボタンは3つだけ：休み / 営業 / メモ（枠なし・見切れ防止） */
+    /* ✅ ボタン（枠なし）を安定させる */
     .badges{
       margin-top:auto;
       display:grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: repeat(3, minmax(var(--btnMin), 1fr));
       gap: 6px;
       align-items:stretch;
     }
 
     .badge{
-      border: 0;                 /* ✅ 枠を削除 */
-      background: var(--btnBg);  /* ✅ ふんわり背景 */
+      border: 0;                 /* ✅ 枠なし */
+      background: var(--btnBg);
       color: var(--btnText);
       border-radius: var(--btnRadius);
       padding: var(--btnPadY) var(--btnPadX);
@@ -223,19 +225,20 @@
       cursor:pointer;
       user-select:none;
       -webkit-tap-highlight-color: transparent;
-      white-space: nowrap;       /* ✅ 縦にならない */
+
+      /* ✅ ここが超重要：縦積み防止＆はみ出し防止 */
+      white-space: nowrap;
       word-break: keep-all;
-      min-width: 0;              /* ✅ グリッド内で縮む */
+      min-width: 0;
+      overflow:hidden;
+      text-overflow: ellipsis;
     }
     .badge:active{ background: var(--btnBgActive); }
 
-    /* ON状態：少し濃く + テキスト濃く */
     .badge.on{
       background: var(--btnBgOn);
       color: var(--btnTextOn);
     }
-
-    /* 休み/営業のONを少し色で区別（枠なしのまま） */
     .badge.off.on{ background: rgba(210,74,74,.14); }
     .badge.open.on{ background: rgba(47,107,255,.14); }
     .badge.memo.on{ background: rgba(184,134,42,.14); }
@@ -341,30 +344,33 @@
         --btnFont: 11px;
         --btnPadY: 6px;
         --btnPadX: 8px;
+        --btnMin: 40px;
       }
-
       .panel{ padding:10px; }
       .dow{ gap: var(--gap); font-size:11px; }
       .grid{ gap: var(--gap); }
-
-      .cell{
-        min-height: 82px;
-        gap: 5px;
-      }
+      .cell{ min-height: 82px; gap: 5px; }
       .daynum{ font-size: 14px; }
       .chipBase{ font-size: 9px; padding:3px 7px; }
       .stateLine{ font-size: 11.5px; }
       .extras{ font-size: 10.5px; }
     }
 
-    @media (max-width: 420px){
+    /* ✅ 超狭い端末だけ：3つを2段にして「見切れゼロ」優先 */
+    @media (max-width: 380px){
       :root{
         --gap:5px;
         --btnFont: 10.5px;
         --btnPadY: 6px;
         --btnPadX: 7px;
+        --btnMin: 44px;
       }
       .cell{ min-height: 78px; }
+      .badges{
+        grid-template-columns: 1fr 1fr; /* 2列 */
+        grid-auto-flow: row;
+      }
+      .badge.memo{ grid-column: 1 / -1; } /* メモだけ下段で全幅 */
     }
   </style>
 </head>
@@ -472,7 +478,6 @@
   })();
 
   // { "YYYY-MM": { off:[], open:[], memo:{} } }
-  // ※ tags(2倍)は管理画面から削除（ボタンも3つだけに）
   let OV = loadOV();
 
   function loadOV(){
@@ -630,14 +635,12 @@
 
     for(let d=1; d<=last; d++){
       const dateStr = ymd(y,m,d);
-
       const { baseOff, forcedOpen, forcedOff, isOff } = calcOpenState(y,m,d);
       const hasMemo = !!(mo.memo && mo.memo[dateStr] && String(mo.memo[dateStr]).trim());
 
       const cell = document.createElement("div");
       cell.className = "cell";
 
-      // 上段：日付 + 基本タグ
       const top = document.createElement("div");
       top.className = "topline";
 
@@ -653,13 +656,11 @@
 
       cell.appendChild(top);
 
-      // ✅ 日付の下：営業/休み（色変更ここ）
       const st = document.createElement("div");
       st.className = "stateLine " + (isOff ? "off" : "open");
       st.textContent = isOff ? "休み" : "営業";
       cell.appendChild(st);
 
-      // 補足（確定表示を短く）
       const extras = [];
       if(forcedOff) extras.push("確定：休み");
       if(forcedOpen) extras.push("確定：営業");
@@ -671,7 +672,6 @@
         cell.appendChild(ex);
       }
 
-      // メモの先頭を小さく表示
       if(hasMemo){
         const memoLine = document.createElement("div");
         memoLine.className = "mini";
@@ -680,7 +680,6 @@
         cell.appendChild(memoLine);
       }
 
-      // ✅ ボタン：休み / 営業 / メモ（3つだけ）
       const badges = document.createElement("div");
       badges.className = "badges";
 
@@ -703,7 +702,6 @@
       badges.appendChild(bMemo);
 
       cell.appendChild(badges);
-
       gridEl.appendChild(cell);
     }
 
