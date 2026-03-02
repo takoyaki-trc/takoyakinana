@@ -17,7 +17,7 @@
       --muted:rgba(0,0,0,.62);
       --line:rgba(0,0,0,.12);
 
-      /* ✅ 状態文字色（ここを好みに変えられる） */
+      /* ✅ 状態文字色（ここを好みに変更OK） */
       --stateOpen:#2f6bff; /* 営業 */
       --stateOff:#d24a4a;  /* 休み */
 
@@ -32,13 +32,12 @@
       --cellPadT:7px;
       --cellPadB:7px;
 
-      /* ✅ ボタン（枠なし） */
+      /* ✅ ボタン（枠なし / 縦3段） */
       --btnFont: 12px;
       --btnPadY: 7px;
       --btnPadX: 10px;
-      --btnRadius: 999px;
+      --btnRadius: 12px;
 
-      /* ✅ ボタン色（見えやすい） */
       --btnOffBg: rgba(210,74,74,.10);
       --btnOffBgOn: rgba(210,74,74,.24);
 
@@ -135,14 +134,11 @@
       background:#fff;
       border-radius:14px;
       padding: var(--cellPadT) var(--cellPadX) var(--cellPadB);
-      min-height: 88px;
-
-      /* ✅ ここが重要：見切れ防止 */
+      min-height: 92px;
       overflow: visible;
-
       display:flex;
       flex-direction:column;
-      gap: 5px;
+      gap: 6px;
       box-shadow: 0 1px 0 rgba(0,0,0,.03);
     }
     .cell.blank{
@@ -186,16 +182,6 @@
     .stateLine.open{ color: var(--stateOpen); }
     .stateLine.off{  color: var(--stateOff); }
 
-    .extras{
-      font-size:11px;
-      color: rgba(0,0,0,.52);
-      font-weight:900;
-      line-height:1.2;
-      white-space: nowrap;
-      overflow:hidden;
-      text-overflow: ellipsis;
-    }
-
     .mini{
       font-size:11px;
       font-weight:900;
@@ -209,34 +195,31 @@
       text-overflow: ellipsis;
     }
 
-    /* ✅ ボタン（枠なし） */
+    /* ✅ ボタン：縦3段（はみ出し防止＆見切れ無し） */
     .badges{
       margin-top:auto;
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
+      display:flex;
+      flex-direction:column;
       gap: 6px;
       align-items:stretch;
     }
 
     .badge{
-      border: 0;
+      border: 0;                 /* ✅ 枠なし */
       border-radius: var(--btnRadius);
       padding: var(--btnPadY) var(--btnPadX);
       font-size: var(--btnFont);
       font-weight: 1000;
       text-align:center;
-      line-height:1;
+      line-height:1.05;
       cursor:pointer;
       user-select:none;
       -webkit-tap-highlight-color: transparent;
-
-      white-space: nowrap;
-      word-break: keep-all;
-      min-width: 0;
-      overflow:hidden;
-      text-overflow: ellipsis;
-
       color: var(--btnText);
+
+      /* ✅ ボタン内は必ず改行表示 */
+      white-space: pre-line;
+      word-break: keep-all;
     }
     .badge:active{ filter: brightness(.95); }
 
@@ -339,7 +322,6 @@
     }
     .toast.on{ opacity:1; transform:none; }
 
-    /* ✅ スマホ：ボタンを2列にして必ず見えるようにする */
     @media (max-width: 560px){
       :root{
         --gap:6px;
@@ -347,35 +329,25 @@
         --cellPadT:7px;
         --cellPadB:7px;
 
-        --btnFont: 11px;
-        --btnPadY: 6px;
-        --btnPadX: 8px;
+        --btnFont: 12px;   /* 縦3段なので縮めすぎない */
+        --btnPadY: 7px;
+        --btnPadX: 10px;
       }
-
       .panel{ padding:10px; }
       .dow{ gap: var(--gap); font-size:11px; }
       .grid{ gap: var(--gap); }
-      .cell{ min-height: 86px; gap: 5px; }
-
+      .cell{ min-height: 92px; gap: 6px; }
       .stateLine{ font-size: 11.5px; }
-      .extras{ font-size: 10.5px; }
-
-      .badges{
-        grid-template-columns: 1fr 1fr;
-      }
-      .badge.memo{
-        grid-column: 1 / -1; /* メモは2段目で横いっぱい */
-      }
     }
 
     @media (max-width: 380px){
       :root{
         --gap:5px;
-        --btnFont: 10.5px;
-        --btnPadY: 6px;
-        --btnPadX: 7px;
+        --btnFont: 11.5px;
+        --btnPadY: 6.5px;
+        --btnPadX: 9px;
       }
-      .cell{ min-height: 82px; }
+      .cell{ min-height: 90px; }
     }
   </style>
 </head>
@@ -662,16 +634,7 @@
       st.textContent = isOff ? "休み" : "営業";
       cell.appendChild(st);
 
-      const extras = [];
-      if(forcedOff) extras.push("確定：休み");
-      if(forcedOpen) extras.push("確定：営業");
-      if(hasMemo) extras.push("メモ");
-      if(extras.length){
-        const ex = document.createElement("div");
-        ex.className = "extras";
-        ex.textContent = extras.join(" / ");
-        cell.appendChild(ex);
-      }
+      /* ✅ 「確定：〇〇」などの文字は不要 → ここでは一切表示しない */
 
       if(hasMemo){
         const memoLine = document.createElement("div");
