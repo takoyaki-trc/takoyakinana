@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>菜々カレンダー管理</title>
+  <meta name="description" content="菜々カレンダー管理（休日/営業切替・臨時休業・メモ）" />
   <style>
     :root{
       --bg:#0b0d17;
@@ -14,6 +15,11 @@
       --accent:#7fd0ff;
       --danger:#ff6b6b;
       --ok:#61ffa0;
+
+      --chip: rgba(255,255,255,.08);
+      --chip2: rgba(255,255,255,.12);
+
+      --radius:16px;
     }
     *{box-sizing:border-box}
     body{
@@ -25,15 +31,19 @@
     }
     .wrap{ max-width:980px; margin:0 auto; padding:16px 12px 40px; }
     .title{ font-size:20px; font-weight:900; letter-spacing:.02em; }
-    .sub{ color:var(--muted); font-size:12px; margin-top:4px; line-height:1.6; }
+    .sub{ color:var(--muted); font-size:12px; margin-top:6px; line-height:1.7; }
     .panel{
       background:var(--panel);
       border:1px solid var(--line);
-      border-radius:16px;
+      border-radius:var(--radius);
       padding:14px;
       margin-top:12px;
     }
+
     .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .row.between{ justify-content:space-between; }
+    .stack{ display:grid; gap:10px; }
+
     button{
       border:1px solid var(--line);
       background:rgba(255,255,255,.10);
@@ -42,6 +52,7 @@
       padding:10px 12px;
       font-weight:900;
       cursor:pointer;
+      -webkit-tap-highlight-color: transparent;
     }
     button.primary{
       border-color:rgba(127,208,255,.55);
@@ -55,17 +66,20 @@
       border-color:rgba(255,107,107,.55);
       box-shadow:0 0 0 2px rgba(255,107,107,.14) inset;
     }
+
     .ym{
-      display:flex;
+      display:grid;
+      grid-template-columns: 1fr auto;
       gap:10px;
       align-items:center;
-      justify-content:space-between;
-      flex-wrap:wrap;
     }
     .ym h2{ margin:0; font-size:18px; font-weight:1000; }
+    .navBtns{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-start; }
+    .navBtns button{ min-width: 92px; }
+
     .dow{
       display:grid;
-      grid-template-columns: repeat(7,1fr);
+      grid-template-columns: repeat(7,minmax(0,1fr));
       gap:8px;
       margin-top:10px;
       color:var(--muted);
@@ -73,50 +87,148 @@
       font-size:12px;
     }
     .dow div{ text-align:center; }
+
+    /* ✅ スマホでも崩れない：minmax(0,1fr)＋gap固定 */
     .grid{
       margin-top:10px;
       display:grid;
-      grid-template-columns: repeat(7,1fr);
+      grid-template-columns: repeat(7,minmax(0,1fr));
       gap:8px;
     }
+
+    /* ✅ セル内を縦に詰めて、ボタンが落ちないように */
     .cell{
       border:1px solid var(--line);
       background:rgba(255,255,255,.06);
-      border-radius:12px;
+      border-radius:14px;
       padding:10px 8px;
-      min-height:78px;
+      min-height: 118px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      overflow:hidden;
     }
     .cell.blank{ opacity:.25; }
+
+    .topline{
+      display:flex;
+      align-items:baseline;
+      justify-content:space-between;
+      gap:6px;
+      min-width:0;
+    }
     .daynum{
       font-size:16px;
       font-weight:1000;
       line-height:1;
+      white-space:nowrap;
     }
-    .mini{
-      margin-top:6px;
+    .baseTag{
       font-size:11px;
+      font-weight:900;
       color:rgba(255,255,255,.75);
-      line-height:1.4;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
+      white-space:nowrap;
+      flex:0 0 auto;
     }
-    .badges{
+
+    .mini{
+      font-size:11px;
+      color:rgba(255,255,255,.78);
+      line-height:1.45;
+      word-break:break-word;
+    }
+
+    /* ✅ 2段チップ（営業/休み/臨休/2倍/メモ） */
+    .chips{
       display:flex;
       gap:6px;
       flex-wrap:wrap;
-      margin-top:8px;
+      margin-top:auto; /* 下に寄せる */
     }
-    .badge{
+    .chip{
       font-size:11px;
       font-weight:1000;
       padding:4px 8px;
       border-radius:999px;
       border:1px solid var(--line);
+      background:var(--chip);
+      user-select:none;
+      white-space:nowrap;
+    }
+    .chip.ok{ border-color:rgba(97,255,160,.55); box-shadow:0 0 0 2px rgba(97,255,160,.12) inset; }
+    .chip.off{ border-color:rgba(255,107,107,.55); box-shadow:0 0 0 2px rgba(255,107,107,.12) inset; }
+    .chip.memo{ border-color:rgba(127,208,255,.55); box-shadow:0 0 0 2px rgba(127,208,255,.12) inset; }
+    .chip.stamp{ border-color:rgba(255,212,90,.70); box-shadow:0 0 0 2px rgba(255,212,90,.12) inset; }
+
+    /* ✅ トグルボタン群（押しやすい/スマホでも崩れない） */
+    .badges{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:6px;
+    }
+    .badgeBtn{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      width:100%;
+      font-size:12px;
+      font-weight:1000;
+      padding:9px 10px;
+      border-radius:12px;
+      border:1px solid var(--line);
       background:rgba(255,255,255,.08);
       cursor:pointer;
-      user-select:none;
+      -webkit-tap-highlight-color: transparent;
     }
-    .badge.off.on{ border-color:rgba(255,107,107,.55); box-shadow:0 0 0 2px rgba(255,107,107,.14) inset; }
-    .badge.stamp.on{ border-color:rgba(127,208,255,.55); box-shadow:0 0 0 2px rgba(127,208,255,.14) inset; }
-    textarea{
+    .badgeBtn .label{ white-space:nowrap; }
+    .badgeBtn .state{
+      font-size:11px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.18);
+      white-space:nowrap;
+    }
+    .badgeBtn.onOff{ border-color:rgba(255,107,107,.55); box-shadow:0 0 0 2px rgba(255,107,107,.14) inset; }
+    .badgeBtn.onOpen{ border-color:rgba(97,255,160,.55); box-shadow:0 0 0 2px rgba(97,255,160,.14) inset; }
+    .badgeBtn.onStamp{ border-color:rgba(255,212,90,.70); box-shadow:0 0 0 2px rgba(255,212,90,.12) inset; }
+    .badgeBtn.onMemo{ border-color:rgba(127,208,255,.55); box-shadow:0 0 0 2px rgba(127,208,255,.14) inset; }
+
+    /* ✅ メモ入力（セル内） */
+    .memoBox{
+      display:none;
+      margin-top:6px;
+      padding-top:8px;
+      border-top:1px dashed rgba(255,255,255,.18);
+    }
+    .memoBox.on{ display:block; }
+    .memoBox label{
+      display:block;
+      font-size:11px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+    .memoBox textarea{
+      width:100%;
+      min-height:54px;
+      resize:vertical;
+      background:rgba(0,0,0,.35);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px;
+      color:var(--text);
+      font-family: system-ui,-apple-system,"Noto Sans JP",sans-serif;
+      font-size:12px;
+      line-height:1.45;
+      outline:none;
+    }
+
+    textarea#out{
       width:100%;
       min-height:220px;
       background:rgba(0,0,0,.35);
@@ -129,18 +241,21 @@
       line-height:1.5;
       margin-top:10px;
       white-space:pre;
+      outline:none;
     }
+
     .hint{
       font-size:12px;
       color:var(--muted);
-      margin-top:8px;
-      line-height:1.6;
+      margin-top:10px;
+      line-height:1.7;
     }
+
     .toast{
       position:fixed;
       left:12px; right:12px;
       bottom: calc(12px + env(safe-area-inset-bottom));
-      background: rgba(0,0,0,.7);
+      background: rgba(0,0,0,.72);
       border:1px solid rgba(255,255,255,.18);
       border-radius:14px;
       padding:12px 12px;
@@ -153,20 +268,52 @@
       margin: 0 auto;
     }
     .toast.on{ opacity:1; transform:none; }
+
+    /* ✅ スマホで崩れない最適化（列は7のまま。中身を圧縮） */
+    @media (max-width: 520px){
+      .wrap{ padding:14px 10px 40px; }
+      .panel{ padding:12px; }
+      .title{ font-size:18px; }
+
+      .ym{ grid-template-columns: 1fr; }
+      .navBtns{ justify-content:space-between; }
+      .navBtns button{ flex:1; min-width:0; }
+
+      .dow{ gap:6px; font-size:11px; }
+      .grid{ gap:6px; }
+
+      .cell{
+        padding:8px 6px;
+        min-height: 114px;
+        border-radius:12px;
+      }
+      .daynum{ font-size:15px; }
+      .baseTag{ font-size:10px; padding:3px 7px; }
+
+      .badgeBtn{ padding:8px 8px; font-size:11.5px; }
+      .badgeBtn .state{ font-size:10.5px; padding:3px 7px; }
+
+      .mini{ font-size:10.5px; }
+      .chip{ font-size:10.5px; padding:3px 7px; }
+
+      .memoBox textarea{ min-height:48px; font-size:12px; }
+    }
   </style>
 </head>
 <body>
 <main class="wrap">
-  <div class="title">菜々カレンダー管理（休日/スタンプ2倍）</div>
+  <div class="title">菜々カレンダー管理（営業/休日/臨時休業/メモ）</div>
   <div class="sub">
-    ✅ 基本休み：<b>毎週水曜</b>＋<b>第2・第3木曜</b>は自動<br>
-    ✅ 自動2倍：<b>7/17/27（7のつく日）</b>は表示ページ側で自動（休みなら表示しない）<br>
-    ✅ 変則：臨時休業の追加だけここでON → JSONを書き出し → <code>assets/calendar-data.json</code> にコピペしてcommit
+    ✅ 基本は <b>毎週水曜</b>＋<b>第2・第3木曜</b> が休み（自動）<br>
+    ✅ ただし「事情で営業する日」がある → <b>この管理画面で“営業に切替”</b>できます（基本休みを上書き）<br>
+    ✅ 臨時休業も追加できます（営業日を休みに上書き）<br>
+    ✅ メモ：その日に表示したい短文（例：<b>イベント/売切れ注意/臨時短縮</b>など）を入力できます<br>
+    ✅ 自動2倍：<b>7/17/27</b> は表示ページ側で自動（休みなら表示しない）／ここは「手動2倍」だけ追加用
   </div>
 
   <section class="panel">
     <div class="ym">
-      <div class="row">
+      <div class="navBtns">
         <button id="prevBtn" type="button">← 前月</button>
         <button id="todayBtn" type="button" class="primary">今月</button>
         <button id="nextBtn" type="button">次月 →</button>
@@ -180,14 +327,15 @@
     <div class="grid" id="grid"></div>
 
     <div class="hint">
-      ・「休み」ON：臨時休業を追加（基本休みとは別に上書き）<br>
-      ・「スタンプ2倍」ON：特別に追加したい時だけ（通常は7/17/27が自動）<br>
-      ・「（基）」表示＝その日が基本休み（水曜 or 第2/第3木曜）
+      ・基本休み（自動）を<b>営業にしたい</b> →「営業にする」をON（優先）<br>
+      ・通常営業日を<b>休みにしたい</b> →「臨時休業」をON（優先）<br>
+      ・両方ONは矛盾するので、押した時点で片方を自動でOFFにします（事故防止）<br>
+      ・メモは表示ページ側で出したい場合、表示ページのJSに「memo表示」を1ヶ所追加すればOK（JSONには入ります）
     </div>
   </section>
 
   <section class="panel">
-    <div class="row" style="justify-content:space-between;">
+    <div class="row between">
       <div class="row">
         <button id="exportBtn" type="button" class="good">JSONを書き出し</button>
         <button id="copyBtn" type="button">コピー</button>
@@ -198,7 +346,8 @@
     </div>
     <textarea id="out" spellcheck="false" placeholder="ここにJSONが出ます"></textarea>
     <div class="hint">
-      ※保存先はこの端末内（localStorage）です。<b>GitHubへ反映するにはコピペ→commitが必要</b>です。
+      ※保存先はこの端末内（localStorage）です。<b>GitHubへ反映するにはコピペ→commitが必要</b>です。<br>
+      出力先：<code>assets/calendar-data.json</code>
     </div>
   </section>
 
@@ -208,7 +357,7 @@
 <script>
 (() => {
   "use strict";
-  const STORE_KEY = "nana_calendar_admin_v1";
+  const STORE_KEY = "nana_calendar_admin_v2"; // v2（営業切替＋メモ追加）
   const $ = (s, el=document) => el.querySelector(s);
 
   const gridEl = $("#grid");
@@ -221,7 +370,7 @@
     toastEl.textContent = msg;
     toastEl.classList.add("on");
     clearTimeout(toastT);
-    toastT = setTimeout(()=>toastEl.classList.remove("on"), 1200);
+    toastT = setTimeout(()=>toastEl.classList.remove("on"), 1400);
   }
 
   let view = (() => {
@@ -229,7 +378,17 @@
     return { y: d.getFullYear(), m: d.getMonth()+1 };
   })();
 
-  // 月ごとの手動設定：{ "YYYY-MM": { off:[], tags:{} } }
+  /**
+   * 月ごとの手動設定（表示ページが読む形式に合わせる）
+   * OV = {
+   *   "YYYY-MM": {
+   *     off:   ["YYYY-MM-DD", ...],     // 臨時休業（追加休み）
+   *     open:  ["YYYY-MM-DD", ...],     // ✅ 基本休みを営業にする（上書き）
+   *     tags:  { "YYYY-MM-DD": "スタンプ\n2倍", ... }, // 手動2倍など
+   *     memo:  { "YYYY-MM-DD": "メモ", ... }          // ✅ 追加
+   *   }
+   * }
+   */
   let OV = loadOV();
 
   function loadOV(){
@@ -250,10 +409,15 @@
 
   function monthObj(y,m){
     const key = ymKey(y,m);
-    if(!OV[key]) OV[key] = { off: [], tags: {} };
-    OV[key].off = Array.isArray(OV[key].off) ? OV[key].off : [];
-    OV[key].tags = (OV[key].tags && typeof OV[key].tags==="object") ? OV[key].tags : {};
-    return OV[key];
+    if(!OV[key]) OV[key] = { off: [], open: [], tags: {}, memo: {} };
+
+    const mo = OV[key];
+    mo.off  = Array.isArray(mo.off)  ? mo.off  : [];
+    mo.open = Array.isArray(mo.open) ? mo.open : [];
+    mo.tags = (mo.tags && typeof mo.tags==="object") ? mo.tags : {};
+    mo.memo = (mo.memo && typeof mo.memo==="object") ? mo.memo : {};
+    OV[key] = mo;
+    return mo;
   }
 
   // 基本休み：水曜＋第2/第3木曜
@@ -271,44 +435,113 @@
     return false;
   }
 
+  // 表示ページ側の自動2倍用（ここでは表示だけ）
   function isAutoStampDay(d){
     return (d===7 || d===17 || d===27);
   }
 
+  function uniqPush(arr, v){
+    if(!arr.includes(v)) arr.push(v);
+  }
+  function removeVal(arr, v){
+    const i = arr.indexOf(v);
+    if(i>=0) arr.splice(i,1);
+  }
+
+  // ✅ 臨時休業：ONで休みに上書き（openが入ってたら消す）
   function toggleOff(y,m,d){
     const mo = monthObj(y,m);
     const dateStr = ymd(y,m,d);
-    const idx = mo.off.indexOf(dateStr);
-    if(idx >= 0){
-      mo.off.splice(idx,1);
-      toast(`${dateStr}：休みOFF`);
+
+    const on = mo.off.includes(dateStr);
+    if(on){
+      removeVal(mo.off, dateStr);
+      toast(`${dateStr}：臨時休業 OFF`);
     }else{
-      mo.off.push(dateStr);
-      toast(`${dateStr}：休みON`);
+      uniqPush(mo.off, dateStr);
+      // 矛盾防止：営業上書きが入ってたら外す
+      removeVal(mo.open, dateStr);
+      toast(`${dateStr}：臨時休業 ON`);
     }
+
     saveOV();
     render();
   }
 
+  // ✅ 営業にする：基本休みを営業に上書き（offが入ってたら消す）
+  function toggleOpen(y,m,d){
+    const mo = monthObj(y,m);
+    const dateStr = ymd(y,m,d);
+
+    const on = mo.open.includes(dateStr);
+    if(on){
+      removeVal(mo.open, dateStr);
+      toast(`${dateStr}：営業上書き OFF`);
+    }else{
+      uniqPush(mo.open, dateStr);
+      // 矛盾防止：臨時休業が入ってたら外す
+      removeVal(mo.off, dateStr);
+      toast(`${dateStr}：営業上書き ON`);
+    }
+
+    saveOV();
+    render();
+  }
+
+  // 手動2倍（特別な日だけ）
   function toggleStamp(y,m,d){
     const mo = monthObj(y,m);
     const dateStr = ymd(y,m,d);
     if(mo.tags[dateStr]){
       delete mo.tags[dateStr];
-      toast(`${dateStr}：2倍OFF`);
+      toast(`${dateStr}：手動2倍 OFF`);
     }else{
       mo.tags[dateStr] = "スタンプ\n2倍";
-      toast(`${dateStr}：2倍ON`);
+      toast(`${dateStr}：手動2倍 ON`);
     }
     saveOV();
     render();
   }
 
+  function setMemo(y,m,d, text){
+    const mo = monthObj(y,m);
+    const dateStr = ymd(y,m,d);
+    const t = String(text || "").trim();
+
+    if(!t){
+      if(mo.memo[dateStr]) delete mo.memo[dateStr];
+    }else{
+      // 長すぎると表示が崩れるので軽く制限（必要なら増やせる）
+      mo.memo[dateStr] = t.slice(0, 80);
+    }
+    saveOV();
+    // 入力中に毎回renderするとカーソルが飛ぶので、保存だけして表示更新は軽めに
+  }
+
+  function getMemo(y,m,d){
+    const mo = monthObj(y,m);
+    const dateStr = ymd(y,m,d);
+    return mo.memo[dateStr] || "";
+  }
+
+  // 「その日が最終的に営業か休みか」を管理画面で表示する（表示ページ側も同じ優先順位でOK）
+  function isFinalOff(y,m,d){
+    const mo = monthObj(y,m);
+    const dateStr = ymd(y,m,d);
+
+    // 優先：営業上書き → 臨時休業 → 基本休み
+    if(mo.open.includes(dateStr)) return false;
+    if(mo.off.includes(dateStr)) return true;
+    return isBaseOff(y,m,d);
+  }
+
+  function clearGrid(){ gridEl.innerHTML = ""; }
+
   function render(){
     const {y,m} = view;
     const key = ymKey(y,m);
     ymTitleEl.textContent = key;
-    gridEl.innerHTML = "";
+    clearGrid();
 
     const start = firstDow(y,m);
     const last = daysInMonth(y,m);
@@ -322,50 +555,154 @@
 
     for(let d=1; d<=last; d++){
       const dateStr = ymd(y,m,d);
+
       const baseOff = isBaseOff(y,m,d);
       const manualOff = mo.off.includes(dateStr);
+      const manualOpen = mo.open.includes(dateStr);
       const manualStamp = !!mo.tags[dateStr];
       const autoStamp = isAutoStampDay(d);
+      const finalOff = isFinalOff(y,m,d);
+      const memoText = getMemo(y,m,d);
 
       const cell = document.createElement("div");
       cell.className = "cell";
 
+      // 上段：日付＋（基）
+      const topline = document.createElement("div");
+      topline.className = "topline";
+
       const n = document.createElement("div");
       n.className = "daynum";
-      n.textContent = d + (baseOff ? "（基）" : "");
-      cell.appendChild(n);
+      n.textContent = String(d);
+      topline.appendChild(n);
 
+      if(baseOff){
+        const t = document.createElement("div");
+        t.className = "baseTag";
+        t.textContent = "（基）";
+        topline.appendChild(t);
+      }
+      cell.appendChild(topline);
+
+      // 状態テキスト
       const mini = document.createElement("div");
       mini.className = "mini";
       mini.textContent =
-        ( (baseOff || manualOff) ? "休み" : "営業" ) +
-        ( autoStamp ? " / 自動2倍" : "" ) +
-        ( manualStamp ? " / 手動2倍" : "" );
+        (finalOff ? "休み" : "営業") +
+        (autoStamp ? " / 自動2倍(表示側)" : "") +
+        (manualStamp ? " / 手動2倍" : "") +
+        (manualOpen ? " / 営業上書き" : "") +
+        (manualOff ? " / 臨時休業" : "");
       cell.appendChild(mini);
 
+      // トグル群
       const badges = document.createElement("div");
       badges.className = "badges";
 
-      const bOff = document.createElement("div");
-      bOff.className = "badge off" + (manualOff ? " on" : "");
-      bOff.textContent = "休み";
-      bOff.addEventListener("click", () => toggleOff(y,m,d));
-      badges.appendChild(bOff);
+      const btnOpen = document.createElement("button");
+      btnOpen.type = "button";
+      btnOpen.className = "badgeBtn" + (manualOpen ? " onOpen" : "");
+      btnOpen.innerHTML = `
+        <span class="label">営業にする</span>
+        <span class="state">${manualOpen ? "ON" : "OFF"}</span>
+      `;
+      btnOpen.addEventListener("click", () => toggleOpen(y,m,d));
+      badges.appendChild(btnOpen);
 
-      const bStamp = document.createElement("div");
-      bStamp.className = "badge stamp" + (manualStamp ? " on" : "");
-      bStamp.textContent = "スタンプ2倍";
-      bStamp.addEventListener("click", () => toggleStamp(y,m,d));
-      badges.appendChild(bStamp);
+      const btnOff = document.createElement("button");
+      btnOff.type = "button";
+      btnOff.className = "badgeBtn" + (manualOff ? " onOff" : "");
+      btnOff.innerHTML = `
+        <span class="label">臨時休業</span>
+        <span class="state">${manualOff ? "ON" : "OFF"}</span>
+      `;
+      btnOff.addEventListener("click", () => toggleOff(y,m,d));
+      badges.appendChild(btnOff);
+
+      const btnStamp = document.createElement("button");
+      btnStamp.type = "button";
+      btnStamp.className = "badgeBtn" + (manualStamp ? " onStamp" : "");
+      btnStamp.innerHTML = `
+        <span class="label">手動2倍</span>
+        <span class="state">${manualStamp ? "ON" : "OFF"}</span>
+      `;
+      btnStamp.addEventListener("click", () => toggleStamp(y,m,d));
+      badges.appendChild(btnStamp);
+
+      // メモの表示/非表示トグル（入力欄）
+      const btnMemo = document.createElement("button");
+      btnMemo.type = "button";
+      btnMemo.className = "badgeBtn" + (memoText ? " onMemo" : "");
+      btnMemo.innerHTML = `
+        <span class="label">メモ</span>
+        <span class="state">${memoText ? "あり" : "なし"}</span>
+      `;
+      badges.appendChild(btnMemo);
 
       cell.appendChild(badges);
 
-      // 補足：自動2倍の日は、休みと被ると表示ページ側で「休」優先になる
+      // メモ入力
+      const memoBox = document.createElement("div");
+      memoBox.className = "memoBox" + (memoText ? " on" : "");
+      memoBox.innerHTML = `
+        <label>${dateStr} のメモ（例：臨時短縮/イベント/売切れ注意）</label>
+      `;
+      const ta = document.createElement("textarea");
+      ta.value = memoText;
+      ta.placeholder = "例）昼のみ営業 / 16時まで / イベント出店 など";
+      ta.addEventListener("input", () => setMemo(y,m,d, ta.value));
+      ta.addEventListener("blur", () => { saveOV(); render(); }); // 見た目更新
+      memoBox.appendChild(ta);
+      cell.appendChild(memoBox);
+
+      btnMemo.addEventListener("click", () => {
+        memoBox.classList.toggle("on");
+        // 開いたらフォーカス（スマホで便利）
+        if(memoBox.classList.contains("on")){
+          setTimeout(()=>ta.focus(), 0);
+        }
+      });
+
+      // チップ表示（視認性）
+      const chips = document.createElement("div");
+      chips.className = "chips";
+
+      const c1 = document.createElement("div");
+      c1.className = "chip " + (finalOff ? "off" : "ok");
+      c1.textContent = finalOff ? "休み" : "営業";
+      chips.appendChild(c1);
+
+      if(manualOpen){
+        const c = document.createElement("div");
+        c.className = "chip ok";
+        c.textContent = "営業上書き";
+        chips.appendChild(c);
+      }
+      if(manualOff){
+        const c = document.createElement("div");
+        c.className = "chip off";
+        c.textContent = "臨時休業";
+        chips.appendChild(c);
+      }
+      if(manualStamp){
+        const c = document.createElement("div");
+        c.className = "chip stamp";
+        c.textContent = "手動2倍";
+        chips.appendChild(c);
+      }
+      if(memoText){
+        const c = document.createElement("div");
+        c.className = "chip memo";
+        c.textContent = "メモあり";
+        chips.appendChild(c);
+      }
+
+      cell.appendChild(chips);
+
       gridEl.appendChild(cell);
     }
 
-    const total = gridEl.children.length;
-    const mod = total % 7;
+    const mod = gridEl.children.length % 7;
     if(mod !== 0){
       for(let i=0;i<7-mod;i++){
         const b = document.createElement("div");
@@ -384,21 +721,28 @@
   }
 
   function exportJSON(){
-    // 表示ページが読む形式：{ overrides: { "YYYY-MM": { off:[...], tags:{...} } } }
-    // ここで出す off は「手動の追加休みのみ」でOK（基本休みは表示JSで自動だから）。
+    // 表示ページが読む形式：{ overrides: { "YYYY-MM": { off:[...], open:[...], tags:{...}, memo:{...} } } }
     const out = { overrides: {} };
     const keys = Object.keys(OV).sort();
+
     for(const key of keys){
-      const mo = OV[key];
-      if(!mo) continue;
+      const mo0 = OV[key];
+      if(!mo0) continue;
 
-      const off = Array.isArray(mo.off) ? mo.off.slice() : [];
-      const tags = (mo.tags && typeof mo.tags==="object") ? mo.tags : {};
+      const mo = {
+        off:  Array.isArray(mo0.off)  ? mo0.off.slice()  : [],
+        open: Array.isArray(mo0.open) ? mo0.open.slice() : [],
+        tags: (mo0.tags && typeof mo0.tags==="object") ? mo0.tags : {},
+        memo: (mo0.memo && typeof mo0.memo==="object") ? mo0.memo : {}
+      };
 
-      // 空なら出力しない（JSONをスッキリ）
-      if(off.length === 0 && Object.keys(tags).length === 0) continue;
+      // 空なら出力しない（スッキリ）
+      if(mo.off.length===0 && mo.open.length===0 &&
+         Object.keys(mo.tags).length===0 && Object.keys(mo.memo).length===0){
+        continue;
+      }
 
-      out.overrides[key] = { off, tags };
+      out.overrides[key] = mo;
     }
 
     outEl.value = JSON.stringify(out, null, 2);
@@ -434,6 +778,7 @@
     render();
   });
 
+  // 初回
   render();
 })();
 </script>
