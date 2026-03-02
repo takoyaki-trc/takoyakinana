@@ -36,6 +36,9 @@
       /* ✅ スタンプの“右下寄せ”を確実にするための余白 */
       --stampInsetR: 6px;
       --stampInsetB: 6px;
+
+      /* ✅ メモ表示エリア（下端） */
+      --memoSafeH: 18px; /* 画面用 */
     }
 
     *{ box-sizing:border-box; }
@@ -161,6 +164,11 @@
       pointer-events:none;
     }
 
+    /* ✅ メモがある日は「下側安全領域」を確保（右下スタンプとも競合しづらい） */
+    .cell.hasMemo{
+      padding-bottom: calc(8px + var(--memoSafeH));
+    }
+
     /* 休みマスだけ背景色 */
     .cell.isOff{ background: var(--offbg); }
 
@@ -187,30 +195,54 @@
       background: radial-gradient(circle at 30% 25%, #fff7c7 0%, var(--stampYellow) 45%, #ffbf2f 100%);
       border: 2px solid var(--stampBorder);
       border-radius: 11px;
-      padding: 3px 4px;           /* ✅ 少し詰める */
-      width: 48px;                /* ✅ 少し小さく */
+      padding: 3px 4px;
+      width: 48px;
       text-align:center;
       font-weight:1000;
       color: var(--stampRed);
       box-shadow: 0 3px 0 rgba(0,0,0,.14);
       pointer-events:none;
       z-index:2;
-      line-height:1;              /* ✅ 行間を潰す */
+      line-height:1;
     }
     .stampBadge .top{
       font-size: 9px;
       white-space:nowrap;
       line-height:1;
       margin:0;
-      transform: translateY(-1px); /* ✅ さらに詰める */
+      transform: translateY(-1px);
     }
     .stampBadge .bottom{
       font-size: 11px;
       white-space:nowrap;
       line-height:1;
       margin:0;
-      transform: translateY(-1px); /* ✅ さらに詰める */
+      transform: translateY(-1px);
       letter-spacing:.02em;
+    }
+
+    /* ✅ メモ表示（下端・左寄せ） */
+    .memo{
+      position:absolute;
+      left: 6px;
+      right: 6px;
+      bottom: 6px;
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1.15;
+      color: rgba(0,0,0,.78);
+      background: rgba(255,255,255,.82);
+      border: 1px solid rgba(0,0,0,.10);
+      border-radius: 8px;
+      padding: 3px 6px;
+      z-index: 4;
+      pointer-events:none;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+    .cell.isOff .memo{
+      background: rgba(255,255,255,.88);
     }
 
     /* ===== カレンダー下：画像だけ（中央・はみ出し無し） ===== */
@@ -254,12 +286,12 @@
       .day{ font-size: 22px; left:6px; top:6px; }
       .offMark{ font-size: 18px; right: 6px; bottom: 6px; }
 
-      /* スタンプも小さめ（右下寄せ維持） */
       :root{
         --stampSafeW: 50px;
         --stampSafeH: 30px;
         --stampInsetR: 5px;
         --stampInsetB: 5px;
+        --memoSafeH: 16px;
       }
       .stampBadge{
         width: 42px;
@@ -269,7 +301,13 @@
       .stampBadge .top{ font-size: 8.5px; }
       .stampBadge .bottom{ font-size: 10.5px; }
 
-      /* 画像は横幅はみ出さない（100%） */
+      .memo{
+        font-size: 10px;
+        padding: 2px 5px;
+        border-radius: 7px;
+        left: 5px; right: 5px; bottom: 5px;
+      }
+
       .promo{ padding: 12px 10px 14px; }
     }
 
@@ -296,8 +334,8 @@
 
       .sheet{
         width: 100% !important;
-        height: calc(210mm - 6mm) !important; /* A4横の高さ固定（1枚） */
-        border: 0.7mm solid #555 !important;  /* ✅ 外枠も太め */
+        height: calc(210mm - 6mm) !important;
+        border: 0.7mm solid #555 !important;
         box-shadow:none !important;
         border-radius:0 !important;
         overflow:hidden !important;
@@ -309,7 +347,6 @@
       .band-month{ font-size: 10.5mm !important; }
       .band-title{ font-size: 10.5mm !important; }
 
-      /* ✅ 曜日段の区切りも太く */
       .dow{
         border-top: 0.7mm solid #555 !important;
         border-bottom: 0.7mm solid #555 !important;
@@ -317,22 +354,19 @@
       .dow > div{
         padding: 2.5mm 0 !important;
         font-size: 4.2mm !important;
-        border-right: 0.5mm solid #666 !important; /* ✅ 縦線太め */
+        border-right: 0.5mm solid #666 !important;
       }
       .dow > div:last-child{ border-right:none !important; }
 
-      /* ✅ 罫線がPDFで消えない対策：すべて“mm指定で太め”に */
       .grid{
         border-bottom: 0.7mm solid #555 !important;
-        grid-auto-rows: 20mm !important; /* 1枚に収める核 */
+        grid-auto-rows: 20mm !important;
       }
       .cell{
         border-right: 0.5mm solid #666 !important;
         border-bottom: 0.5mm solid #666 !important;
       }
-      .cell:nth-child(7n){
-        border-right: none !important;
-      }
+      .cell:nth-child(7n){ border-right: none !important; }
 
       .day{
         font-size: 6.6mm !important;
@@ -345,13 +379,27 @@
         bottom: 2.2mm !important;
       }
 
-      /* 右下バッジ（印刷でも右下＆小さめ） */
+      /* 印刷時のメモ：小さく、下端に */
       :root{
         --stampSafeW: 18mm;
         --stampSafeH: 11mm;
         --stampInsetR: 2mm;
         --stampInsetB: 2mm;
+        --memoSafeH: 7mm;
       }
+      .cell.hasMemo{
+        padding-bottom: calc(2.2mm + var(--memoSafeH)) !important;
+      }
+      .memo{
+        left: 1.8mm !important;
+        right: 1.8mm !important;
+        bottom: 1.7mm !important;
+        font-size: 3.2mm !important;
+        padding: 0.6mm 1.2mm !important;
+        border-radius: 2mm !important;
+        border-width: 0.35mm !important;
+      }
+
       .stampBadge{
         width: 14.5mm !important;
         padding: 1.0mm 0.9mm !important;
@@ -363,15 +411,12 @@
       .stampBadge .top{ font-size: 2.8mm !important; }
       .stampBadge .bottom{ font-size: 3.2mm !important; }
 
-      /* ✅ 画像：横幅ギリギリ（用紙内）＋はみ出し防止 */
-      .promo{
-        padding: 3mm 0 0 !important;
-      }
+      .promo{ padding: 3mm 0 0 !important; }
       .promo img{
         width: 100% !important;
         max-width: 100% !important;
         height: auto !important;
-        max-height: 55mm !important; /* カレンダー優先で残りに収める */
+        max-height: 55mm !important;
       }
 
       .band, .dow, .grid, .promo{
@@ -396,7 +441,6 @@
 
       <div class="grid" id="calGrid"></div>
 
-      <!-- ✅ 下の文字は全部削除して、画像だけ中央表示 -->
       <div class="promo">
         <img src="https://ul.h3z.jp/AMdusfdD.jpg" alt="菜々カレンダー下部画像" loading="eager" decoding="async">
       </div>
@@ -414,6 +458,9 @@
   (() => {
     "use strict";
 
+    // ★管理画面（v2）の保存キーと合わせる
+    const ADMIN_STORE_KEY = "nana_calendar_admin_v2_local";
+
     const $ = (s, el=document) => el.querySelector(s);
     const gridEl = $("#calGrid");
     const bandMonthEl = $("#bandMonth");
@@ -428,6 +475,7 @@
       return { y: d.getFullYear(), m: d.getMonth()+1 };
     })();
 
+    // 互換データ（localStorage or JSON）
     let DATA = { overrides: {} };
 
     function pad2(n){ return String(n).padStart(2,"0"); }
@@ -436,7 +484,7 @@
     function daysInMonth(y,m){ return new Date(y, m, 0).getDate(); }
     function firstDow(y,m){ return new Date(y, m-1, 1).getDay(); }
 
-    // 休み：水曜 + 第2/第3木曜
+    // 基本休み：水曜 + 第2/第3木曜
     function isBaseOff(y,m,d){
       const dt = new Date(y, m-1, d);
       const dow = dt.getDay();
@@ -454,15 +502,40 @@
     // 自動：7/17/27 はスタンプ2倍
     function isAutoStampDay(d){ return (d === 7 || d === 17 || d === 27); }
 
-    async function loadData(){
+    // ========== データ読込（localStorage優先 → なければ assets/calendar-data.json） ==========
+    function loadFromLocal(){
+      try{
+        const raw = localStorage.getItem(ADMIN_STORE_KEY);
+        if(!raw) return null;
+        const obj = JSON.parse(raw);
+        if(!obj || typeof obj !== "object") return null;
+
+        // 管理画面は { "YYYY-MM": {off,open,tags,memo} ... } 形式
+        // 表示ページは { overrides: {...} } に合わせて内部統一
+        return { overrides: obj };
+      }catch(e){
+        return null;
+      }
+    }
+
+    async function loadFromJSON(){
       try{
         const res = await fetch("assets/calendar-data.json", { cache:"no-store" });
         if(!res.ok) throw new Error("calendar-data.json not found");
         const json = await res.json();
-        if(json && typeof json === "object") DATA = json;
-      }catch(e){
-        DATA = { overrides: {} };
+        if(json && typeof json === "object") return json;
+      }catch(e){ /* noop */ }
+      return { overrides: {} };
+    }
+
+    async function loadData(){
+      const local = loadFromLocal();
+      if(local){
+        DATA = local;
+        return;
       }
+      // localが無い（または壊れてる）ときだけJSON
+      DATA = await loadFromJSON();
     }
 
     function getMonthOverride(y,m){
@@ -474,13 +547,49 @@
       while(gridEl.firstChild) gridEl.removeChild(gridEl.firstChild);
     }
 
+    // open/offの優先順位：
+    // open（基本休みを営業に戻す） → off（最終的に休みにする）
+    function isOffForDate(y,m,d, ov){
+      const dateStr = ymd(y,m,d);
+
+      const baseOff = isBaseOff(y,m,d);
+
+      const offArr  = (ov && Array.isArray(ov.off))  ? ov.off  : [];
+      const openArr = (ov && Array.isArray(ov.open)) ? ov.open : [];
+
+      const forcedOpen = openArr.includes(dateStr);
+      const forcedOff  = offArr.includes(dateStr);
+
+      // 基本休みでも、臨時営業があれば営業に戻す
+      let off = baseOff && !forcedOpen;
+
+      // 臨時休業があれば最優先で休み
+      if(forcedOff) off = true;
+
+      return off;
+    }
+
+    function getMemoForDate(ov, dateStr){
+      const memo = (ov && ov.memo && typeof ov.memo === "object") ? ov.memo : null;
+      if(!memo) return "";
+      const v = memo[dateStr];
+      if(v == null) return "";
+      return String(v).trim();
+    }
+
+    function getManualTagForDate(ov, dateStr){
+      const tags = (ov && ov.tags && typeof ov.tags === "object") ? ov.tags : null;
+      if(!tags) return "";
+      const v = tags[dateStr];
+      if(v == null) return "";
+      return String(v);
+    }
+
     function render(){
       const {y,m} = view;
       bandMonthEl.textContent = `${m}月`;
 
       const ov = getMonthOverride(y,m);
-      const manualOff = new Set((ov && ov.off) ? ov.off : []);
-      const manualTags = (ov && ov.tags) ? ov.tags : {};
 
       clearGrid();
 
@@ -509,7 +618,18 @@
         day.textContent = String(d);
         cell.appendChild(day);
 
-        const off = isBaseOff(y,m,d) || manualOff.has(dateStr);
+        const off = isOffForDate(y,m,d, ov);
+
+        // メモ
+        const memo = getMemoForDate(ov, dateStr);
+        if(memo){
+          cell.classList.add("hasMemo");
+          const memoEl = document.createElement("div");
+          memoEl.className = "memo";
+          // 1行表示に寄せる（改行→スペース）
+          memoEl.textContent = memo.replace(/\s+/g, " ");
+          cell.appendChild(memoEl);
+        }
 
         if(off){
           cell.classList.add("isOff");
@@ -519,20 +639,26 @@
           cell.appendChild(o);
         }else{
           // タグ（手動） or 自動スタンプ日
-          let tag = "";
-          if(manualTags[dateStr]) tag = String(manualTags[dateStr]);
-
+          const manualTag = getManualTagForDate(ov, dateStr); // 例："スタンプ\n2倍"
           const shouldAuto = isAutoStampDay(d);
 
-          if(tag || shouldAuto){
-            cell.classList.add("hasStamp"); // ✅ 右下の安全領域
+          // 表示するラベル：手動タグがあれば優先（上段の文言だけ使う）
+          let topLabel = "";
+          if(manualTag){
+            topLabel = manualTag.split(/\r?\n/)[0].trim() || "スタンプ";
+          }else if(shouldAuto){
+            topLabel = "スタンプ";
+          }
+
+          if(topLabel){
+            cell.classList.add("hasStamp");
 
             const badge = document.createElement("div");
             badge.className = "stampBadge";
 
             const top = document.createElement("div");
             top.className = "top";
-            top.textContent = tag ? tag : "スタンプ";
+            top.textContent = topLabel;
 
             const bottom = document.createElement("div");
             bottom.className = "bottom";
@@ -567,6 +693,24 @@
       view = { y, m };
       render();
     }
+
+    // ✅ 管理画面と同時に開いている時、変更を“即反映”させる仕組み
+    // 1) 同一ブラウザ内：storageイベント（別タブで変えた時）
+    window.addEventListener("storage", (ev) => {
+      if(ev && ev.key === ADMIN_STORE_KEY){
+        // localStorage を読み直して即描画
+        const local = loadFromLocal();
+        DATA = local ? local : { overrides:{} };
+        render();
+      }
+    });
+
+    // 2) 同一タブ内（管理画面と表示ページを同じタブで行き来）でも安定するように、
+    //    表示ページがフォーカスされたタイミングで読み直す
+    window.addEventListener("focus", async () => {
+      await loadData();
+      render();
+    });
 
     async function init(){
       await loadData();
