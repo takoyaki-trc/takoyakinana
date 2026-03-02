@@ -17,7 +17,7 @@
       --muted:rgba(0,0,0,.62);
       --line:rgba(0,0,0,.12);
 
-      /* ✅ 状態文字色（変更ポイント） */
+      /* ✅ 状態文字色（ここを好みに変えられる） */
       --stateOpen:#2f6bff; /* 営業 */
       --stateOff:#d24a4a;  /* 休み */
 
@@ -26,7 +26,7 @@
 
       --r:16px;
 
-      /* レイアウト詰め */
+      /* 余白詰め */
       --gap:6px;
       --cellPadX:6px;
       --cellPadT:7px;
@@ -37,17 +37,16 @@
       --btnPadY: 7px;
       --btnPadX: 10px;
       --btnRadius: 999px;
-      --btnMin: 44px;
 
-      /* ✅ ボタン色（見えやすく） */
+      /* ✅ ボタン色（見えやすい） */
       --btnOffBg: rgba(210,74,74,.10);
-      --btnOffBgOn: rgba(210,74,74,.22);
+      --btnOffBgOn: rgba(210,74,74,.24);
 
       --btnOpenBg: rgba(47,107,255,.10);
-      --btnOpenBgOn: rgba(47,107,255,.22);
+      --btnOpenBgOn: rgba(47,107,255,.24);
 
       --btnMemoBg: rgba(184,134,42,.10);
-      --btnMemoBgOn: rgba(184,134,42,.22);
+      --btnMemoBgOn: rgba(184,134,42,.24);
 
       --btnText: rgba(0,0,0,.86);
       --btnTextOn: rgba(0,0,0,.92);
@@ -136,8 +135,11 @@
       background:#fff;
       border-radius:14px;
       padding: var(--cellPadT) var(--cellPadX) var(--cellPadB);
-      min-height: 86px;
-      overflow:hidden;
+      min-height: 88px;
+
+      /* ✅ ここが重要：見切れ防止 */
+      overflow: visible;
+
       display:flex;
       flex-direction:column;
       gap: 5px;
@@ -174,7 +176,7 @@
     .chipBase.off{ border-color:rgba(210,74,74,.22); color:rgba(210,74,74,.92); background: rgba(210,74,74,.06); }
     .chipBase.on{  border-color:rgba(31,143,82,.20); color:rgba(31,143,82,.95); background: rgba(31,143,82,.06); }
 
-    /* ✅ 日付の下：営業/休み（色変更対象） */
+    /* ✅ 日付の下：営業/休み（色変更） */
     .stateLine{
       font-size:12px;
       font-weight:1000;
@@ -211,7 +213,7 @@
     .badges{
       margin-top:auto;
       display:grid;
-      grid-template-columns: repeat(3, minmax(var(--btnMin), 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 6px;
       align-items:stretch;
     }
@@ -238,12 +240,10 @@
     }
     .badge:active{ filter: brightness(.95); }
 
-    /* ✅ それぞれ“常に薄色”で存在が分かる */
     .badge.off{  background: var(--btnOffBg); }
     .badge.open{ background: var(--btnOpenBg); }
     .badge.memo{ background: var(--btnMemoBg); }
 
-    /* ✅ ON は濃くする */
     .badge.on{ color: var(--btnTextOn); }
     .badge.off.on{  background: var(--btnOffBgOn); }
     .badge.open.on{ background: var(--btnOpenBgOn); }
@@ -339,6 +339,7 @@
     }
     .toast.on{ opacity:1; transform:none; }
 
+    /* ✅ スマホ：ボタンを2列にして必ず見えるようにする */
     @media (max-width: 560px){
       :root{
         --gap:6px;
@@ -349,14 +350,22 @@
         --btnFont: 11px;
         --btnPadY: 6px;
         --btnPadX: 8px;
-        --btnMin: 40px;
       }
+
       .panel{ padding:10px; }
       .dow{ gap: var(--gap); font-size:11px; }
       .grid{ gap: var(--gap); }
-      .cell{ min-height: 82px; gap: 5px; }
+      .cell{ min-height: 86px; gap: 5px; }
+
       .stateLine{ font-size: 11.5px; }
       .extras{ font-size: 10.5px; }
+
+      .badges{
+        grid-template-columns: 1fr 1fr;
+      }
+      .badge.memo{
+        grid-column: 1 / -1; /* メモは2段目で横いっぱい */
+      }
     }
 
     @media (max-width: 380px){
@@ -365,11 +374,8 @@
         --btnFont: 10.5px;
         --btnPadY: 6px;
         --btnPadX: 7px;
-        --btnMin: 44px;
       }
-      .cell{ min-height: 78px; }
-      .badges{ grid-template-columns: 1fr 1fr; }
-      .badge.memo{ grid-column: 1 / -1; }
+      .cell{ min-height: 82px; }
     }
   </style>
 </head>
@@ -719,7 +725,7 @@
     render();
   }
 
-   function exportJSON(){
+  function exportJSON(){
     const out = { overrides: {} };
     const keys = Object.keys(OV).sort();
     for(const key of keys){
