@@ -10,7 +10,6 @@
     :root{
       --paper:#fff;
       --ink:#111;
-      --muted:#333;
 
       --grid:#8f9aa5;
       --grid2:#c4ccd4;
@@ -28,9 +27,6 @@
       --stampRed:#d53737;
       --stampYellow:#ffd54a;
       --stampBorder:#c79b18;
-
-      /* 画像っぽい太め書体寄せ（環境依存。無ければ近い系へフォールバック） */
-      --edoBold: "HGS創英角ﾎﾟｯﾌﾟ体","HGP創英角ﾎﾟｯﾌﾟ体","HGP行書体","HGS行書体","Yuji Syuku","Klee One","Noto Sans JP","Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
 
       /* ✅ バッジが右下に来るので「右下の安全領域」を確保 */
       --stampSafeW: 56px;
@@ -148,10 +144,6 @@
     .cell.sat .day{ color:var(--sat); }
 
     /* ✅ スタンプがある日は「右下の安全領域」を確保 */
-    .cell.hasStamp{
-      padding-right: 8px;
-      padding-bottom: 8px;
-    }
     .cell.hasStamp::after{
       content:"";
       position:absolute;
@@ -214,95 +206,21 @@
       letter-spacing:.02em;
     }
 
-    /* ===== 下段：画像のレイアウトに寄せる ===== */
-    .foot{
-      padding: 14px 16px 16px;
+    /* ===== カレンダー下：画像だけ（中央・はみ出し無し） ===== */
+    .promo{
       background:#fff;
+      padding: 14px 14px 16px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
     }
-
-    /* 営業時間 行（左：営業時間 / 右：時間 / 右端：L.O.） */
-    .hoursRow{
-      display:grid;
-      grid-template-columns: 120px 1fr auto;
-      align-items:end;
-      column-gap: 14px;
-    }
-    .hoursLabel{
-      font-weight:1000;
-      font-size: 22px;
-      letter-spacing:.02em;
-      white-space:nowrap;
-    }
-    .hoursTime{
-      font-weight:1000;
-      font-size: 56px;
-      line-height:1;
-      letter-spacing:.01em;
-      white-space:nowrap;
-    }
-    .hoursLo{
-      font-weight:900;
-      font-size: 18px;
-      color: var(--muted);
-      white-space:nowrap;
-      padding-bottom: 6px;
-    }
-
-    .warn{
-      margin-top: 8px;
-      font-size: 16px;
-      color: var(--muted);
-      line-height:1.35;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    /* 最下段：左＝店名 / 右＝電話ブロック（上：予約、下：TEL） */
-    .bottomRow{
-      margin-top: 10px;
-      display:grid;
-      grid-template-columns: 1fr 360px;
-      align-items:end;
-      column-gap: 18px;
-    }
-
-    .shopName{
-      font-family: var(--edoBold);
-      font-weight:1000;
-      font-size: 58px;
-      line-height:1;
-      letter-spacing:.06em;
-      white-space:nowrap;
-      text-shadow:
-        0 1px 0 rgba(0,0,0,.14),
-        1px 0 0 rgba(0,0,0,.08),
-        -1px 0 0 rgba(0,0,0,.08);
-    }
-
-    .telBox{
-      display:grid;
-      grid-template-rows: auto auto;
-      justify-items:end;
-      row-gap: 8px;
-    }
-    .telReserve{
-      background:#333;
-      color:#fff;
-      font-weight:1000;
-      font-size: 16px;
-      padding: 10px 14px;
-      border-radius: 6px;
-      white-space:nowrap;
-    }
-    .telLine{
-      font-weight:1000;
-      font-size: 18px;
-      white-space:nowrap;
-    }
-    .telLine .num{
-      font-size: 34px;
-      letter-spacing:.02em;
+    .promo img{
+      display:block;
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      margin: 0 auto;
+      object-fit: contain;
     }
 
     /* 操作ボタン */
@@ -341,40 +259,11 @@
       .stampBadge .top{ font-size: 9px; }
       .stampBadge .bottom{ font-size: 11px; }
 
-      /* 営業時間：崩れないよう縮小 */
-      .hoursRow{
-        grid-template-columns: 86px 1fr auto;
-        column-gap: 10px;
-      }
-      .hoursLabel{ font-size: 16px; }
-      .hoursTime{ font-size: 40px; }
-      .hoursLo{ font-size: 14px; padding-bottom: 4px; }
-
-      .warn{
-        font-size: 13px;
-        white-space:normal;
-        overflow:visible;
-        text-overflow:clip;
-      }
-
-      /* 店名＋電話：2段にしてでも見切れ防止 */
-      .bottomRow{
-        grid-template-columns: 1fr;
-        row-gap: 10px;
-      }
-      .shopName{
-        text-align:left;
-        font-size: 44px;
-      }
-      .telBox{
-        justify-items:start;
-      }
-      .telReserve{ font-size: 14px; padding: 9px 12px; }
-      .telLine{ font-size: 14px; }
-      .telLine .num{ font-size: 24px; }
+      /* 画像は横幅はみ出さない（100%） */
+      .promo{ padding: 12px 10px 14px; }
     }
 
-    /* ===== 印刷（A4横・1枚固定） ===== */
+    /* ===== 印刷（A4横・1枚固定 / 画像は横幅ギリギリ） ===== */
     @page{
       size: A4 landscape;
       margin: 3mm;
@@ -397,7 +286,7 @@
 
       .sheet{
         width: 100% !important;
-        height: calc(210mm - 6mm) !important; /* A4横の高さ固定 */
+        height: calc(210mm - 6mm) !important; /* A4横の高さ固定（1枚） */
         border: 0.35mm solid #777 !important;
         box-shadow:none !important;
         border-radius:0 !important;
@@ -431,7 +320,6 @@
         bottom: 2.2mm !important;
       }
 
-      /* 右下バッジ */
       :root{ --stampSafeW: 18mm; --stampSafeH: 11mm; }
       .stampBadge{
         width: 15mm !important;
@@ -444,22 +332,19 @@
       .stampBadge .top{ font-size: 3.0mm !important; }
       .stampBadge .bottom{ font-size: 3.4mm !important; }
 
-      .foot{ padding: 4.5mm 6mm 5mm !important; }
+      /* ✅ 画像：横幅ギリギリ（用紙内）＋はみ出し防止 */
+      .promo{
+        padding: 3mm 0 0 !important;
+      }
+      .promo img{
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        /* カレンダーが優先。残り高さに収めるため上限だけ付ける */
+        max-height: 55mm !important;
+      }
 
-      /* 印刷時は文字を“画像くらい大きく” */
-      .hoursLabel{ font-size: 5.4mm !important; }
-      .hoursTime{ font-size: 14.2mm !important; }
-      .hoursLo{ font-size: 4.2mm !important; padding-bottom: 1.2mm !important; }
-
-      .warn{ font-size: 4.0mm !important; }
-
-      .bottomRow{ grid-template-columns: 1fr 90mm !important; }
-      .shopName{ font-size: 15.0mm !important; }
-      .telReserve{ font-size: 4.2mm !important; padding: 2.2mm 3mm !important; }
-      .telLine{ font-size: 4.4mm !important; }
-      .telLine .num{ font-size: 7.8mm !important; }
-
-      .band, .dow, .grid, .foot{ page-break-inside:avoid !important; break-inside:avoid !important; }
+      .band, .dow, .grid, .promo{ page-break-inside:avoid !important; break-inside:avoid !important; }
     }
   </style>
 </head>
@@ -478,23 +363,9 @@
 
       <div class="grid" id="calGrid"></div>
 
-      <div class="foot">
-        <div class="hoursRow">
-          <div class="hoursLabel">営業時間</div>
-          <div class="hoursTime">11:00 ～ 19:30</div>
-          <div class="hoursLo">(L.O.)</div>
-        </div>
-
-        <div class="warn">※材料、または店主の元気がなくなり次第終了する場合があります。</div>
-
-        <div class="bottomRow">
-          <div class="shopName">たこ焼き 菜々</div>
-
-          <div class="telBox">
-            <div class="telReserve">電話予約受け付けます</div>
-            <div class="telLine">TEL <span class="num">070-4077-7732</span></div>
-          </div>
-        </div>
+      <!-- ✅ 下の文字は全部削除して、画像だけ中央表示 -->
+      <div class="promo">
+        <img src="https://ul.h3z.jp/AMdusfdD.jpg" alt="菜々カレンダー下部画像" loading="eager" decoding="async">
       </div>
     </section>
 
