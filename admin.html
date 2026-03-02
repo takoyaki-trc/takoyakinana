@@ -17,7 +17,7 @@
       --muted:rgba(0,0,0,.62);
       --line:rgba(0,0,0,.12);
 
-      /* ✅ 状態文字色（ここを好みに変更OK） */
+      /* 状態文字色（好みで変更OK） */
       --stateOpen:#2f6bff; /* 営業 */
       --stateOff:#d24a4a;  /* 休み */
 
@@ -26,16 +26,16 @@
 
       --r:16px;
 
-      /* 余白詰め */
+      /* ベース（PC/タブレット） */
       --gap:6px;
       --cellPadX:6px;
       --cellPadT:7px;
       --cellPadB:7px;
 
-      /* ✅ ボタン（枠なし / 縦3段） */
+      /* ボタン（枠なし / 縦3段） */
       --btnFont: 12px;
       --btnPadY: 7px;
-      --btnPadX: 10px;
+      --btnPadX: 10px; /* ←スマホでさらに詰める */
       --btnRadius: 12px;
 
       --btnOffBg: rgba(210,74,74,.10);
@@ -172,7 +172,7 @@
     .chipBase.off{ border-color:rgba(210,74,74,.22); color:rgba(210,74,74,.92); background: rgba(210,74,74,.06); }
     .chipBase.on{  border-color:rgba(31,143,82,.20); color:rgba(31,143,82,.95); background: rgba(31,143,82,.06); }
 
-    /* ✅ 日付の下：営業/休み（色変更） */
+    /* 日付の下：営業/休み */
     .stateLine{
       font-size:12px;
       font-weight:1000;
@@ -195,7 +195,7 @@
       text-overflow: ellipsis;
     }
 
-    /* ✅ ボタン：縦3段（はみ出し防止＆見切れ無し） */
+    /* ✅ ボタン：縦3段（枠なし） */
     .badges{
       margin-top:auto;
       display:flex;
@@ -205,7 +205,7 @@
     }
 
     .badge{
-      border: 0;                 /* ✅ 枠なし */
+      border: 0;                 /* 枠なし */
       border-radius: var(--btnRadius);
       padding: var(--btnPadY) var(--btnPadX);
       font-size: var(--btnFont);
@@ -216,8 +216,6 @@
       user-select:none;
       -webkit-tap-highlight-color: transparent;
       color: var(--btnText);
-
-      /* ✅ ボタン内は必ず改行表示 */
       white-space: pre-line;
       word-break: keep-all;
     }
@@ -322,32 +320,46 @@
     }
     .toast.on{ opacity:1; transform:none; }
 
+    /* =========================================================
+       ✅ スマホ最適化（縮小しなくても 7列が入るようにさらに詰める）
+       - gapを縮める
+       - セルの左右paddingを縮める
+       - チップ/文字を微調整
+       - ボタン左右余白を詰める
+    ========================================================= */
     @media (max-width: 560px){
       :root{
-        --gap:6px;
-        --cellPadX:5px;
-        --cellPadT:7px;
-        --cellPadB:7px;
+        --gap:4px;        /* ✅ 6 → 4 */
+        --cellPadX:4px;   /* ✅ 6 → 4 */
+        --cellPadT:6px;
+        --cellPadB:6px;
 
-        --btnFont: 12px;   /* 縦3段なので縮めすぎない */
-        --btnPadY: 7px;
-        --btnPadX: 10px;
+        --btnPadX:7px;    /* ✅ ボタン左右余白を詰める */
+        --btnPadY:6.5px;
+        --btnFont:11.5px;
       }
+      .wrap{ padding:10px 8px 28px; }
       .panel{ padding:10px; }
       .dow{ gap: var(--gap); font-size:11px; }
       .grid{ gap: var(--gap); }
-      .cell{ min-height: 92px; gap: 6px; }
-      .stateLine{ font-size: 11.5px; }
+
+      .cell{ border-radius:12px; min-height: 88px; gap: 5px; }
+      .daynum{ font-size:13px; }
+      .chipBase{ font-size:9px; padding:2.5px 6px; }
+      .stateLine{ font-size:11.5px; }
+      .badges{ gap: 5px; }
     }
 
-    @media (max-width: 380px){
+    @media (max-width: 420px){
       :root{
-        --gap:5px;
-        --btnFont: 11.5px;
-        --btnPadY: 6.5px;
-        --btnPadX: 9px;
+        --gap:3px;        /* ✅ さらに詰める */
+        --cellPadX:3px;
+        --btnPadX:6px;
+        --btnFont:11px;
       }
-      .cell{ min-height: 90px; }
+      .wrap{ padding:10px 6px 26px; }
+      .panel{ padding:9px; }
+      .cell{ min-height: 86px; }
     }
   </style>
 </head>
@@ -633,8 +645,6 @@
       st.className = "stateLine " + (isOff ? "off" : "open");
       st.textContent = isOff ? "休み" : "営業";
       cell.appendChild(st);
-
-      /* ✅ 「確定：〇〇」などの文字は不要 → ここでは一切表示しない */
 
       if(hasMemo){
         const memoLine = document.createElement("div");
