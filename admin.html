@@ -3,42 +3,41 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>菜々カレンダー</title>
-  <meta name="description" content="たこ焼き 菜々：営業日カレンダー（A4横印刷 1枚固定）" />
+  <title>菜々カレンダー管理</title>
+  <meta name="description" content="菜々カレンダー管理（ローカル保存 / 基本休み＋例外＋メモ）" />
 
   <style>
     :root{
+      /* ✅ 目に優しい紙背景 */
+      --bg0:#fbfaf7;
+      --bg1:#f3efe7;
+
       --paper:#ffffff;
-      --ink:#111;
+      --paper2:#fffdf8;
 
-      /* 罫線（画面） */
-      --grid:#8f9aa5;
-      --grid2:#c4ccd4;
+      --ink:#1b1b1b;
+      --muted:rgba(0,0,0,.62);
 
-      --band:#d85c61;
-      --band2:#c94d53;
+      /* 枠線 */
+      --line:rgba(0,0,0,.12);
+      --line2:rgba(0,0,0,.08);
 
-      --sun:#d04545;
-      --sat:#2f6bff;
+      /* アクセント */
+      --accent:#2f6bff;
+      --danger:#d24a4a;
+      --ok:#1f8f52;
+      --warn:#b8862a;
 
-      --cellbg:#ffffff;
-      --offbg:#ffe9eb;
-      --off:#d24a4a;
+      /* カード */
+      --cellBg:#ffffff;
 
-      --stampRed:#d53737;
-      --stampYellow:#ffd54a;
-      --stampBorder:#c79b18;
+      --r:16px;
 
-      /* バッジが右下に来るので「右下の安全領域」 */
-      --stampSafeW: 56px;
-      --stampSafeH: 34px;
-
-      /* スタンプの“右下寄せ”余白 */
-      --stampInsetR: 6px;
-      --stampInsetB: 6px;
-
-      /* メモ表示エリア（下端） */
-      --memoSafeH: 18px; /* 画面用 */
+      /* ✅ ボタン（スマホで縦に割れないように） */
+      --btnFont:12px;
+      --btnPadY:7px;
+      --btnPadX:10px;
+      --btnMinW: 64px;     /* 最低幅を確保 */
     }
 
     *{ box-sizing:border-box; }
@@ -48,672 +47,761 @@
       color:var(--ink);
       min-height:100svh;
 
-      /* ✅ 目に優しい「紙っぽい白」 */
+      /* ✅ 紙っぽい白（暗い背景は撤廃） */
       background:
-        radial-gradient(circle at 12% 8%, rgba(255,255,255,.85), rgba(255,255,255,0) 55%),
-        radial-gradient(circle at 88% 18%, rgba(255,255,255,.75), rgba(255,255,255,0) 60%),
-        linear-gradient(180deg, #fbfaf7, #f3efe7);
+        radial-gradient(circle at 12% 10%, rgba(255,255,255,.92), rgba(255,255,255,0) 55%),
+        radial-gradient(circle at 88% 18%, rgba(255,255,255,.80), rgba(255,255,255,0) 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
     }
 
-    .wrap{
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 14px 12px 24px;
+    .wrap{ max-width:980px; margin:0 auto; padding:16px 12px 40px; }
+
+    .title{ font-size:20px; font-weight:1000; letter-spacing:.02em; }
+    .sub{
+      color:var(--muted);
+      font-size:12px;
+      margin-top:6px;
+      line-height:1.75;
     }
 
-    .sheet{
-      background: var(--paper);
-      border: 1px solid #e1ddd5;
-      /* ✅ 紙っぽい影（強すぎない） */
-      box-shadow: 0 12px 28px rgba(0,0,0,.10);
-      border-radius: 12px;
-      overflow: hidden;
+    .panel{
+      background: linear-gradient(180deg, var(--paper), var(--paper2));
+      border:1px solid var(--line);
+      border-radius:var(--r);
+      padding:14px;
+      margin-top:12px;
+      box-shadow: 0 12px 28px rgba(0,0,0,.08);
     }
 
-    /* ===== 上帯 ===== */
-    .band{
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+
+    button{
+      border:1px solid var(--line);
+      background: #fff;
+      color:var(--ink);
+      border-radius:12px;
+      padding:10px 12px;
+      font-weight:1000;
+      cursor:pointer;
+      -webkit-tap-highlight-color: transparent;
+      box-shadow: 0 1px 0 rgba(0,0,0,.04);
+    }
+    button.primary{
+      border-color: rgba(47,107,255,.35);
+      box-shadow: 0 0 0 2px rgba(47,107,255,.10) inset, 0 1px 0 rgba(0,0,0,.04);
+    }
+    button.good{
+      border-color: rgba(31,143,82,.35);
+      box-shadow: 0 0 0 2px rgba(31,143,82,.10) inset, 0 1px 0 rgba(0,0,0,.04);
+    }
+    button.danger{
+      border-color: rgba(210,74,74,.40);
+      box-shadow: 0 0 0 2px rgba(210,74,74,.10) inset, 0 1px 0 rgba(0,0,0,.04);
+    }
+
+    .ym{
       display:flex;
+      gap:10px;
       align-items:center;
-      justify-content:center;
-      gap:16px;
-      padding: 14px 12px;
-      background: linear-gradient(180deg,var(--band),var(--band2));
-      color:#fff;
-      font-weight: 1000;
-      letter-spacing:.04em;
+      justify-content:space-between;
+      flex-wrap:wrap;
     }
-    .band-month{
-      font-size: 30px;
-      color:#ffd56b;
-      text-shadow: 0 2px 0 rgba(0,0,0,.18);
-    }
-    .band-title{ font-size: 30px; }
-
-    /* ===== 曜日 ===== */
-    .dow{
-      display:grid;
-      grid-template-columns:repeat(7, 1fr);
-      background:#fff;
-      border-top: 2px solid var(--grid);
-      border-bottom: 2px solid var(--grid);
-      font-weight: 1000;
-    }
-    .dow > div{
-      text-align:center;
-      padding: 10px 0;
-      border-right: 1px solid var(--grid2);
-      font-size: 18px;
-    }
-    .dow > div:last-child{ border-right:none; }
-    .dow .sun{ color:var(--sun); }
-    .dow .sat{ color:var(--sat); }
-
-    /* ===== カレンダーグリッド ===== */
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(7, 1fr);
-      grid-auto-rows: 78px;
-      background:#fff;
-      border-bottom: 2px solid var(--grid);
-    }
-
-    .cell{
-      position:relative;
-      background: var(--cellbg);
-      border-right: 1px solid var(--grid2);
-      border-bottom: 1px solid var(--grid2);
-      padding: 8px;
-      overflow:hidden;
-    }
-    .cell:nth-child(7n){ border-right:none; }
-    .cell.blank{ opacity:.28; background:#fff; }
-
-    /* 日付：左上固定 */
-    .day{
-      position:absolute;
-      left: 8px;
-      top: 8px;
-      font-weight:1000;
-      font-size: 26px;
-      line-height:1;
-      z-index: 10;
-      pointer-events:none;
-      text-shadow: 0 1px 0 rgba(255,255,255,.55);
-    }
-    .cell.sun .day{ color:var(--sun); }
-    .cell.sat .day{ color:var(--sat); }
-
-    /* スタンプがある日は「右下安全領域」を確保 */
-    .cell.hasStamp::after{
-      content:"";
-      position:absolute;
-      right:0;
-      bottom:0;
-      width: var(--stampSafeW);
-      height: var(--stampSafeH);
-      background: transparent;
-      z-index:1;
-      pointer-events:none;
-    }
-
-    /* メモがある日は「下側安全領域」を確保 */
-    .cell.hasMemo{
-      padding-bottom: calc(8px + var(--memoSafeH));
-    }
-
-    /* 休みマスだけ背景色 */
-    .cell.isOff{ background: var(--offbg); }
-
-    /* 休：右下 */
-    .offMark{
-      position:absolute;
-      right: 8px;
-      bottom: 8px;
-      font-weight:1000;
-      font-size: 24px;
-      color: var(--off);
-      opacity:.95;
-      pointer-events:none;
-      z-index:3;
-    }
-
-    /* スタンプ2倍：右下 */
-    .stampBadge{
-      position:absolute;
-      right: var(--stampInsetR);
-      bottom: var(--stampInsetB);
-      transform: rotate(-8deg);
-      transform-origin: bottom right;
-      background: radial-gradient(circle at 30% 25%, #fff7c7 0%, var(--stampYellow) 45%, #ffbf2f 100%);
-      border: 2px solid var(--stampBorder);
-      border-radius: 11px;
-      padding: 3px 4px;
-      width: 48px;
-      text-align:center;
-      font-weight:1000;
-      color: var(--stampRed);
-      box-shadow: 0 3px 0 rgba(0,0,0,.14);
-      pointer-events:none;
-      z-index:2;
-      line-height:1;
-    }
-    .stampBadge .top{
-      font-size: 9px;
-      white-space:nowrap;
-      line-height:1;
+    .ym h2{
       margin:0;
-      transform: translateY(-1px);
-    }
-    .stampBadge .bottom{
-      font-size: 11px;
-      white-space:nowrap;
-      line-height:1;
-      margin:0;
-      transform: translateY(-1px);
+      font-size:18px;
+      font-weight:1000;
       letter-spacing:.02em;
     }
 
-    /* ✅ メモ表示（下端・左寄せ） */
-    .memo{
-      position:absolute;
-      left: 6px;
-      right: 6px;
-      bottom: 6px;
-      font-size: 11px;
-      font-weight: 900;
-      line-height: 1.15;
-      color: rgba(0,0,0,.78);
-      background: rgba(255,255,255,.88);
-      border: 1px solid rgba(0,0,0,.10);
-      border-radius: 8px;
-      padding: 3px 6px;
-      z-index: 4;
-      pointer-events:none;
+    .dow{
+      display:grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap:8px;
+      margin-top:10px;
+      color:rgba(0,0,0,.55);
+      font-weight:1000;
+      font-size:12px;
+    }
+    .dow div{ text-align:center; }
+
+    .grid{
+      margin-top:10px;
+      display:grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap:8px;
+    }
+
+    .cell{
+      border:1px solid var(--line);
+      background: var(--cellBg);
+      border-radius:14px;
+      padding:10px 8px 10px;
+      min-height:92px;
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      box-shadow: 0 1px 0 rgba(0,0,0,.03);
+    }
+    .cell.blank{ opacity:.35; background: rgba(255,255,255,.65); }
+
+    .topline{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:8px;
+    }
+    .daynum{
+      font-size:16px;
+      font-weight:1000;
+      line-height:1.05;
+      white-space:nowrap;
+    }
+    .chipBase{
+      font-size:10px;
+      font-weight:1000;
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(0,0,0,.04);
+      color: rgba(0,0,0,.72);
+      white-space:nowrap;
+    }
+    .chipBase.off{ border-color:rgba(210,74,74,.22); color:rgba(210,74,74,.92); background: rgba(210,74,74,.06); }
+    .chipBase.on{ border-color:rgba(31,143,82,.20); color:rgba(31,143,82,.95); background: rgba(31,143,82,.06); }
+
+    .stateLine{
+      font-size:12px;
+      font-weight:1000;
+      line-height:1.3;
+      color: rgba(0,0,0,.80);
+    }
+    .stateLine .muted{ color:rgba(0,0,0,.55); font-weight:900; }
+
+    /* ✅ メモ短文（1行） */
+    .mini{
+      font-size:11px;
+      font-weight:900;
+      color: rgba(0,0,0,.70);
+      background: rgba(0,0,0,.03);
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 10px;
+      padding: 5px 8px;
       white-space: nowrap;
       overflow:hidden;
       text-overflow: ellipsis;
     }
-    .cell.isOff .memo{ background: rgba(255,255,255,.90); }
 
-    /* ===== カレンダー下：画像だけ（中央・はみ出し無し） ===== */
-    .promo{
-      background:#fff;
-      padding: 14px 14px 16px;
+    .badges{
       display:flex;
-      justify-content:center;
-      align-items:center;
-    }
-    .promo img{
-      display:block;
-      width: 100%;
-      max-width: 100%;
-      height: auto;
-      margin: 0 auto;
-      object-fit: contain;
+      gap:6px;
+      flex-wrap:wrap;
+      margin-top:auto;
     }
 
-    /* 操作ボタン */
-    .bars{
-      margin-top: 10px;
+    /* ✅ ボタン内の「臨時」文字を撤廃：短いラベルに統一 */
+    .badge{
+      font-size: var(--btnFont);
+      font-weight:1000;
+      padding: var(--btnPadY) var(--btnPadX);
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: #fff;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+
+      /* ✅ スマホで縦割れ防止 */
+      white-space: nowrap;
+      word-break: keep-all;
+      min-width: var(--btnMinW);
+      text-align:center;
+      line-height: 1;
+    }
+
+    .badge.off.on{
+      border-color: rgba(210,74,74,.45);
+      box-shadow: 0 0 0 2px rgba(210,74,74,.10) inset;
+    }
+    .badge.open.on{
+      border-color: rgba(31,143,82,.45);
+      box-shadow: 0 0 0 2px rgba(31,143,82,.10) inset;
+    }
+    .badge.stamp.on{
+      border-color: rgba(47,107,255,.45);
+      box-shadow: 0 0 0 2px rgba(47,107,255,.10) inset;
+    }
+    .badge.memo.on{
+      border-color: rgba(184,134,42,.45);
+      box-shadow: 0 0 0 2px rgba(184,134,42,.10) inset;
+    }
+
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:10px;
+      line-height:1.75;
+    }
+
+    textarea#out{
+      width:100%;
+      min-height:220px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      color: var(--ink);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Noto Sans Mono", monospace;
+      font-size:12px;
+      line-height:1.5;
+      margin-top:10px;
+      white-space:pre;
+    }
+
+    dialog{
+      width:min(560px, calc(100% - 24px));
+      border:1px solid rgba(0,0,0,.14);
+      background: rgba(255,255,255,.96);
+      color: var(--ink);
+      border-radius: 16px;
+      padding: 0;
+      overflow:hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,.18);
+    }
+    dialog::backdrop{ background: rgba(0,0,0,.28); }
+    .dlgHead{
+      padding: 14px 14px 10px;
+      border-bottom: 1px solid rgba(0,0,0,.10);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .dlgTitle{
+      font-weight:1000;
+      font-size:14px;
+      letter-spacing:.02em;
+    }
+    .dlgBody{ padding: 12px 14px 14px; }
+    .dlgBody label{
+      display:block;
+      font-size:12px;
+      color: rgba(0,0,0,.65);
+      margin-bottom: 6px;
+      font-weight:1000;
+    }
+    .dlgBody input, .dlgBody textarea{
+      width:100%;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,.14);
+      background: #fff;
+      color: var(--ink);
+      padding: 10px 12px;
+      font-size: 14px;
+      outline: none;
+    }
+    .dlgBody textarea{ min-height: 120px; white-space: pre-wrap; }
+    .dlgFoot{
+      padding: 12px 14px 14px;
       display:flex;
       gap:10px;
-      justify-content:center;
-      flex-wrap:wrap;
+      justify-content:flex-end;
+      border-top: 1px solid rgba(0,0,0,.10);
     }
-    .bars button{
-      border:1px solid rgba(0,0,0,.16);
+
+    .toast{
+      position:fixed;
+      left:12px; right:12px;
+      bottom: calc(12px + env(safe-area-inset-bottom));
       background: rgba(255,255,255,.92);
-      padding:10px 12px;
-      border-radius:10px;
+      border:1px solid rgba(0,0,0,.12);
+      border-radius:14px;
+      padding:12px 12px;
       font-weight:1000;
-      cursor:pointer;
+      opacity:0;
+      transform: translateY(10px);
+      transition:.18s ease;
+      pointer-events:none;
+      max-width: 980px;
+      margin: 0 auto;
+      color: rgba(0,0,0,.85);
+      box-shadow: 0 14px 38px rgba(0,0,0,.14);
     }
+    .toast.on{ opacity:1; transform:none; }
 
-    /* ===== スマホ ===== */
-    @media (max-width: 520px){
-      .grid{ grid-auto-rows: 64px; }
-      .day{ font-size: 22px; left:6px; top:6px; }
-      .offMark{ font-size: 18px; right: 6px; bottom: 6px; }
+    /* ✅ スマホ最適化：7列維持、ボタンが縦割れしないよう微調整 */
+    @media (max-width: 560px){
+      .wrap{ padding:14px 10px 34px; }
+      .panel{ padding:12px; }
+      .dow{ gap:6px; font-size:11px; }
+      .grid{ gap:6px; }
 
-      :root{
-        --stampSafeW: 50px;
-        --stampSafeH: 30px;
-        --stampInsetR: 5px;
-        --stampInsetB: 5px;
-        --memoSafeH: 16px;
-      }
-      .stampBadge{
-        width: 42px;
-        padding: 2px 3px;
-        border-radius: 10px;
-      }
-      .stampBadge .top{ font-size: 8.5px; }
-      .stampBadge .bottom{ font-size: 10.5px; }
-
-      .memo{
-        font-size: 10px;
-        padding: 2px 5px;
-        border-radius: 7px;
-        left: 5px; right: 5px; bottom: 5px;
-      }
-      .promo{ padding: 12px 10px 14px; }
-    }
-
-    /* ===== 印刷（A4横・1枚固定） ===== */
-    @page{
-      size: A4 landscape;
-      margin: 3mm;
-    }
-    @media print{
-      *{
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-      }
-      html, body{
-        background:#fff !important;
-        height: 100% !important;
-      }
-      .wrap{
-        max-width:none !important;
-        padding:0 !important;
-        margin:0 !important;
-      }
-      .bars{ display:none !important; }
-
-      .sheet{
-        width: 100% !important;
-        height: calc(210mm - 6mm) !important;
-        border: 0.7mm solid #555 !important;
-        box-shadow:none !important;
-        border-radius:0 !important;
-        overflow:hidden !important;
-        page-break-inside:avoid !important;
-        break-inside:avoid !important;
-      }
-
-      .band{ padding: 6mm 5mm !important; }
-      .band-month{ font-size: 10.5mm !important; }
-      .band-title{ font-size: 10.5mm !important; }
-
-      .dow{
-        border-top: 0.7mm solid #555 !important;
-        border-bottom: 0.7mm solid #555 !important;
-      }
-      .dow > div{
-        padding: 2.5mm 0 !important;
-        font-size: 4.2mm !important;
-        border-right: 0.5mm solid #666 !important;
-      }
-      .dow > div:last-child{ border-right:none !important; }
-
-      .grid{
-        border-bottom: 0.7mm solid #555 !important;
-        grid-auto-rows: 20mm !important;
-      }
       .cell{
-        border-right: 0.5mm solid #666 !important;
-        border-bottom: 0.5mm solid #666 !important;
+        border-radius: 12px;
+        padding: 8px 6px 8px;
+        min-height: 84px;
+        gap: 5px;
       }
-      .cell:nth-child(7n){ border-right: none !important; }
+      .daynum{ font-size: 14px; }
+      .chipBase{ font-size: 9px; padding: 3px 7px; }
+      .stateLine{ font-size: 11px; }
 
-      .day{
-        font-size: 6.6mm !important;
-        left: 2.4mm !important;
-        top: 2.2mm !important;
-      }
-      .offMark{
-        font-size: 6.0mm !important;
-        right: 2.4mm !important;
-        bottom: 2.2mm !important;
-      }
-
-      /* 印刷時のメモ：小さく、下端に */
       :root{
-        --stampSafeW: 18mm;
-        --stampSafeH: 11mm;
-        --stampInsetR: 2mm;
-        --stampInsetB: 2mm;
-        --memoSafeH: 7mm;
+        --btnFont:11px;
+        --btnPadY:6px;
+        --btnPadX:8px;
+        --btnMinW: 58px;
       }
-      .cell.hasMemo{
-        padding-bottom: calc(2.2mm + var(--memoSafeH)) !important;
-      }
-      .memo{
-        left: 1.8mm !important;
-        right: 1.8mm !important;
-        bottom: 1.7mm !important;
-        font-size: 3.2mm !important;
-        padding: 0.6mm 1.2mm !important;
-        border-radius: 2mm !important;
-        border-width: 0.35mm !important;
-      }
+    }
 
-      .stampBadge{
-        width: 14.5mm !important;
-        padding: 1.0mm 0.9mm !important;
-        border-radius: 3mm !important;
-        border-width: 0.6mm !important;
-        box-shadow: 0 1.2mm 0 rgba(0,0,0,.12) !important;
-        line-height:1 !important;
-      }
-      .stampBadge .top{ font-size: 2.8mm !important; }
-      .stampBadge .bottom{ font-size: 3.2mm !important; }
-
-      .promo{ padding: 3mm 0 0 !important; }
-      .promo img{
-        width: 100% !important;
-        max-width: 100% !important;
-        height: auto !important;
-        max-height: 55mm !important;
-      }
-
-      .band, .dow, .grid, .promo{
-        page-break-inside:avoid !important;
-        break-inside:avoid !important;
+    @media (max-width: 420px){
+      .cell{ min-height: 78px; }
+      .badges{ gap:5px; }
+      :root{
+        --btnFont:10.5px;
+        --btnPadY:6px;
+        --btnPadX:7px;
+        --btnMinW: 54px;
       }
     }
   </style>
 </head>
 
 <body>
-  <main class="wrap">
-    <section class="sheet" aria-label="営業日カレンダー">
-      <div class="band">
-        <div class="band-month" id="bandMonth">3月</div>
-        <div class="band-title">菜々カレンダー</div>
+<main class="wrap">
+  <div class="title">菜々カレンダー管理（休み／営業切替／メモ／スタンプ2倍）</div>
+  <div class="sub">
+    ✅ 基本は <b>毎週水曜</b>＋<b>第2・第3木曜</b> が休み（自動）<br>
+    ✅ 例外で上書き：<b>休みにする</b>／<b>営業に戻す（基本休み解除）</b><br>
+    ✅ メモ：カレンダーに表示できる短文（例：イベント、早仕舞い など）<br>
+    ✅ 自動2倍：<b>7/17/27</b>（7のつく日）は表示ページ側で自動（休みなら出さない）※手動2倍も可能
+  </div>
+
+  <section class="panel">
+    <div class="ym">
+      <div class="row">
+        <button id="prevBtn" type="button">← 前月</button>
+        <button id="todayBtn" type="button" class="primary">今月</button>
+        <button id="nextBtn" type="button">次月 →</button>
       </div>
-
-      <div class="dow">
-        <div class="sun">日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div class="sat">土</div>
-      </div>
-
-      <div class="grid" id="calGrid"></div>
-
-      <div class="promo">
-        <img src="https://ul.h3z.jp/AMdusfdD.jpg" alt="菜々カレンダー下部画像" loading="eager" decoding="async">
-      </div>
-    </section>
-
-    <div class="bars">
-      <button id="prevBtn" type="button">← 先月</button>
-      <button id="todayBtn" type="button">今月</button>
-      <button id="nextBtn" type="button">来月 →</button>
-      <button id="printBtn" type="button">A4で印刷</button>
+      <h2 id="ymTitle">----</h2>
     </div>
-  </main>
 
-  <script>
-  (() => {
-    "use strict";
+    <div class="dow">
+      <div style="color:var(--danger);">日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div style="color:var(--accent);">土</div>
+    </div>
+    <div class="grid" id="grid"></div>
 
-    // ★管理画面（localStorage）と合わせるキー
-    // ※あなたの管理画面のキーが違う場合はここだけ合わせてください
-    const ADMIN_STORE_KEY = "nana_calendar_admin_v2_local";
+    <div class="hint">
+      ・「休みにする」：その日を休みにする（基本営業日でも休み）<br>
+      ・「営業に戻す」：基本休みの日でも営業に戻す（例：事情で営業したい時）<br>
+      ・「メモ」：表示ページに短文表示（改行OK）<br>
+      ・「2倍」：7/17/27以外で追加したい時だけ
+    </div>
+  </section>
 
-    const $ = (s, el=document) => el.querySelector(s);
-    const gridEl = $("#calGrid");
-    const bandMonthEl = $("#bandMonth");
+  <section class="panel">
+    <div class="row" style="justify-content:space-between;">
+      <div class="row">
+        <button id="exportBtn" type="button" class="good">JSONを書き出し（バックアップ）</button>
+        <button id="copyBtn" type="button">コピー</button>
+      </div>
+      <div class="row">
+        <button id="clearBtn" type="button" class="danger">この端末の設定を全削除</button>
+      </div>
+    </div>
+    <textarea id="out" spellcheck="false" placeholder="ここにJSONが出ます（バックアップ用）。GASなし運用なら普段は不要です。"></textarea>
+    <div class="hint">
+      ※保存先は <b>この端末内（localStorage）</b> です。<br>
+      ※別端末にも移したい時だけ、JSONをコピーして手動移行できます。
+    </div>
+  </section>
 
-    const prevBtn = $("#prevBtn");
-    const nextBtn = $("#nextBtn");
-    const todayBtn = $("#todayBtn");
-    const printBtn = $("#printBtn");
+  <div class="toast" id="toast"></div>
 
-    let view = (() => {
-      const d = new Date();
-      return { y: d.getFullYear(), m: d.getMonth()+1 };
-    })();
+  <!-- メモ編集 -->
+  <dialog id="memoDlg">
+    <div class="dlgHead">
+      <div class="dlgTitle" id="memoDlgTitle">メモ</div>
+      <button type="button" id="memoCloseBtn" aria-label="閉じる">✕</button>
+    </div>
+    <div class="dlgBody">
+      <label for="memoText">この日のメモ（表示ページに出す短文）</label>
+      <textarea id="memoText" placeholder="例：早仕舞い18:00 / イベント出店 など" spellcheck="false"></textarea>
+      <div class="hint" style="margin-top:8px;">
+        ※空にして保存するとメモは削除されます。
+      </div>
+    </div>
+    <div class="dlgFoot">
+      <button type="button" id="memoDeleteBtn" class="danger">削除</button>
+      <button type="button" id="memoSaveBtn" class="good">保存</button>
+    </div>
+  </dialog>
+</main>
 
-    // 互換データ（localStorage or JSON）
-    let DATA = { overrides: {} };
+<script>
+(() => {
+  "use strict";
 
-    function pad2(n){ return String(n).padStart(2,"0"); }
-    function ymKey(y,m){ return `${y}-${pad2(m)}`; }
-    function ymd(y,m,d){ return `${y}-${pad2(m)}-${pad2(d)}`; }
-    function daysInMonth(y,m){ return new Date(y, m, 0).getDate(); }
-    function firstDow(y,m){ return new Date(y, m-1, 1).getDay(); }
+  const STORE_KEY = "nana_calendar_admin_v2_local"; // ★v2
+  const $ = (s, el=document) => el.querySelector(s);
 
-    // 基本休み：水曜 + 第2/第3木曜
-    function isBaseOff(y,m,d){
-      const dt = new Date(y, m-1, d);
-      const dow = dt.getDay();
-      if(dow === 3) return true; // 水
-      if(dow === 4){ // 木：第2/第3
-        let count = 0;
-        for(let i=1;i<=d;i++){
-          if(new Date(y, m-1, i).getDay() === 4) count++;
-        }
-        return (count === 2 || count === 3);
+  const gridEl = $("#grid");
+  const ymTitleEl = $("#ymTitle");
+  const outEl = $("#out");
+  const toastEl = $("#toast");
+
+  const memoDlg = $("#memoDlg");
+  const memoDlgTitle = $("#memoDlgTitle");
+  const memoText = $("#memoText");
+  const memoCloseBtn = $("#memoCloseBtn");
+  const memoSaveBtn = $("#memoSaveBtn");
+  const memoDeleteBtn = $("#memoDeleteBtn");
+
+  let toastT=null;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add("on");
+    clearTimeout(toastT);
+    toastT = setTimeout(()=>toastEl.classList.remove("on"), 1200);
+  }
+
+  let view = (() => {
+    const d = new Date();
+    return { y: d.getFullYear(), m: d.getMonth()+1 };
+  })();
+
+  // { "YYYY-MM": { off:[], open:[], tags:{}, memo:{} } }
+  let OV = loadOV();
+
+  function loadOV(){
+    try{
+      const raw = localStorage.getItem(STORE_KEY);
+      if(!raw) return {};
+      const obj = JSON.parse(raw);
+      return (obj && typeof obj === "object") ? obj : {};
+    }catch(e){ return {}; }
+  }
+  function saveOV(){ localStorage.setItem(STORE_KEY, JSON.stringify(OV)); }
+
+  function pad2(n){ return String(n).padStart(2,"0"); }
+  function ymKey(y,m){ return `${y}-${pad2(m)}`; }
+  function ymd(y,m,d){ return `${y}-${pad2(m)}-${pad2(d)}`; }
+  function daysInMonth(y,m){ return new Date(y, m, 0).getDate(); }
+  function firstDow(y,m){ return new Date(y, m-1, 1).getDay(); }
+
+  function monthObj(y,m){
+    const key = ymKey(y,m);
+    if(!OV[key]) OV[key] = { off: [], open: [], tags: {}, memo: {} };
+
+    const mo = OV[key];
+    mo.off  = Array.isArray(mo.off)  ? mo.off  : [];
+    mo.open = Array.isArray(mo.open) ? mo.open : [];
+    mo.tags = (mo.tags && typeof mo.tags==="object") ? mo.tags : {};
+    mo.memo = (mo.memo && typeof mo.memo==="object") ? mo.memo : {};
+    return mo;
+  }
+
+  // 基本休み：水曜＋第2/第3木曜
+  function isBaseOff(y,m,d){
+    const dt = new Date(y, m-1, d);
+    const dow = dt.getDay();
+    if(dow === 3) return true;
+    if(dow === 4){
+      let count = 0;
+      for(let i=1;i<=d;i++){
+        if(new Date(y, m-1, i).getDay() === 4) count++;
       }
-      return false;
+      return (count===2 || count===3);
+    }
+    return false;
+  }
+
+  function isAutoStampDay(d){ return (d===7 || d===17 || d===27); }
+
+  // 優先：open（基本休み解除）→ off（最終的に休み）
+  function calcOpenState(y,m,d){
+    const mo = monthObj(y,m);
+    const dateStr = ymd(y,m,d);
+    const baseOff = isBaseOff(y,m,d);
+    const forcedOpen = mo.open.includes(dateStr);
+    const forcedOff  = mo.off.includes(dateStr);
+
+    let isOff = baseOff && !forcedOpen;
+    if(forcedOff) isOff = true;
+
+    return { baseOff, forcedOpen, forcedOff, isOff };
+  }
+
+  function toggleOff(y,m,d){
+    const mo = monthObj(y,m);
+    const dateStr = ymd(y,m,d);
+
+    const idx = mo.off.indexOf(dateStr);
+    if(idx >= 0){
+      mo.off.splice(idx,1);
+      toast(`${dateStr}：休みにする OFF`);
+    }else{
+      mo.off.push(dateStr);
+      // 矛盾防止：同日に open があれば外す
+      const j = mo.open.indexOf(dateStr);
+      if(j >= 0) mo.open.splice(j,1);
+      toast(`${dateStr}：休みにする ON`);
+    }
+    saveOV();
+    render();
+  }
+
+  function toggleOpen(y,m,d){
+    const mo = monthObj(y,m);
+    const dateStr = ymd(y,m,d);
+
+    const idx = mo.open.indexOf(dateStr);
+    if(idx >= 0){
+      mo.open.splice(idx,1);
+      toast(`${dateStr}：営業に戻す OFF`);
+    }else{
+      mo.open.push(dateStr);
+      // 矛盾防止：同日に off があれば外す
+      const j = mo.off.indexOf(dateStr);
+      if(j >= 0) mo.off.splice(j,1);
+      toast(`${dateStr}：営業に戻す ON`);
+    }
+    saveOV();
+    render();
+  }
+
+  function toggleStamp(y,m,d){
+    const mo = monthObj(y,m);
+    const dateStr = ymd(y,m,d);
+    if(mo.tags[dateStr]){
+      delete mo.tags[dateStr];
+      toast(`${dateStr}：2倍 OFF`);
+    }else{
+      mo.tags[dateStr] = "スタンプ\n2倍";
+      toast(`${dateStr}：2倍 ON`);
+    }
+    saveOV();
+    render();
+  }
+
+  // メモ編集
+  let editing = null; // {y,m,d,dateStr}
+  function openMemoDlg(y,m,d){
+    const mo = monthObj(y,m);
+    const dateStr = ymd(y,m,d);
+    editing = { y,m,d,dateStr };
+
+    memoDlgTitle.textContent = `${dateStr} のメモ`;
+    memoText.value = (mo.memo && mo.memo[dateStr]) ? String(mo.memo[dateStr]) : "";
+
+    memoDlg.showModal();
+    memoText.focus();
+  }
+  function saveMemo(){
+    if(!editing) return;
+    const {y,m,dateStr} = editing;
+    const mo = monthObj(y,m);
+    const v = (memoText.value || "").trim();
+
+    if(v){
+      mo.memo[dateStr] = v;
+      toast(`${dateStr}：メモ保存`);
+    }else{
+      delete mo.memo[dateStr];
+      toast(`${dateStr}：メモ削除`);
+    }
+    saveOV();
+    memoDlg.close();
+    render();
+  }
+  function deleteMemo(){
+    if(!editing) return;
+    const {y,m,dateStr} = editing;
+    const mo = monthObj(y,m);
+    delete mo.memo[dateStr];
+    saveOV();
+    toast(`${dateStr}：メモ削除`);
+    memoDlg.close();
+    render();
+  }
+
+  memoCloseBtn.addEventListener("click", ()=>memoDlg.close());
+  memoSaveBtn.addEventListener("click", saveMemo);
+  memoDeleteBtn.addEventListener("click", deleteMemo);
+
+  function render(){
+    const {y,m} = view;
+    const key = ymKey(y,m);
+    ymTitleEl.textContent = key;
+    gridEl.innerHTML = "";
+
+    const start = firstDow(y,m);
+    const last = daysInMonth(y,m);
+    const mo = monthObj(y,m);
+
+    for(let i=0;i<start;i++){
+      const b = document.createElement("div");
+      b.className = "cell blank";
+      gridEl.appendChild(b);
     }
 
-    // 自動：7/17/27 はスタンプ2倍
-    function isAutoStampDay(d){ return (d === 7 || d === 17 || d === 27); }
-
-    // ========== データ読込（localStorage優先 → なければ assets/calendar-data.json） ==========
-    function loadFromLocal(){
-      try{
-        const raw = localStorage.getItem(ADMIN_STORE_KEY);
-        if(!raw) return null;
-        const obj = JSON.parse(raw);
-        if(!obj || typeof obj !== "object") return null;
-
-        // 管理画面は { "YYYY-MM": {off,open,tags,memo} ... } 形式
-        // 表示ページは { overrides: {...} } に合わせて内部統一
-        return { overrides: obj };
-      }catch(e){
-        return null;
-      }
-    }
-
-    async function loadFromJSON(){
-      try{
-        const res = await fetch("assets/calendar-data.json", { cache:"no-store" });
-        if(!res.ok) throw new Error("calendar-data.json not found");
-        const json = await res.json();
-        if(json && typeof json === "object") return json;
-      }catch(e){ /* noop */ }
-      return { overrides: {} };
-    }
-
-    async function loadData(){
-      const local = loadFromLocal();
-      if(local){
-        DATA = local;
-        return;
-      }
-      // localが無い（または壊れてる）ときだけJSON
-      DATA = await loadFromJSON();
-    }
-
-    function getMonthOverride(y,m){
-      const key = ymKey(y,m);
-      return (DATA.overrides && DATA.overrides[key]) ? DATA.overrides[key] : null;
-    }
-
-    function clearGrid(){
-      while(gridEl.firstChild) gridEl.removeChild(gridEl.firstChild);
-    }
-
-    // off/open の優先順位：
-    // open（基本休みを営業に戻す）→ off（最終的に休みにする）
-    function isOffForDate(y,m,d, ov){
+    for(let d=1; d<=last; d++){
       const dateStr = ymd(y,m,d);
 
-      const baseOff = isBaseOff(y,m,d);
+      const { baseOff, forcedOpen, forcedOff, isOff } = calcOpenState(y,m,d);
+      const manualStamp = !!mo.tags[dateStr];
+      const autoStamp = isAutoStampDay(d);
 
-      const offArr  = (ov && Array.isArray(ov.off))  ? ov.off  : [];
-      const openArr = (ov && Array.isArray(ov.open)) ? ov.open : [];
+      const hasMemo = !!(mo.memo && mo.memo[dateStr] && String(mo.memo[dateStr]).trim());
 
-      const forcedOpen = openArr.includes(dateStr);
-      const forcedOff  = offArr.includes(dateStr);
+      const cell = document.createElement("div");
+      cell.className = "cell";
 
-      // 基本休みでも、臨時営業があれば営業に戻す
-      let off = baseOff && !forcedOpen;
+      // 上段：日付 + 基本タグ
+      const top = document.createElement("div");
+      top.className = "topline";
 
-      // 追加休業があれば最優先で休み
-      if(forcedOff) off = true;
+      const n = document.createElement("div");
+      n.className = "daynum";
+      n.textContent = d;
+      top.appendChild(n);
 
-      return off;
-    }
+      const chip = document.createElement("div");
+      chip.className = "chipBase " + (baseOff ? "off" : "on");
+      chip.textContent = baseOff ? "基本：休" : "基本：営";
+      top.appendChild(chip);
 
-    function getMemoForDate(ov, dateStr){
-      const memo = (ov && ov.memo && typeof ov.memo === "object") ? ov.memo : null;
-      if(!memo) return "";
-      const v = memo[dateStr];
-      if(v == null) return "";
-      return String(v).trim();
-    }
+      cell.appendChild(top);
 
-    function getManualTagForDate(ov, dateStr){
-      const tags = (ov && ov.tags && typeof ov.tags === "object") ? ov.tags : null;
-      if(!tags) return "";
-      const v = tags[dateStr];
-      if(v == null) return "";
-      return String(v);
-    }
+      // 状態行（ここは情報として残す：ボタンの文言は短くする）
+      const st = document.createElement("div");
+      st.className = "stateLine";
 
-    function render(){
-      const {y,m} = view;
-      bandMonthEl.textContent = `${m}月`;
+      const stateTxt = isOff ? "休み" : "営業";
+      const extra = [];
+      if(forcedOff) extra.push("休みにする");
+      if(forcedOpen) extra.push("営業に戻す");
+      if(autoStamp) extra.push("自動2倍");
+      if(manualStamp) extra.push("手動2倍");
+      if(hasMemo) extra.push("メモ");
 
-      const ov = getMonthOverride(y,m);
+      st.innerHTML = `${stateTxt} <span class="muted">${extra.length ? " / " + extra.join("・") : ""}</span>`;
+      cell.appendChild(st);
 
-      clearGrid();
-
-      const start = firstDow(y,m);
-      const last = daysInMonth(y,m);
-
-      // ブランク
-      for(let i=0;i<start;i++){
-        const c = document.createElement("div");
-        c.className = "cell blank";
-        gridEl.appendChild(c);
+      // メモ表示（短く）
+      if(hasMemo){
+        const memoLine = document.createElement("div");
+        memoLine.className = "mini";
+        const v = String(mo.memo[dateStr]).replace(/\s+/g, " ").trim();
+        memoLine.textContent = v.length > 18 ? (v.slice(0,18) + "…") : v;
+        cell.appendChild(memoLine);
       }
 
-      for(let d=1; d<=last; d++){
-        const dateStr = ymd(y,m,d);
-        const dow = new Date(y, m-1, d).getDay();
+      // ボタン群（短い文言・横並び維持）
+      const badges = document.createElement("div");
+      badges.className = "badges";
 
-        const cell = document.createElement("div");
-        cell.className = "cell";
-        if(dow === 0) cell.classList.add("sun");
-        if(dow === 6) cell.classList.add("sat");
+      const bOff = document.createElement("div");
+      bOff.className = "badge off" + (forcedOff ? " on" : "");
+      bOff.textContent = "休みに";
+      bOff.addEventListener("click", () => toggleOff(y,m,d));
+      badges.appendChild(bOff);
 
-        // 日付
-        const day = document.createElement("div");
-        day.className = "day";
-        day.textContent = String(d);
-        cell.appendChild(day);
+      const bOpen = document.createElement("div");
+      bOpen.className = "badge open" + (forcedOpen ? " on" : "");
+      bOpen.textContent = "営業";
+      bOpen.addEventListener("click", () => toggleOpen(y,m,d));
+      badges.appendChild(bOpen);
 
-        // メモ
-        const memo = getMemoForDate(ov, dateStr);
-        if(memo){
-          cell.classList.add("hasMemo");
-          const memoEl = document.createElement("div");
-          memoEl.className = "memo";
-          memoEl.textContent = memo.replace(/\s+/g, " ");
-          cell.appendChild(memoEl);
-        }
+      const bMemo = document.createElement("div");
+      bMemo.className = "badge memo" + (hasMemo ? " on" : "");
+      bMemo.textContent = "メモ";
+      bMemo.addEventListener("click", () => openMemoDlg(y,m,d));
+      badges.appendChild(bMemo);
 
-        const off = isOffForDate(y,m,d, ov);
+      const bStamp = document.createElement("div");
+      bStamp.className = "badge stamp" + (manualStamp ? " on" : "");
+      bStamp.textContent = "2倍";
+      bStamp.addEventListener("click", () => toggleStamp(y,m,d));
+      badges.appendChild(bStamp);
 
-        if(off){
-          cell.classList.add("isOff");
-          const o = document.createElement("div");
-          o.className = "offMark";
-          o.textContent = "休";
-          cell.appendChild(o);
-        }else{
-          // タグ（手動） or 自動スタンプ日
-          const manualTag = getManualTagForDate(ov, dateStr);
-          const shouldAuto = isAutoStampDay(d);
+      cell.appendChild(badges);
 
-          // ✅ 「臨時」の文字は一切出さない（スタンプ表示のみ）
-          let topLabel = "";
-          if(manualTag){
-            topLabel = manualTag.split(/\r?\n/)[0].trim() || "スタンプ";
-          }else if(shouldAuto){
-            topLabel = "スタンプ";
-          }
-
-          if(topLabel){
-            cell.classList.add("hasStamp");
-
-            const badge = document.createElement("div");
-            badge.className = "stampBadge";
-
-            const top = document.createElement("div");
-            top.className = "top";
-            top.textContent = topLabel;
-
-            const bottom = document.createElement("div");
-            bottom.className = "bottom";
-            bottom.textContent = "2倍";
-
-            badge.appendChild(top);
-            badge.appendChild(bottom);
-            cell.appendChild(badge);
-          }
-        }
-
-        gridEl.appendChild(cell);
-      }
-
-      // 末尾ブランク
-      const mod = gridEl.children.length % 7;
-      if(mod !== 0){
-        const need = 7 - mod;
-        for(let i=0;i<need;i++){
-          const c = document.createElement("div");
-          c.className = "cell blank";
-          gridEl.appendChild(c);
-        }
-      }
+      gridEl.appendChild(cell);
     }
 
-    function addMonth(delta){
-      let y = view.y;
-      let m = view.m + delta;
-      while(m <= 0){ m += 12; y--; }
-      while(m >= 13){ m -= 12; y++; }
-      view = { y, m };
-      render();
-    }
-
-    // 管理画面と同時に開いている時、変更を“即反映”
-    // 1) 別タブ更新：storageイベント
-    window.addEventListener("storage", (ev) => {
-      if(ev && ev.key === ADMIN_STORE_KEY){
-        const local = loadFromLocal();
-        DATA = local ? local : { overrides:{} };
-        render();
+    const total = gridEl.children.length;
+    const mod = total % 7;
+    if(mod !== 0){
+      for(let i=0;i<7-mod;i++){
+        const b = document.createElement("div");
+        b.className = "cell blank";
+        gridEl.appendChild(b);
       }
-    });
+    }
+  }
 
-    // 2) タブに戻った時：focusで読み直し
-    window.addEventListener("focus", async () => {
-      await loadData();
-      render();
-    });
+  function addMonth(delta){
+    let y=view.y, m=view.m + delta;
+    while(m<=0){ m+=12; y--; }
+    while(m>=13){ m-=12; y++; }
+    view = { y, m };
+    render();
+  }
 
-    async function init(){
-      await loadData();
-      render();
+  function exportJSON(){
+    const out = { overrides: {} };
+    const keys = Object.keys(OV).sort();
+    for(const key of keys){
+      const mo = OV[key];
+      if(!mo) continue;
 
-      prevBtn.addEventListener("click", () => addMonth(-1));
-      nextBtn.addEventListener("click", () => addMonth(1));
-      todayBtn.addEventListener("click", () => {
-        const d = new Date();
-        view = { y:d.getFullYear(), m:d.getMonth()+1 };
-        render();
-      });
-      printBtn.addEventListener("click", () => window.print());
+      const off  = Array.isArray(mo.off)  ? mo.off.slice()  : [];
+      const open = Array.isArray(mo.open) ? mo.open.slice() : [];
+      const tags = (mo.tags && typeof mo.tags==="object") ? mo.tags : {};
+      const memo = (mo.memo && typeof mo.memo==="object") ? mo.memo : {};
+
+      if(off.length===0 && open.length===0 && Object.keys(tags).length===0 && Object.keys(memo).length===0) continue;
+
+      out.overrides[key] = { off, open, tags, memo };
     }
 
-    init();
-  })();
-  </script>
+    outEl.value = JSON.stringify(out, null, 2);
+    toast("JSONを書き出しました（バックアップ）");
+  }
+
+  $("#prevBtn").addEventListener("click", () => addMonth(-1));
+  $("#nextBtn").addEventListener("click", () => addMonth(1));
+  $("#todayBtn").addEventListener("click", () => {
+    const d = new Date();
+    view = { y:d.getFullYear(), m:d.getMonth()+1 };
+    render();
+  });
+
+  $("#exportBtn").addEventListener("click", exportJSON);
+
+  $("#copyBtn").addEventListener("click", async () => {
+    if(!outEl.value.trim()) exportJSON();
+    try{
+      await navigator.clipboard.writeText(outEl.value);
+      toast("コピーしました");
+    }catch(e){
+      outEl.focus(); outEl.select();
+      toast("手動でコピーしてください");
+    }
+  });
+
+  $("#clearBtn").addEventListener("click", () => {
+    localStorage.removeItem(STORE_KEY);
+    OV = loadOV();
+    outEl.value = "";
+    toast("この端末の設定を削除しました");
+    render();
+  });
+
+  render();
+})();
+</script>
 </body>
 </html>
