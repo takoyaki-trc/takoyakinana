@@ -26,16 +26,20 @@
 
       --r:16px;
 
-      /* ベース（PC/タブレット） */
+      /* ====== レイアウト変数（PC/タブレット） ====== */
+      --wrapPadX: 10px;
+      --panelPad: 12px;
+
       --gap:6px;
       --cellPadX:6px;
       --cellPadT:7px;
       --cellPadB:7px;
+      --cellRadius:14px;
 
       /* ボタン（枠なし / 縦3段） */
       --btnFont: 12px;
       --btnPadY: 7px;
-      --btnPadX: 10px; /* ←スマホでさらに詰める */
+      --btnPadX: 10px;
       --btnRadius: 12px;
 
       --btnOffBg: rgba(210,74,74,.10);
@@ -52,6 +56,10 @@
     }
 
     *{ box-sizing:border-box; }
+
+    /* ✅ 端末差の1〜2px溢れを確実に止める */
+    html, body{ overflow-x:hidden; }
+
     body{
       margin:0;
       font-family: system-ui,-apple-system,"Noto Sans JP",sans-serif;
@@ -63,7 +71,12 @@
         linear-gradient(180deg, var(--bg0), var(--bg1));
     }
 
-    .wrap{ max-width:980px; margin:0 auto; padding:12px 10px 34px; }
+    .wrap{
+      max-width:980px;
+      margin:0 auto;
+      padding:12px var(--wrapPadX) 34px;
+    }
+
     .title{ font-size:18px; font-weight:1000; letter-spacing:.02em; }
     .sub{ color:var(--muted); font-size:12px; margin-top:6px; line-height:1.75; }
 
@@ -71,9 +84,10 @@
       background: linear-gradient(180deg, var(--paper), var(--paper2));
       border:1px solid var(--line);
       border-radius:var(--r);
-      padding:12px;
+      padding:var(--panelPad);
       margin-top:10px;
       box-shadow: 0 10px 24px rgba(0,0,0,.08);
+      overflow-x:hidden; /* ✅ パネル内も横溢れを切る */
     }
 
     .row{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
@@ -113,33 +127,36 @@
 
     .dow{
       display:grid;
-      grid-template-columns: repeat(7, 1fr);
+      grid-template-columns: repeat(7, minmax(0, 1fr)); /* ✅ 0まで縮む */
       gap: var(--gap);
       margin-top:10px;
       color:rgba(0,0,0,.55);
       font-weight:1000;
       font-size:12px;
     }
-    .dow div{ text-align:center; }
+    .dow div{ text-align:center; min-width:0; } /* ✅ */
 
     .grid{
       margin-top:10px;
       display:grid;
-      grid-template-columns: repeat(7, 1fr);
+      grid-template-columns: repeat(7, minmax(0, 1fr)); /* ✅ 0まで縮む */
       gap: var(--gap);
+      width:100%;
+      min-width:0;
     }
 
     .cell{
+      min-width:0; /* ✅ これが無いと端末によって縮み切らず溢れる */
       border:1px solid var(--line);
       background:#fff;
-      border-radius:14px;
+      border-radius:var(--cellRadius);
       padding: var(--cellPadT) var(--cellPadX) var(--cellPadB);
       min-height: 92px;
-      overflow: visible;
       display:flex;
       flex-direction:column;
       gap: 6px;
       box-shadow: 0 1px 0 rgba(0,0,0,.03);
+      overflow:hidden;
     }
     .cell.blank{
       opacity:.35;
@@ -152,12 +169,14 @@
       align-items:flex-start;
       justify-content:space-between;
       gap:6px;
+      min-width:0;
     }
     .daynum{
       font-size:14px;
       font-weight:1000;
       line-height:1.05;
       white-space:nowrap;
+      min-width:0;
     }
     .chipBase{
       font-size:9.5px;
@@ -168,16 +187,19 @@
       background: var(--chipBg);
       color: rgba(0,0,0,.72);
       white-space:nowrap;
+      min-width:0;
     }
     .chipBase.off{ border-color:rgba(210,74,74,.22); color:rgba(210,74,74,.92); background: rgba(210,74,74,.06); }
     .chipBase.on{  border-color:rgba(31,143,82,.20); color:rgba(31,143,82,.95); background: rgba(31,143,82,.06); }
 
-    /* 日付の下：営業/休み */
     .stateLine{
       font-size:12px;
       font-weight:1000;
       line-height:1.25;
       margin-top: 1px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
     .stateLine.open{ color: var(--stateOpen); }
     .stateLine.off{  color: var(--stateOff); }
@@ -193,6 +215,7 @@
       white-space: nowrap;
       overflow:hidden;
       text-overflow: ellipsis;
+      min-width:0;
     }
 
     /* ✅ ボタン：縦3段（枠なし） */
@@ -202,10 +225,11 @@
       flex-direction:column;
       gap: 6px;
       align-items:stretch;
+      min-width:0;
     }
 
     .badge{
-      border: 0;                 /* 枠なし */
+      border: 0;
       border-radius: var(--btnRadius);
       padding: var(--btnPadY) var(--btnPadX);
       font-size: var(--btnFont);
@@ -218,6 +242,7 @@
       color: var(--btnText);
       white-space: pre-line;
       word-break: keep-all;
+      min-width:0;
     }
     .badge:active{ filter: brightness(.95); }
 
@@ -321,45 +346,52 @@
     .toast.on{ opacity:1; transform:none; }
 
     /* =========================================================
-       ✅ スマホ最適化（縮小しなくても 7列が入るようにさらに詰める）
-       - gapを縮める
-       - セルの左右paddingを縮める
-       - チップ/文字を微調整
-       - ボタン左右余白を詰める
+       ✅ ここから「さらに強く」スマホを詰める（確実に入れる最終設定）
     ========================================================= */
     @media (max-width: 560px){
       :root{
-        --gap:4px;        /* ✅ 6 → 4 */
-        --cellPadX:4px;   /* ✅ 6 → 4 */
-        --cellPadT:6px;
-        --cellPadB:6px;
+        --wrapPadX: 6px;     /* ✅ 外側余白を減らす */
+        --panelPad: 8px;     /* ✅ パネル内余白を減らす */
 
-        --btnPadX:7px;    /* ✅ ボタン左右余白を詰める */
-        --btnPadY:6.5px;
-        --btnFont:11.5px;
+        --gap: 3px;          /* ✅ 4→3 */
+        --cellPadX: 3px;     /* ✅ 4→3 */
+        --cellPadT: 5px;
+        --cellPadB: 5px;
+        --cellRadius: 11px;  /* ✅ 角丸も小さくして幅を稼ぐ */
+
+        --btnPadX: 6px;      /* ✅ ボタン左右余白を詰める */
+        --btnPadY: 6px;
+        --btnFont: 11px;
+        --btnRadius: 10px;
       }
-      .wrap{ padding:10px 8px 28px; }
-      .panel{ padding:10px; }
-      .dow{ gap: var(--gap); font-size:11px; }
-      .grid{ gap: var(--gap); }
+      .wrap{ padding:10px var(--wrapPadX) 26px; }
+      .panel{ padding:var(--panelPad); }
 
-      .cell{ border-radius:12px; min-height: 88px; gap: 5px; }
-      .daynum{ font-size:13px; }
-      .chipBase{ font-size:9px; padding:2.5px 6px; }
-      .stateLine{ font-size:11.5px; }
-      .badges{ gap: 5px; }
+      .dow{ font-size:10.5px; }
+      .cell{ min-height: 86px; gap:5px; }
+
+      .daynum{ font-size:12.5px; }
+      .chipBase{ font-size:8.6px; padding:2px 5px; }
+
+      .stateLine{ font-size:11px; }
+      .badges{ gap:4px; }
     }
 
     @media (max-width: 420px){
       :root{
-        --gap:3px;        /* ✅ さらに詰める */
-        --cellPadX:3px;
-        --btnPadX:6px;
-        --btnFont:11px;
+        --wrapPadX: 4px;
+        --panelPad: 7px;
+
+        --gap: 2px;          /* ✅ 最終手段：2px */
+        --cellPadX: 2px;
+        --cellPadT: 5px;
+        --cellPadB: 5px;
+
+        --btnPadX: 5px;
+        --btnFont: 10.7px;
       }
-      .wrap{ padding:10px 6px 26px; }
-      .panel{ padding:9px; }
-      .cell{ min-height: 86px; }
+      .dow{ font-size:10px; }
+      .cell{ min-height: 84px; }
     }
   </style>
 </head>
@@ -718,7 +750,7 @@
     toast("JSONを書き出し（バックアップ）");
   }
 
-   $("#prevBtn").addEventListener("click", () => addMonth(-1));
+  $("#prevBtn").addEventListener("click", () => addMonth(-1));
   $("#nextBtn").addEventListener("click", () => addMonth(1));
   $("#todayBtn").addEventListener("click", () => {
     const d = new Date();
